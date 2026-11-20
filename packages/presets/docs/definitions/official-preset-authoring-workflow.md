@@ -91,7 +91,8 @@ palette context to select; the matching field in `canonicalSurfaces` documents t
 and does not replace that map.
 
 Core validates Card-to-Container and catalog references. Surface Builder resolves them in the
-portable `surface-contexts.json` for the preset. Web Builder then publishes scoped Container
+portable `generated/surface-contexts.json` beside the preset schema. Regenerate it with
+`pnpm --filter @kiskadee/surface-builder build` and version it with its source. Web Builder then publishes scoped Container
 and self-contained Card palette resources. Their resolved catalogs support Showcase selection.
 
 Card is not a universal prerequisite for compiling another component. It becomes a delivery

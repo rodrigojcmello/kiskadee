@@ -1,0 +1,13 @@
+{
+  "formatVersion": 1,
+  "preset": {
+    "key": "ios-18-apple",
+    "version": [
+      18,
+      0,
+      0
+    ],
+    "revision": "84c2b5f853c9ed67e7201276ef6ead0bcec4545d5020a2fbf6d0611485a1f521"
+  },
+  "components": {}
+}

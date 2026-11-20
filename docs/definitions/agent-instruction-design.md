@@ -63,9 +63,10 @@ source evidence, tonal mapping, public-contract, accessibility, or structural CS
 | Linear creation always asked for another confirmation | Honor the already-authorized task list; clarify missing scope and inspect uncertain writes before retrying |
 | Architecture entrypoint loaded new-component and schema-specific procedures for unrelated work | Route conditional procedures to supporting references while retaining ownership constraints |
 
-Ordinary code review still produces `CODE-REVIEW.md` by default. Evaluating an existing report
-leaves it intact, and explicitly forbidding all file writes produces a chat-only review.
-Successful authorized correction closes the handoff only after its relevant validation passes.
+Each implementation adds its context to `CODE-REVIEW.md` so a reviewer in a different chat
+can compare the intended outcome with the entire uncommitted batch. The user chooses when
+to request review and when to commit. The [review skill](../../skills/kiskadee-code-review-markdown/SKILL.md)
+defines report handling for fresh diff reviews, analysis-only requests, and validated closure.
 
 ## Evaluation
 
@@ -102,7 +103,9 @@ Representative task walkthroughs for these instructions:
 | Explain a public article's relevance to the project | Read the article and relevant project context; a relevance question alone does not require a full architecture audit |
 | Normalize integer notation in an official schema | Inspect the focused diff and confirm unchanged recipe semantics; preserve evidence and run relevant focused checks |
 | Review a canonical icon mapping without changes | Inspect source mapping and existing artifacts; report evidence and freshness limits without generation |
-| Assess an existing review report | Revalidate findings without rewriting or clearing the report |
+| Complete another implementation before review | Append its request, motivation, and delivered scope after the preceding entries |
+| Assess an existing report containing only implementation notes | Review the full uncommitted batch, fix pertinent findings, and validate before closure |
+| Request analysis only on an existing report | Return findings in chat and preserve the report and working tree |
 | Review a new diff | Follow review scope and write `CODE-REVIEW.md` unless all writes were explicitly forbidden |
 | Fix authorized report findings | Implement and validate; clear the report only when all applicable closure conditions hold |
 | A feature or review fix needs an unpresented Schema contract change | Show the concrete type/serialized before-and-after, reason and affected consumers; wait for explicit user approval of that delta |

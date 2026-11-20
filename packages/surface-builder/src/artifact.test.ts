@@ -7,10 +7,12 @@ import { schema as material } from '@kiskadee/presets/src/presets/material-3-goo
 import { describe, expect, it } from 'vitest';
 import {
   buildSurfaceContextsArtifact,
+  checkSurfaceContexts,
   generateSurfaceContexts,
   getSurfaceContextsPath,
   getSurfacePresetKey,
   getSurfacePresetRevision,
+  loadSurfacePresets,
   materializeSurfaceContexts,
   readSurfaceContexts,
   type SurfacePreset,
@@ -22,6 +24,31 @@ function preset(schema: SurfacePreset['schema']): SurfacePreset {
 }
 
 describe('portable surface contexts', () => {
+  it('keeps the checked-in surface maps synchronized with all authored presets', async () => {
+    await checkSurfaceContexts(await loadSurfacePresets());
+  });
+
+  it('checks the companion beside its schema and reports drift without rewriting it', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'surface-companion-'));
+    const source = { ...preset(fluent), schemaPath: join(root, 'local-preset', 'preset.ts') };
+    const path = join(root, 'local-preset', 'generated', 'surface-contexts.json');
+    try {
+      await expect(checkSurfaceContexts([source])).rejects.toMatchObject({ code: 'ENOENT', path });
+      await generateSurfaceContexts([source]);
+      await checkSurfaceContexts([source]);
+      const edited = await readSurfaceContexts(source);
+      edited.components.button!.contentSurfaceContext!.default!.light!.onSubtle!.standard.primary!
+        .high!.rest = 'onSubtle';
+      const modifiedBytes = `${JSON.stringify(edited, null, 2)}\n`;
+      await writeFile(path, modifiedBytes);
+      await expect(checkSurfaceContexts([source])).rejects.toThrow('differs from generated output');
+      await expect(readSurfaceContexts(source)).rejects.toThrow('differs from generated output');
+      expect(await readFile(path, 'utf8')).toBe(modifiedBytes);
+    } finally {
+      await rm(root, { recursive: true, force: true });
+    }
+  });
+
   it('derives Fluent Container Rest once and computes independent CardAction state deltas', () => {
     const source = preset(fluent);
     const sourceRevision = getSurfacePresetRevision(source.schema);

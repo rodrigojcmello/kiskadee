@@ -1,9 +1,19 @@
 # Review Report Format
 
-Use for a new code review, including reviews with no actionable findings.
+At implementation handoff, create only the title and Change Context section if missing.
+Append one entry per completed request. Keep each field to a short sentence where possible.
+Add the review sections when a review is performed, including reviews with no actionable findings.
 
 ```md
 # Code Review
+
+## Change Context
+
+### <Short change title>
+
+- Request: <what the user wanted>
+- Motivation: <why it matters, from the request or accepted decision>
+- Delivered: <what actually changed and where>
 
 ## Scope
 

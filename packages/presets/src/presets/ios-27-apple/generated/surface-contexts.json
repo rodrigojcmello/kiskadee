@@ -1,0 +1,602 @@
+{
+  "formatVersion": 1,
+  "preset": {
+    "key": "ios-27-apple",
+    "version": [
+      27,
+      0,
+      0
+    ],
+    "revision": "63940d8fcec259815bbf4f1fbf12bcd9e690b1056c99edb8680f6bf6c33312c8"
+  },
+  "components": {
+    "container": {
+      "contentSurfaceContext": {
+        "default": {
+          "light": {
+            "onSubtle": {
+              "standard": {
+                "neutral": {
+                  "lowest": {
+                    "rest": "onSubtle"
+                  },
+                  "low": {
+                    "rest": "onSubtle"
+                  },
+                  "medium": {
+                    "rest": "onSubtle"
+                  }
+                },
+                "primary": {
+                  "medium": {
+                    "rest": "onSubtle"
+                  },
+                  "high": {
+                    "rest": "onVivid"
+                  },
+                  "highest": {
+                    "rest": "onVivid"
+                  }
+                }
+              }
+            },
+            "onVivid": {
+              "standard": {
+                "neutral": {
+                  "lowest": {
+                    "rest": "onSubtle"
+                  },
+                  "low": {
+                    "rest": "onSubtle"
+                  },
+                  "medium": {
+                    "rest": "onSubtle"
+                  }
+                },
+                "primary": {
+                  "medium": {
+                    "rest": "onSubtle"
+                  },
+                  "high": {
+                    "rest": "onVivid"
+                  },
+                  "highest": {
+                    "rest": "onVivid"
+                  }
+                }
+              }
+            }
+          },
+          "dark": {
+            "onSubtle": {
+              "standard": {
+                "neutral": {
+                  "lowest": {
+                    "rest": "onSubtle"
+                  },
+                  "low": {
+                    "rest": "onSubtle"
+                  },
+                  "medium": {
+                    "rest": "onSubtle"
+                  }
+                },
+                "primary": {
+                  "medium": {
+                    "rest": "onSubtle"
+                  },
+                  "high": {
+                    "rest": "onVivid"
+                  },
+                  "highest": {
+                    "rest": "onVivid"
+                  }
+                }
+              }
+            },
+            "onVivid": {
+              "standard": {
+                "neutral": {
+                  "lowest": {
+                    "rest": "onSubtle"
+                  },
+                  "low": {
+                    "rest": "onSubtle"
+                  },
+                  "medium": {
+                    "rest": "onSubtle"
+                  }
+                },
+                "primary": {
+                  "medium": {
+                    "rest": "onSubtle"
+                  },
+                  "high": {
+                    "rest": "onVivid"
+                  },
+                  "highest": {
+                    "rest": "onVivid"
+                  }
+                }
+              }
+            }
+          },
+          "darker": {
+            "onSubtle": {
+              "standard": {
+                "neutral": {
+                  "lowest": {
+                    "rest": "onSubtle"
+                  },
+                  "low": {
+                    "rest": "onSubtle"
+                  },
+                  "medium": {
+                    "rest": "onSubtle"
+                  }
+                },
+                "primary": {
+                  "medium": {
+                    "rest": "onSubtle"
+                  },
+                  "high": {
+                    "rest": "onVivid"
+                  },
+                  "highest": {
+                    "rest": "onVivid"
+                  }
+                }
+              }
+            },
+            "onVivid": {
+              "standard": {
+                "neutral": {
+                  "lowest": {
+                    "rest": "onSubtle"
+                  },
+                  "low": {
+                    "rest": "onSubtle"
+                  },
+                  "medium": {
+                    "rest": "onSubtle"
+                  }
+                },
+                "primary": {
+                  "medium": {
+                    "rest": "onSubtle"
+                  },
+                  "high": {
+                    "rest": "onVivid"
+                  },
+                  "highest": {
+                    "rest": "onVivid"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "options": {
+        "canonicalSurfaces": {
+          "default": {
+            "light": [
+              {
+                "intent": "neutral",
+                "emphasis": "lowest",
+                "contentSurfaceContext": "onSubtle",
+                "rest": "#ffffff"
+              },
+              {
+                "intent": "neutral",
+                "emphasis": "low",
+                "contentSurfaceContext": "onSubtle",
+                "rest": "#f2f2f4"
+              },
+              {
+                "intent": "neutral",
+                "emphasis": "medium",
+                "contentSurfaceContext": "onSubtle",
+                "rest": "#ffffff"
+              },
+              {
+                "intent": "primary",
+                "emphasis": "medium",
+                "contentSurfaceContext": "onSubtle",
+                "rest": "#e2efff"
+              },
+              {
+                "intent": "primary",
+                "emphasis": "high",
+                "contentSurfaceContext": "onVivid",
+                "rest": "#0069c8"
+              },
+              {
+                "intent": "primary",
+                "emphasis": "highest",
+                "contentSurfaceContext": "onVivid",
+                "rest": "#004588"
+              }
+            ],
+            "dark": [
+              {
+                "intent": "neutral",
+                "emphasis": "lowest",
+                "contentSurfaceContext": "onSubtle",
+                "rest": "#2c2c2e"
+              },
+              {
+                "intent": "neutral",
+                "emphasis": "low",
+                "contentSurfaceContext": "onSubtle",
+                "rest": "#1c1c1e"
+              },
+              {
+                "intent": "neutral",
+                "emphasis": "medium",
+                "contentSurfaceContext": "onSubtle",
+                "rest": "#38383b"
+              },
+              {
+                "intent": "primary",
+                "emphasis": "medium",
+                "contentSurfaceContext": "onSubtle",
+                "rest": "#001837"
+              },
+              {
+                "intent": "primary",
+                "emphasis": "high",
+                "contentSurfaceContext": "onVivid",
+                "rest": "#0069c8"
+              },
+              {
+                "intent": "primary",
+                "emphasis": "highest",
+                "contentSurfaceContext": "onVivid",
+                "rest": "#004588"
+              }
+            ],
+            "darker": [
+              {
+                "intent": "neutral",
+                "emphasis": "lowest",
+                "contentSurfaceContext": "onSubtle",
+                "rest": "#1c1c1e"
+              },
+              {
+                "intent": "neutral",
+                "emphasis": "low",
+                "contentSurfaceContext": "onSubtle",
+                "rest": "#000000"
+              },
+              {
+                "intent": "primary",
+                "emphasis": "medium",
+                "contentSurfaceContext": "onSubtle",
+                "rest": "#001837"
+              },
+              {
+                "intent": "primary",
+                "emphasis": "high",
+                "contentSurfaceContext": "onVivid",
+                "rest": "#0069c8"
+              },
+              {
+                "intent": "primary",
+                "emphasis": "highest",
+                "contentSurfaceContext": "onVivid",
+                "rest": "#004588"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "card": {
+      "contentSurfaceContext": {
+        "default": {
+          "light": {
+            "onSubtle": {
+              "standard": {
+                "neutral": {
+                  "lowest": {
+                    "selected": "onVivid",
+                    "rest": "onSubtle"
+                  },
+                  "low": {
+                    "selected": "onVivid",
+                    "rest": "onSubtle"
+                  },
+                  "medium": {
+                    "selected": "onVivid",
+                    "rest": "onSubtle"
+                  }
+                },
+                "primary": {
+                  "medium": {
+                    "selected": "onVivid",
+                    "rest": "onSubtle"
+                  },
+                  "high": {
+                    "rest": "onVivid"
+                  },
+                  "highest": {
+                    "rest": "onVivid"
+                  }
+                }
+              }
+            },
+            "onVivid": {
+              "standard": {
+                "neutral": {
+                  "lowest": {
+                    "selected": "onVivid",
+                    "rest": "onSubtle"
+                  },
+                  "low": {
+                    "selected": "onVivid",
+                    "rest": "onSubtle"
+                  },
+                  "medium": {
+                    "selected": "onVivid",
+                    "rest": "onSubtle"
+                  }
+                },
+                "primary": {
+                  "medium": {
+                    "selected": "onVivid",
+                    "rest": "onSubtle"
+                  },
+                  "high": {
+                    "rest": "onVivid"
+                  },
+                  "highest": {
+                    "rest": "onVivid"
+                  }
+                }
+              }
+            }
+          },
+          "dark": {
+            "onSubtle": {
+              "standard": {
+                "neutral": {
+                  "lowest": {
+                    "selected": "onVivid",
+                    "rest": "onSubtle"
+                  },
+                  "low": {
+                    "selected": "onVivid",
+                    "rest": "onSubtle"
+                  },
+                  "medium": {
+                    "selected": "onVivid",
+                    "rest": "onSubtle"
+                  }
+                },
+                "primary": {
+                  "medium": {
+                    "selected": "onVivid",
+                    "rest": "onSubtle"
+                  },
+                  "high": {
+                    "rest": "onVivid"
+                  },
+                  "highest": {
+                    "rest": "onVivid"
+                  }
+                }
+              }
+            },
+            "onVivid": {
+              "standard": {
+                "neutral": {
+                  "lowest": {
+                    "selected": "onVivid",
+                    "rest": "onSubtle"
+                  },
+                  "low": {
+                    "selected": "onVivid",
+                    "rest": "onSubtle"
+                  },
+                  "medium": {
+                    "selected": "onVivid",
+                    "rest": "onSubtle"
+                  }
+                },
+                "primary": {
+                  "medium": {
+                    "selected": "onVivid",
+                    "rest": "onSubtle"
+                  },
+                  "high": {
+                    "rest": "onVivid"
+                  },
+                  "highest": {
+                    "rest": "onVivid"
+                  }
+                }
+              }
+            }
+          },
+          "darker": {
+            "onSubtle": {
+              "standard": {
+                "neutral": {
+                  "lowest": {
+                    "selected": "onVivid",
+                    "rest": "onSubtle"
+                  },
+                  "low": {
+                    "selected": "onVivid",
+                    "rest": "onSubtle"
+                  },
+                  "medium": {
+                    "selected": "onVivid",
+                    "rest": "onSubtle"
+                  }
+                },
+                "primary": {
+                  "medium": {
+                    "selected": "onVivid",
+                    "rest": "onSubtle"
+                  },
+                  "high": {
+                    "rest": "onVivid"
+                  },
+                  "highest": {
+                    "rest": "onVivid"
+                  }
+                }
+              }
+            },
+            "onVivid": {
+              "standard": {
+                "neutral": {
+                  "lowest": {
+                    "selected": "onVivid",
+                    "rest": "onSubtle"
+                  },
+                  "low": {
+                    "selected": "onVivid",
+                    "rest": "onSubtle"
+                  },
+                  "medium": {
+                    "selected": "onVivid",
+                    "rest": "onSubtle"
+                  }
+                },
+                "primary": {
+                  "medium": {
+                    "selected": "onVivid",
+                    "rest": "onSubtle"
+                  },
+                  "high": {
+                    "rest": "onVivid"
+                  },
+                  "highest": {
+                    "rest": "onVivid"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "options": {
+        "canonicalSurfaces": {
+          "default": {
+            "light": [
+              {
+                "intent": "neutral",
+                "emphasis": "lowest",
+                "contentSurfaceContext": "onSubtle",
+                "rest": "#ffffff"
+              },
+              {
+                "intent": "neutral",
+                "emphasis": "low",
+                "contentSurfaceContext": "onSubtle",
+                "rest": "#f2f2f4"
+              },
+              {
+                "intent": "neutral",
+                "emphasis": "medium",
+                "contentSurfaceContext": "onSubtle",
+                "rest": "#ffffff"
+              },
+              {
+                "intent": "primary",
+                "emphasis": "medium",
+                "contentSurfaceContext": "onSubtle",
+                "rest": "#e2efff"
+              },
+              {
+                "intent": "primary",
+                "emphasis": "high",
+                "contentSurfaceContext": "onVivid",
+                "rest": "#0069c8"
+              },
+              {
+                "intent": "primary",
+                "emphasis": "highest",
+                "contentSurfaceContext": "onVivid",
+                "rest": "#004588"
+              }
+            ],
+            "dark": [
+              {
+                "intent": "neutral",
+                "emphasis": "lowest",
+                "contentSurfaceContext": "onSubtle",
+                "rest": "#2c2c2e"
+              },
+              {
+                "intent": "neutral",
+                "emphasis": "low",
+                "contentSurfaceContext": "onSubtle",
+                "rest": "#1c1c1e"
+              },
+              {
+                "intent": "neutral",
+                "emphasis": "medium",
+                "contentSurfaceContext": "onSubtle",
+                "rest": "#38383b"
+              },
+              {
+                "intent": "primary",
+                "emphasis": "medium",
+                "contentSurfaceContext": "onSubtle",
+                "rest": "#001837"
+              },
+              {
+                "intent": "primary",
+                "emphasis": "high",
+                "contentSurfaceContext": "onVivid",
+                "rest": "#0069c8"
+              },
+              {
+                "intent": "primary",
+                "emphasis": "highest",
+                "contentSurfaceContext": "onVivid",
+                "rest": "#004588"
+              }
+            ],
+            "darker": [
+              {
+                "intent": "neutral",
+                "emphasis": "lowest",
+                "contentSurfaceContext": "onSubtle",
+                "rest": "#1c1c1e"
+              },
+              {
+                "intent": "neutral",
+                "emphasis": "low",
+                "contentSurfaceContext": "onSubtle",
+                "rest": "#000000"
+              },
+              {
+                "intent": "primary",
+                "emphasis": "medium",
+                "contentSurfaceContext": "onSubtle",
+                "rest": "#001837"
+              },
+              {
+                "intent": "primary",
+                "emphasis": "high",
+                "contentSurfaceContext": "onVivid",
+                "rest": "#0069c8"
+              },
+              {
+                "intent": "primary",
+                "emphasis": "highest",
+                "contentSurfaceContext": "onVivid",
+                "rest": "#004588"
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+}

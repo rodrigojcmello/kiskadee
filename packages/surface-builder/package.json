@@ -13,7 +13,8 @@
     "./palettes/resolveForegroundReferences": "./src/palettes/resolveForegroundReferences.ts"
   },
   "scripts": {
-    "build": "node ./src/run-build.ts"
+    "build": "node ./src/run-build.ts",
+    "check": "node ./src/run-build.ts --check"
   },
   "dependencies": {
     "@kiskadee/core": "workspace:^",

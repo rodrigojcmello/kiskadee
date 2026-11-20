@@ -34,8 +34,9 @@ palette maps or CSS. `surfaceContexts` continues to describe Standard states.
 ## Palette surface configuration
 
 The [Surface Builder](../../../surface-builder/README.md) pre-build emits one readable
-`surface-contexts.json` per preset. Web Builder validates the companion against the authored
-Schema and publishes each selected component, segment and theme as a separate palette resource.
+`generated/surface-contexts.json` in each preset directory. Web Builder uses the Surface Builder
+reader to verify the checked-in companion against the authored Schema and current derivation.
+It then publishes each selected component, segment and theme as a separate palette resource.
 A palette resource uses `formatVersion: 4`. The manifest, component metadata and class-map
 envelopes use `formatVersion: 3`. Compiled Web Brand Packs use `kiskadee.brand-pack-build.v3`
 and format 3. Consumers require the defined version for each envelope.

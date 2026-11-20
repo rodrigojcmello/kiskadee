@@ -23,8 +23,10 @@ map and authority boundaries; load only the sections relevant to the task.
   does not replace this scope confirmation; approval of a recap already given in the conversation
   does. Clear approval of the recapped scope authorizes the agreed work, interpreted in context
   without requiring specific keywords. Honor an explicit request to skip this checkpoint for the task.
+- After each completed implementation, append its request, motivation, and delivered scope to root
+  `CODE-REVIEW.md` using the review skill. The user decides when to review and when to commit.
 - Requests to inspect, analyze, review, validate, or correct an existing `CODE-REVIEW.md` authorize
-  the report workflow (verification, pertinent fixes, validation, and closure) without the scope
+  reviewing the uncommitted batch, fixing pertinent issues, validating, and closing it without the scope
   approval checkpoint. Explicit analysis-only or no-edit instructions take precedence. Follow
   `skills/kiskadee-code-review-markdown/SKILL.md`; this exception does not expand a fresh diff review.
   It does not waive the Schema Contract Approval gate below.
@@ -116,7 +118,7 @@ Use these entrypoints only for the indicated concern; this is a routing index, n
 | Concern | Required entrypoint |
 | --- | --- |
 | Ownership, shared contracts, or architecture decisions | `skills/kiskadee-architecture/SKILL.md` |
-| Code review, report assessment, or authorized review fixes | `skills/kiskadee-code-review-markdown/SKILL.md` |
+| Implementation notes, code review, or review fixes | `skills/kiskadee-code-review-markdown/SKILL.md` |
 | Official preset schema or source-derived visual decisions | `skills/kiskadee-preset-evidence/SKILL.md` |
 | Official preset color mapping, authorship, or review | `skills/kiskadee-resolve-preset-colors/SKILL.md` |
 | Rest/Hover/Pressed/Selected/Disabled maps or state precedence | `skills/kiskadee-author-interaction-states/SKILL.md` |
@@ -170,4 +172,5 @@ from the project-governance definition.
 
 ## Notes
 
-- `node_modules/` is already ignored at repo level; do not commit dependencies or build artifacts.
+- Keep dependencies and build outputs out of Git, except the versioned
+  `generated/surface-contexts.json` companion in each preset directory.

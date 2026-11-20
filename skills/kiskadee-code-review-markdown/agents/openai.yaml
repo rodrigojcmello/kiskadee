@@ -1,4 +1,4 @@
 interface:
   display_name: "Kiskadee Review Markdown"
-  short_description: "Review code, ownership boundaries, and handoff"
-  default_prompt: "Use $kiskadee-code-review-markdown to review Kiskadee changes, verify documented project ownership, write CODE-REVIEW.md, or resolve and clear its findings."
+  short_description: "Record change context and review uncommitted work"
+  default_prompt: "Use $kiskadee-code-review-markdown to review the uncommitted changes against CODE-REVIEW.md, fix pertinent findings, and validate the batch."

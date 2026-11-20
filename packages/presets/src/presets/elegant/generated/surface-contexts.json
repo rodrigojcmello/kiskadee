@@ -1,0 +1,48 @@
+{
+  "formatVersion": 1,
+  "preset": {
+    "key": "elegant-1-kiskadee",
+    "version": [
+      1,
+      0,
+      0
+    ],
+    "revision": "a343e41fd3cbd7780adc943ba26eca1111e4be178d71f3b410c93fa579944a86"
+  },
+  "components": {
+    "container": {
+      "contentSurfaceContext": {
+        "default": {
+          "light": {
+            "onSubtle": {
+              "standard": {
+                "neutral": {
+                  "medium": {
+                    "rest": "inherit"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "card": {
+      "contentSurfaceContext": {
+        "default": {
+          "light": {
+            "onSubtle": {
+              "standard": {
+                "neutral": {
+                  "medium": {
+                    "rest": "inherit"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

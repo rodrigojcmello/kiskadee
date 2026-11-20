@@ -6,12 +6,21 @@ Generate the portable Surface Context data with:
 pnpm --filter @kiskadee/surface-builder build
 ```
 
-The Node pre-build reads the authored presets and writes one
-`build/<presetKey>/surface-contexts.json` per preset. The file keeps readable field names,
+The Node pre-build writes `generated/surface-contexts.json` in the directory of each authored
+preset. For example, the [Fluent companion](../presets/src/presets/fluent-2-microsoft/generated/surface-contexts.json)
+is checked in alongside the Fluent schema and distributed with it. After updating a preset or
+its derivation, run the command above and include the generated changes in the same commit.
+To compare all companions byte for byte with fresh derivations without rewriting them, run:
+
+```sh
+pnpm --filter @kiskadee/surface-builder check
+```
+
+Each file keeps readable field names,
 including all authored and derived Surface Context maps and canonical surface catalogs. It carries
 `formatVersion: 1` and the preset key, version and deterministic SHA-256 revision of its authored
-Schema. Consumers validate that identity before using the file with a preset. The authored Schema
-remains a separate input.
+Schema. The build-time reader validates that identity and compares the stored bytes with a fresh
+derivation before returning the map. The authored Schema remains a separate input.
 
 ## Derivation
 
