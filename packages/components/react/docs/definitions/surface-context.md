@@ -113,6 +113,11 @@ leak into an independent overlay surface. A portal must either publish the seman
 surface it creates or deliberately reset it; DOM placement alone cannot preserve the trigger's
 visual surroundings.
 
+Dropdown.Content establishes this independent boundary when portaled. An inline Content keeps
+the local context. Dropdown.Surface can also be composed inside a Select listbox or Menu without
+Dropdown.Content. It publishes `onSubtle` when the current Web palette confirms a painted panel;
+otherwise its children retain the context at the composition site.
+
 ## Custom And Mixed Surfaces
 
 Kiskadee does not measure background color. A consumer that creates a uniform custom vivid region

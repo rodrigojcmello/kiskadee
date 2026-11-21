@@ -26,7 +26,10 @@ import { joinClassNames } from '../../shared/class-resolution/classNames.ts';
 import { resolveStructuralUtilityProjectionClassName } from '../../shared/class-resolution/structuralUtilityProjection.ts';
 import { useEssentialIcon } from '../../shared/contexts/EssentialIconContext.tsx';
 import { useKiskadee } from '../../shared/contexts/KiskadeeContext.tsx';
-import { SurfaceContextProvider } from '../../shared/contexts/SurfaceContext.tsx';
+import {
+  SurfaceContextProvider,
+  useSurfaceContext
+} from '../../shared/contexts/SurfaceContext.tsx';
 import { useComponentClassMap } from '../../shared/contexts/useComponentClassMap.ts';
 import { useIsomorphicLayoutEffect } from '../../shared/utils/useIsomorphicLayoutEffect.ts';
 import { FamilyResolvedIcon } from '../Icon/FamilyResolvedIcon.tsx';
@@ -83,6 +86,7 @@ type DropdownPresenceRuntimeContextValue = {
 };
 
 type DropdownVisualContextValue = {
+  panelFill: boolean;
   classesMap: DropdownClassesMap | undefined;
   classNames: DropdownClassNames;
   resolved: ReturnType<typeof resolveDropdownClassNames>;
@@ -95,6 +99,7 @@ type ResolvedDropdownPresentationOptions = Required<DropdownPresentationProps>;
 
 const DEFAULT_LEADING_ICON_COMPOSITION: DropdownLeadingIconComposition = 'item-and-selection';
 const DEFAULT_SELECTED_ITEM_BACKGROUND = true;
+const DROPDOWN_PANEL_CONTEXT = 'onSubtle';
 
 const DropdownItemIntentContext = createContext<DropdownIntent>(DEFAULT_DROPDOWN_INTENT);
 
@@ -140,6 +145,7 @@ function DropdownVisualProvider({
   const scale = useComponentScale('dropdown', size);
   const { classesMap, global } = useKiskadee();
   const dropdownMetadata = useComponentMetadata('dropdown');
+  const panelFill = dropdownMetadata?.capabilities?.panelFill === true;
   const dropdownClassesMap = useComponentClassMap(
     'dropdown',
     classesMap.dropdown as DropdownClassesMap | undefined
@@ -193,12 +199,13 @@ function DropdownVisualProvider({
     () => ({
       classesMap: dropdownClassesMap,
       classNames,
+      panelFill,
       options,
       presence: resolvedPresence,
       resolved,
       scale
     }),
-    [classNames, dropdownClassesMap, options, resolved, resolvedPresence, scale]
+    [classNames, dropdownClassesMap, options, panelFill, resolved, resolvedPresence, scale]
   );
 
   return (
@@ -240,8 +247,11 @@ const DropdownAnchor = forwardRef<HTMLElement, DropdownAnchorProps>(
 
 const DropdownContent = forwardRef<HTMLDivElement, DropdownContentProps>(
   function DropdownContent(props, ref) {
+    const contentContext = useSurfaceContext(
+      props.portalled === false ? undefined : DROPDOWN_PANEL_CONTEXT
+    );
     return (
-      <SurfaceContextProvider value="onSubtle">
+      <SurfaceContextProvider value={contentContext}>
         <DropdownPresence>
           {({ forceMount, render }) => (
             <HeadlessDropdown.Content
@@ -416,7 +426,8 @@ const DropdownSurface = forwardRef<HTMLDivElement, DropdownSurfaceProps>(functio
   { className, ...props },
   ref
 ) {
-  const { resolved } = useDropdownVisualContext('Dropdown.Surface');
+  const { panelFill, resolved } = useDropdownVisualContext('Dropdown.Surface');
+  const panelContext = useSurfaceContext(panelFill ? DROPDOWN_PANEL_CONTEXT : undefined);
   const presenceRuntime = useContext(DropdownPresenceRuntimeContext);
   const surfaceIdRef = useRef(Symbol('dropdown-surface'));
   useIsomorphicLayoutEffect(() => {
@@ -425,37 +436,34 @@ const DropdownSurface = forwardRef<HTMLDivElement, DropdownSurfaceProps>(functio
     presenceRuntime.registerSurface(surfaceId, true);
     return () => presenceRuntime.registerSurface(surfaceId, false);
   }, [presenceRuntime?.registerSurface]);
-  const surfaceProps = {
+  const surfaceProps: DropdownPresenceRenderProps = {
     ...props,
     ref,
     className: `${resolved.e1} ${className ?? ''}`.trim()
-  } as DropdownPresenceRenderProps;
-
-  if (presenceRuntime?.presence && presenceRuntime.effectModule) {
-    return (
-      <presenceRuntime.effectModule.DropdownPresenceEffect
-        onExitComplete={() => presenceRuntime.onSurfaceExitComplete(surfaceIdRef.current)}
-        open={presenceRuntime.state.open}
-        positioned={presenceRuntime.state.positioned}
-        placement={presenceRuntime.state.placement}
-        surfaceProps={surfaceProps}
-        profile={presenceRuntime.presence.profile}
-        profiles={presenceRuntime.presence.profiles}
-      />
-    );
-  }
-
-  const { ref: surfaceRef, style, ...surfaceRest } = surfaceProps;
+  };
   return (
-    <div
-      {...surfaceRest}
-      ref={surfaceRef}
-      style={
-        presenceRuntime && !presenceRuntime.state.open
-          ? { ...style, opacity: 0, pointerEvents: 'none' }
-          : style
-      }
-    />
+    <SurfaceContextProvider value={panelContext}>
+      {presenceRuntime?.presence && presenceRuntime.effectModule ? (
+        <presenceRuntime.effectModule.DropdownPresenceEffect
+          onExitComplete={() => presenceRuntime.onSurfaceExitComplete(surfaceIdRef.current)}
+          open={presenceRuntime.state.open}
+          positioned={presenceRuntime.state.positioned}
+          placement={presenceRuntime.state.placement}
+          surfaceProps={surfaceProps}
+          profile={presenceRuntime.presence.profile}
+          profiles={presenceRuntime.presence.profiles}
+        />
+      ) : (
+        <div
+          {...surfaceProps}
+          style={
+            presenceRuntime && !presenceRuntime.state.open
+              ? { ...props.style, opacity: 0, pointerEvents: 'none' }
+              : props.style
+          }
+        />
+      )}
+    </SurfaceContextProvider>
   );
 });
 

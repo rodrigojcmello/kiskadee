@@ -56,8 +56,9 @@ Changing appearance preserves mounted children.
 `options.divider` is a single required boolean preset default, common to every
 emphasis. Fluent declares true. Instance `divider` overrides that default;
 false removes only the internal line, independently of the outer border.
-Separator matches the frame neutral contour: low onSubtle, medium onVivid.
- Expansion never becomes
+The panel divider consumes the surface published by the enclosing Card. Its Separator
+uses low emphasis on a subtle frame and medium emphasis on a vivid frame.
+Expansion never becomes
 CardAction `controlState` and never emits `aria-pressed` or selected paint.
 No shared Card, Button, Container or Layout recipes are modified.
 

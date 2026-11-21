@@ -11,6 +11,10 @@ import type {
 } from './surfacePaletteWire.ts';
 
 export type StylesheetResource = { path: string; sha256: string; order: number };
+type ComponentResourceCapabilities = Omit<ManifestComponent, 'artifacts'> & {
+  /** Selected Dropdown palette has a visible Rest fill behind panel content. */
+  panelFill?: true;
+};
 export type ComponentInspectionArtifact = {
   elements: Partial<Record<'e1' | 'e8', { scales: { _boxHeight: ElementHeightReference } }>>;
 };
@@ -29,7 +33,7 @@ export type ComponentResourceArtifact = {
     stackedOutsideSizesByRadius?: Record<RadiusMode, string[]>;
   };
   density?: DensityScaleMapJSON;
-  capabilities?: Omit<ManifestComponent, 'artifacts'>;
+  capabilities?: ComponentResourceCapabilities;
   inspection?: ComponentInspectionArtifact;
   resources: {
     core?: string;
@@ -43,6 +47,6 @@ export type ComponentPaletteResourceArtifact = {
   component: string;
   styles: StylesheetResource[];
   classMap?: string;
-  capabilities?: Omit<ManifestComponent, 'artifacts'>;
+  capabilities?: ComponentResourceCapabilities;
   config?: CompactPaletteConfig;
 };

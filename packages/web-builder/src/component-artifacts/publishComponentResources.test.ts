@@ -1,9 +1,75 @@
 import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
-import type { Schema } from '@kiskadee/core';
+import type { Color, ColorSchema, Schema } from '@kiskadee/core';
 import { expect, it } from 'vitest';
 import { publishComponentResources } from './publishComponentResources.ts';
+
+it('publishes Dropdown panel fill evidence only for the painted Rest palette', async () => {
+  const fill = (rest: Color): ColorSchema => ({ boxColor: { neutral: { medium: { rest } } } });
+  const gradient = (from: string, to: string): Color => ({
+    kind: 'linear',
+    angle: 90,
+    stops: [
+      { color: from, position: 0 },
+      { color: to, position: 100 }
+    ]
+  });
+  const cases: [string, ColorSchema | undefined, boolean][] = [
+    ['opaque', fill('#fff'), true],
+    ['partial', fill('#fff1'), true],
+    ['gradient', fill(gradient('#fff0', '#000')), true],
+    ['transparentGradient', fill(gradient('#fff0', '#abcdef00')), false],
+    ['missing', undefined, false],
+    ['borderOnly', { borderColor: { neutral: { medium: { rest: '#fff' } } } }, false],
+    ['transparent', fill('#ffffff00'), false],
+    ['dynamicFill', fill('var(--panel)'), false]
+  ];
+  const dir = await mkdtemp(join(tmpdir(), 'kiskadee-dropdown-panel-'));
+  try {
+    const palettes = Object.fromEntries(
+      cases.map(([segment, colors]) => [
+        segment,
+        {
+          ...(colors && { light: { onSubtle: { standard: colors } } }),
+          dark: { onSubtle: { standard: fill('#000') } }
+        }
+      ])
+    );
+    const themes = Object.fromEntries(cases.map(([segment]) => [segment, ['light', 'dark']]));
+    const maps = Object.fromEntries(
+      cases.flatMap(([segment]) =>
+        ['light', 'dark'].map((theme) => [
+          `${segment}.${theme}`,
+          `class-maps/${segment}.${theme}/dropdown.json`
+        ])
+      )
+    );
+    await writeFile(
+      join(dir, 'manifest.json'),
+      JSON.stringify({
+        themes,
+        components: { dropdown: { artifacts: { classMaps: { palettes: maps } } } }
+      })
+    );
+    await writeFile(join(dir, 'global.kiskadee.json'), '{}');
+    await writeFile(join(dir, 'core.kiskadee.json'), '{}');
+    await publishComponentResources(dir, {
+      components: { dropdown: { elements: { e1: { name: 'panel', palettes } } } }
+    } as unknown as Schema);
+    const read = async (path: string) => JSON.parse(await readFile(join(dir, path), 'utf8'));
+    const metadata = await read('components/dropdown.kiskadee.json');
+    expect(metadata.capabilities).not.toHaveProperty('panelFill');
+    for (const [segment, , painted] of cases) {
+      const light = await read(metadata.resources.palettes[`${segment}.light`]);
+      const dark = await read(metadata.resources.palettes[`${segment}.dark`]);
+      expect(light.capabilities?.panelFill, segment).toBe(painted ? true : undefined);
+      expect(dark.capabilities?.panelFill, segment).toBe(true);
+    }
+  } finally {
+    await rm(dir, { recursive: true, force: true });
+  }
+});
 
 it('publishes the authored Text default over stale metadata without changing foreground recipes', async () => {
   const dir = await mkdtemp(join(tmpdir(), 'kiskadee-text-default-'));

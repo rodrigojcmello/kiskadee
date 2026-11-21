@@ -8,6 +8,7 @@ import {
   KiskadeeContext,
   type KiskadeeContextValue
 } from '../../shared/contexts/KiskadeeContext.tsx';
+import { SurfaceContextProvider } from '../../shared/contexts/SurfaceContext.tsx';
 import { Accordion } from './Accordion.tsx';
 import type { AccordionProps } from './Accordion.types.ts';
 
@@ -62,11 +63,13 @@ const context = {
   }
 } satisfies KiskadeeContextValue;
 function Fixture({
+  resources = context,
   open = [],
   enabled = true,
   theme = 'light',
   appearance = {}
 }: {
+  resources?: KiskadeeContextValue;
   open?: string[];
   enabled?: boolean;
   theme?: 'light' | 'dark';
@@ -83,7 +86,7 @@ function Fixture({
   >;
 }) {
   return (
-    <KiskadeeContext.Provider value={{ ...context, theme }}>
+    <KiskadeeContext.Provider value={{ ...resources, theme }}>
       <Accordion expandedItems={open} motion={enabled} {...appearance}>
         <Accordion.Item value="a">
           <Accordion.Header>Header</Accordion.Header>
@@ -118,6 +121,41 @@ afterEach(() => {
   vi.unstubAllGlobals();
 });
 describe('Accordion presentation', async () => {
+  it.each([
+    ['onSubtle', 'onSubtle', 'subtle-low'],
+    ['onVivid', 'onSubtle', 'subtle-low'],
+    ['onSubtle', 'onVivid', 'vivid-medium']
+  ] as const)('uses %s page and %s frame to render the %s divider', (page, frame, expected) => {
+    const frameRecipe = { standard: { neutral: { medium: { rest: frame } } } };
+    const card = {
+      component: 'card' as const,
+      formatVersion: 3 as const,
+      contentSurfaceContext: {
+        default: { light: { onSubtle: frameRecipe, onVivid: frameRecipe } }
+      }
+    };
+    const resources = {
+      ...context,
+      componentArtifacts: { ...context.componentArtifacts, card },
+      classesMap: {
+        ...context.classesMap,
+        separator: {
+          e1: {
+            c: {
+              s: { s: { neutral: { l: 'subtle-low', m: 'subtle-medium' } } },
+              v: { s: { neutral: { l: 'vivid-low', m: 'vivid-medium' } } }
+            }
+          }
+        }
+      }
+    };
+    const view = render(
+      <SurfaceContextProvider value={page}>
+        <Fixture resources={resources} open={['a']} enabled={false} />
+      </SurfaceContextProvider>
+    );
+    expect(view.getByRole('separator', { hidden: true }).classList).toContain(expected);
+  });
   it('keeps indicator timing independent of panel speed and coordination', async () => {
     const view = render(
       <Fixture appearance={{ motionSpeed: 'debugSlow', transitionCoordination: 'independent' }} />

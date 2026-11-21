@@ -7,6 +7,7 @@ import {
   compileDensityMap,
   componentEmphasisBuckets,
   elementSizeValues,
+  normalizeHexColor,
   type RadiusMode,
   resolveContentSurfaceContextVariant,
   resolveSupportedSize,
@@ -36,6 +37,22 @@ import {
 
 const isRecord = (value: unknown): value is Record<string, any> =>
   Boolean(value) && typeof value === 'object' && !Array.isArray(value);
+
+function hasDropdownPanelFill(
+  dropdown: Schema<string>['components']['dropdown'],
+  segment: string,
+  theme: ThemeMode
+): boolean {
+  const palette = dropdown?.elements.e1.palettes?.[segment]?.[theme]?.onSubtle.standard;
+  const fill = palette?.boxColor?.neutral?.medium?.rest;
+  if (!fill) return false;
+  const colors = typeof fill === 'string' ? [fill] : fill.stops.map((stop) => stop.color);
+  if (!colors.every((color) => color.startsWith('#'))) return false;
+  return colors.some((color) => {
+    const hex = normalizeHexColor(color);
+    return hex.length === 7 || !hex.endsWith('00');
+  });
+}
 
 /** Discovery needs intent/emphasis coordinates, not every palette's interaction-state maps. */
 function summarizeStandardCoverage(
@@ -456,6 +473,8 @@ export async function publishComponentResources(buildDir: string, schema: Schema
       const [segment, theme] = palette.split('.') as [string, ThemeMode];
       const classMap = artifacts?.classMaps?.palettes?.[palette];
       const surfaceContexts = paletteCapabilities?.[palette];
+      const panelFill =
+        name === 'dropdown' && hasDropdownPanelFill(schema.components.dropdown, segment, theme);
       const styles = resource.palettes[palette]?.styles ?? [];
       const context = contentSurfaceContext?.[segment]?.[theme];
       const canonical = canonicalSurfaces?.[segment]?.[theme];
@@ -475,17 +494,18 @@ export async function publishComponentResources(buildDir: string, schema: Schema
         };
       }
       const hasConfig = Object.keys(config).length > 0;
-      if (!classMap && !surfaceContexts && !styles.length && !hasConfig) continue;
+      if (!classMap && !surfaceContexts && !panelFill && !styles.length && !hasConfig) continue;
       const palettePath = `components/${palette}/${componentNameToArtifactSlug(name)}.json`;
       const selected = {
         formatVersion: COMPONENT_PALETTE_FORMAT_VERSION,
         component: name,
         styles,
         ...(classMap ? { classMap } : {}),
-        ...(surfaceContexts
+        ...(surfaceContexts || panelFill
           ? {
               capabilities: {
-                ...(surfaceContexts ? { surfaceContexts: { [palette]: surfaceContexts } } : {})
+                ...(surfaceContexts ? { surfaceContexts: { [palette]: surfaceContexts } } : {}),
+                ...(panelFill && { panelFill: true as const })
               }
             }
           : {}),

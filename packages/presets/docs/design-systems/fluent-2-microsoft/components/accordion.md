@@ -36,8 +36,9 @@ CardAction provides header states; Card consumes its neutral Rest surfaces from 
 Both regions retain one rounded Card frame with independent border/shadow contracts.
 
 `options.divider: true` is the common Fluent default for every emphasis; each
-instance can override it. The line uses the frame's neutral contour (low onSubtle,
-medium onVivid). The Showcase configuration divider remains low emphasis.
+instance can override it. The line uses the Separator recipe for the surface inside
+the Card frame (low onSubtle, medium onVivid). A Medium frame in Fluent Light produces
+onSubtle on either page background. The Showcase configuration divider remains low emphasis.
 No preset colors change; no primary intent is exposed.
 These emphasis mappings are approved Kiskadee adaptations, not Microsoft labels.
 

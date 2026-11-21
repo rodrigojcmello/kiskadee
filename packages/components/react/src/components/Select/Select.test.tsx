@@ -1,10 +1,12 @@
 // @vitest-environment jsdom
-import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
 import {
   KiskadeeContext,
   type KiskadeeContextValue
 } from '../../shared/contexts/KiskadeeContext.tsx';
+import { SurfaceContextProvider } from '../../shared/contexts/SurfaceContext.tsx';
+import { Badge } from '../Badge/Badge.tsx';
 import { Select } from './Select.tsx';
 
 const base: KiskadeeContextValue = {
@@ -303,6 +305,64 @@ describe('Select list resource, viewport and portal handoff', () => {
       dropdown: { e1: {}, e2: {}, e4: {}, e10: {} }
     }
   };
+  it.each([
+    { panel: 'painted', expectedClass: 'badge-on-subtle' },
+    { panel: 'border-only', expectedClass: 'badge-on-vivid' },
+    { panel: 'headless', expectedClass: 'badge-on-vivid' }
+  ])('gives an option Badge $expectedClass in a $panel list on a vivid host', async ({
+    panel,
+    expectedClass
+  }) => {
+    const context = {
+      ...styled,
+      componentArtifacts: {
+        dropdown: {
+          formatVersion: 3,
+          component: 'dropdown',
+          capabilities: panel === 'painted' ? { panelFill: true } : {}
+        }
+      },
+      classesMap: {
+        ...styled.classesMap,
+        dropdown:
+          panel === 'headless'
+            ? undefined
+            : {
+                ...styled.classesMap.dropdown,
+                e1: {
+                  c: {
+                    s: {
+                      s: {
+                        neutral: { m: panel === 'painted' ? 'panel-background' : 'panel-border' }
+                      }
+                    }
+                  }
+                }
+              },
+        badge: {
+          e1: {
+            c: {
+              s: { s: { attention: { m: 'badge-on-subtle' } } },
+              v: { s: { attention: { m: 'badge-on-vivid' } } }
+            }
+          }
+        }
+      }
+    };
+    render(
+      <SurfaceContextProvider value="onVivid">
+        {view(context, {
+          options: [
+            options[0]!,
+            { value: 'new', textValue: 'New', label: <Badge data-testid="option-badge">New</Badge> }
+          ]
+        })}
+      </SurfaceContextProvider>
+    );
+    fireEvent.click(screen.getByRole('combobox'));
+    const option = await screen.findByRole('option', { name: 'New' });
+    expect(within(option).getByTestId('option-badge').classList).toContain(expectedClass);
+  });
   it('composes a native scroll viewport for long lists and keeps option semantics', async () => {
     render(
       view(styled, {

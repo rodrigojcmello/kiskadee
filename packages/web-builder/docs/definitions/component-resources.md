@@ -41,6 +41,13 @@ A palette resource uses `formatVersion: 4`. The manifest, component metadata and
 envelopes use `formatVersion: 3`. Compiled Web Brand Packs use `kiskadee.brand-pack-build.v3`
 and format 3. Consumers require the defined version for each envelope.
 
+A Dropdown palette descriptor publishes `capabilities.panelFill: true` when its Rest panel
+recipe (`e1.onSubtle.standard.boxColor.neutral.medium.rest` in that palette) supplies visible
+paint. For a static HEX fill or gradient, at least one color must have nonzero alpha.
+Absent fills, border-only recipes, fully transparent colors and unresolved runtime expressions
+omit this capability. Consumers can use the flag when applying their existing panel context
+policy. It carries no color or contrast classification.
+
 The compact surface configuration uses these fields in the selected palette resource:
 
 - `config.sc.<s|v>.<s|a>.<intent>.<hh|h|m|l|ll>` contains the context received, color variant,

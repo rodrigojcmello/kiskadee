@@ -12,11 +12,19 @@ import {
   KiskadeeContext,
   type KiskadeeContextValue
 } from '../../shared/contexts/KiskadeeContext.tsx';
+import {
+  SurfaceContextProvider,
+  useSurfaceContext
+} from '../../shared/contexts/SurfaceContext.tsx';
 import { Dropdown } from './Dropdown.tsx';
 import { loadDropdownPresenceEffect } from './effects/presence/index.ts';
 
 function Check() {
   return <svg data-testid="check-glyph" />;
+}
+
+function PanelContextProbe() {
+  return <output data-testid="panel-context">{useSurfaceContext()}</output>;
 }
 
 function installObservers(): void {
@@ -294,6 +302,27 @@ describe('styled Dropdown', () => {
     expect(endAffordance?.dispatchEvent(pointerDown)).toBe(true);
     expect(pointerDown.defaultPrevented).toBe(false);
   });
+  it.each([
+    { portalled: false, expected: 'onVivid' },
+    { portalled: true, expected: 'onSubtle' }
+  ])('resolves an unpainted panel with portalled=$portalled', ({ portalled, expected }) => {
+    const view = render(
+      <KiskadeeContext.Provider value={context}>
+        <SurfaceContextProvider value="onVivid">
+          <Dropdown.Root defaultOpen presence={false}>
+            <Dropdown.Anchor>Toggle</Dropdown.Anchor>
+            <Dropdown.Content portalled={portalled}>
+              <Dropdown.Surface>
+                <PanelContextProbe />
+              </Dropdown.Surface>
+            </Dropdown.Content>
+          </Dropdown.Root>
+        </SurfaceContextProvider>
+      </KiskadeeContext.Provider>
+    );
+    expect(view.getByTestId('panel-context').textContent).toBe(expected);
+  });
+
   it('keeps the core path unmounted while closed when presence is disabled', () => {
     const result = render(
       <KiskadeeContext.Provider value={presenceContext}>

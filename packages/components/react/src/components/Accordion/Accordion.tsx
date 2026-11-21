@@ -214,6 +214,7 @@ const Panel = forwardRef<HTMLDivElement, AccordionPanelProps>(function Accordion
   ref
 ) {
   const { panelEmphasis, divider, group, surfaceContext } = useContext(Visual);
+  const frameSurface = useSurfaceContext();
   const item = useAccordionItemContext();
   const panel = useAccordionPanel();
   const content = useRef<HTMLDivElement>(null);
@@ -232,11 +233,7 @@ const Panel = forwardRef<HTMLDivElement, AccordionPanelProps>(function Accordion
     >
       <div ref={content} className="k-acc-body">
         {divider && (
-          <Separator
-            aria-hidden="true"
-            surfaceContext={surfaceContext}
-            emphasis={surfaceContext === 'onVivid' ? 'medium' : 'low'}
-          />
+          <Separator aria-hidden="true" emphasis={frameSurface === 'onVivid' ? 'medium' : 'low'} />
         )}
         <Container
           intent="neutral"

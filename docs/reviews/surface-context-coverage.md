@@ -2,6 +2,11 @@
 
 **20 de novembro de 2026 · revisão `93fdcbd8` · 18 componentes × 10 presets.**
 
+**Atualizações posteriores ao levantamento.** Os dados abaixo descrevem a revisão auditada.
+
+- A lista do Select recebe `onSubtle` quando o painel do Dropdown tem preenchimento confirmado. Uma lista sem pintura de fundo conserva o contexto recebido. A decisão sobre conteúdo rico no controle fechado continua pendente. [Contrato da lista](../../packages/components/react/docs/definitions/select.md#open-list-and-independent-dropdown-presentation)
+- A divisória do Accordion já usa a superfície publicada pelo Card. No Fluent Light, a mesma moldura Medium usa a divisória Low tanto sobre uma página sutil quanto sobre uma página vívida. [Contrato do Accordion](../../packages/components/react/docs/definitions/accordion/accordion-contract.md)
+
 Os dez presets distribuem o arquivo portátil. O cálculo pelo contraste está habilitado em **Button e Container do Fluent 2 Microsoft** e nas pinturas interativas do **CardAction** desse preset. Card recebe do Container o resultado em repouso. A primeira correção indicada pela auditoria está no **Select**: o painel reutilizado do Dropdown já tem uma política adequada, mas a composição da lista não passa pelo Provider que a aplica.
 
 | Decisão | Evidência |

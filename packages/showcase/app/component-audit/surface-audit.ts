@@ -20,12 +20,9 @@ type SurfaceAuditRow = {
 const components: Record<ComponentName, SurfaceAuditRow> = {
   accordion: {
     label: 'Accordion',
-    status: 'fix',
-    summary: 'The Fluent panel divider can retain the outer vivid context.',
-    details: [
-      'Open a Medium accordion on a vivid surface in Fluent Light. The frame produces a subtle surface, but the divider still uses the vivid recipe.',
-      'The header and panel already delegate their surfaces to CardAction and Container.'
-    ]
+    status: 'verified',
+    summary:
+      'In Fluent Light, the panel divider follows the Card frame. A subtle frame uses Low on both subtle and vivid pages.'
   },
   badge: {
     label: 'Badge',
@@ -103,11 +100,11 @@ const components: Record<ComponentName, SurfaceAuditRow> = {
   },
   select: {
     label: 'Select',
-    status: 'fix',
-    summary: 'An option can inherit a vivid context on a white popup.',
+    status: 'decision',
+    summary: 'Popup fixed. Review rich content in the closed control.',
     details: [
-      'Fix the styled list first. It uses the Dropdown panel but bypasses the provider that supplies its subtle context.',
-      'Review rich values in the closed Fluent control separately. Sandbox translucent triggers still need reference backgrounds.'
+      'Options on a painted Dropdown panel receive onSubtle. A list with no panel fill keeps its surrounding context.',
+      'Compare a badge inside a closed Fluent Outline or Borderless control on vivid. Sandbox translucent triggers still need reference backgrounds.'
     ]
   },
   separator: {
