@@ -35,6 +35,13 @@ type ResolveIntentClassNameOptions = {
 };
 
 const DEFAULT_COLOR_BUCKET_ORDER = ['hh', 'h', 'm', 'l', 'll'] as const;
+const emphasisByBucket = {
+  hh: 'highest',
+  h: 'high',
+  m: 'medium',
+  l: 'low',
+  ll: 'lowest'
+} as const satisfies Record<ColorBucketKey, ComponentEmphasis>;
 const warnedMissingOnVividBuckets = new WeakSet<ClassNameByElementJSON>();
 
 function resolveColorClassesByIntent(
@@ -61,15 +68,37 @@ function resolveColorClassesByIntent(
   return bucket;
 }
 
-function resolveColorBucketClassName(
-  colors: ColorClasses,
-  order: readonly ColorBucketKey[]
-): string {
-  for (const bucket of order) {
-    const className = colors[bucket];
-    if (className) return className;
+/** The selected coordinates identify the recipe even when multiple recipes share CSS classes. */
+export function resolveIntentColorRecipe(
+  element: ClassNameByElementJSON | undefined,
+  intent: string | undefined,
+  emphasis: ComponentEmphasis | undefined,
+  options: ResolveIntentClassNameOptions = {}
+): { intent: string; emphasis: ComponentEmphasis; className: string } | undefined {
+  if (!element?.c || !intent) return;
+
+  const byIntent = resolveColorClassesByIntent(
+    element,
+    options.surfaceContext ?? 'onSubtle',
+    options.colorVariant ?? 'standard'
+  );
+  if (!byIntent) return;
+  let chosenIntent = intent;
+  if (!byIntent[chosenIntent]) {
+    if (options.fallbackIntent && byIntent[options.fallbackIntent])
+      chosenIntent = options.fallbackIntent;
+    else if (options.useFirstIntentFallback) chosenIntent = Object.keys(byIntent)[0];
   }
-  return '';
+  const colors = byIntent[chosenIntent];
+  if (!colors) return;
+
+  const exact = emphasis && componentEmphasisBuckets[emphasis];
+  const order = exact
+    ? options.emphasisFallbackOrder
+    : (options.defaultFallbackOrder ?? DEFAULT_COLOR_BUCKET_ORDER);
+  const bucket = exact && colors[exact] != null ? exact : order?.find((key) => colors[key]);
+  if (bucket)
+    return { intent: chosenIntent, emphasis: emphasisByBucket[bucket], className: colors[bucket]! };
 }
 
 export function resolveIntentClassName(
@@ -78,32 +107,7 @@ export function resolveIntentClassName(
   emphasis: ComponentEmphasis | undefined,
   options: ResolveIntentClassNameOptions = {}
 ): string {
-  if (!element?.c || !intent) return '';
-
-  const byIntent = resolveColorClassesByIntent(
-    element,
-    options.surfaceContext ?? 'onSubtle',
-    options.colorVariant ?? 'standard'
-  );
-  if (!byIntent) return '';
-  const chosen =
-    byIntent[intent] ??
-    (options.fallbackIntent ? byIntent[options.fallbackIntent] : undefined) ??
-    (options.useFirstIntentFallback ? Object.values(byIntent)[0] : undefined);
-  if (!chosen) return '';
-
-  const bucket = emphasis ? componentEmphasisBuckets[emphasis] : undefined;
-  if (!bucket) {
-    return resolveColorBucketClassName(
-      chosen,
-      options.defaultFallbackOrder ?? DEFAULT_COLOR_BUCKET_ORDER
-    );
-  }
-
-  const buckets = chosen as Record<string, string | undefined>;
-  return (
-    buckets[bucket] ?? resolveColorBucketClassName(chosen, options.emphasisFallbackOrder ?? [])
-  );
+  return resolveIntentColorRecipe(element, intent, emphasis, options)?.className ?? '';
 }
 
 export function resolveScaleClassName(

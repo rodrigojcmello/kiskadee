@@ -7,7 +7,8 @@ import type {
 import type { ManifestComponent } from '../phase-7-publish-metadata/manifestTypes.ts';
 import type {
   COMPONENT_PALETTE_FORMAT_VERSION,
-  CompactPaletteConfig
+  CompactPaletteConfig,
+  SurfaceRegions
 } from './surfacePaletteWire.ts';
 
 export type StylesheetResource = { path: string; sha256: string; order: number };
@@ -21,6 +22,8 @@ export type ComponentInspectionArtifact = {
 export type ComponentResourceArtifact = {
   formatVersion: 3;
   component: string;
+  /** Selected palette only. Raw metadata does not contain regional paint outputs. */
+  regions?: SurfaceRegions;
   sizeSupport: ComponentSizeSupport;
   layouts?: {
     stacked?: { sizes: string[]; sizesByRadius?: Record<RadiusMode, string[]> };

@@ -7,8 +7,12 @@ import { useComponentScale } from '../../shared/contexts/DensityContext.tsx';
 import './Badge.structural.scss';
 import { Children, forwardRef, isValidElement } from 'react';
 import { useKiskadee } from '../../shared/contexts/KiskadeeContext.tsx';
-import { useSurfaceContext } from '../../shared/contexts/SurfaceContext.tsx';
+import {
+  SurfaceContextProvider,
+  useSurfaceContext
+} from '../../shared/contexts/SurfaceContext.tsx';
 import { useComponentClassMap } from '../../shared/contexts/useComponentClassMap.ts';
+import { useRegionSurface } from '../../shared/contexts/useRegionSurface.ts';
 import {
   DEFAULT_BADGE_EMPHASIS,
   DEFAULT_BADGE_INTENT,
@@ -149,6 +153,11 @@ const BadgeMark = forwardRef<HTMLSpanElement, BadgeMarkProps>(function BadgeMark
   }
 
   const fullBleed = presentation === 'full-bleed';
+  const markSurface = useRegionSurface('badge', 'e5', {
+    intent,
+    emphasis: emphasis ?? 'high',
+    surfaceContext
+  });
   const resolved = useResolvedBadgeClasses({
     className,
     classNames,
@@ -162,7 +171,13 @@ const BadgeMark = forwardRef<HTMLSpanElement, BadgeMarkProps>(function BadgeMark
 
   return (
     <span {...props} ref={ref} className={fullBleed ? resolved.e3 : resolved.e5}>
-      {fullBleed ? children : <span className={resolved.e4}>{children}</span>}
+      {fullBleed ? (
+        children
+      ) : (
+        <span className={resolved.e4}>
+          <SurfaceContextProvider value={markSurface}>{children}</SurfaceContextProvider>
+        </span>
+      )}
       <SeparationLayer enabled={separation === 'ring'} className={resolved.e6} />
     </span>
   );

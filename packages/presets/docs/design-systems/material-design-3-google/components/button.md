@@ -209,10 +209,7 @@ pending (label only) and disabled colors; the indicator keeps its own Selected r
 Stable foregrounds and borders omit redundant transient states. No Rest-equal Focus
 palette reset is required. Focus surface treatment coexists with the existing external ring.
 
-Content surface context is explicitly published for both themes, both input surfaces,
-all five intents and emphases. Selection retains the context of that emphasis's Pressed
-surface rather than unconditionally publishing the High context. Disabled returns to
-the inherited surrounding context.
+The portable compiler classifies the effective Rest, Selected, Pending and Disabled shell fills by segment and theme. The selected paint coordinate also accounts for the literal High Rest projection when the instance uses selection emphasis Medium or High.
 
 ## Per-Emphasis Selection Policy (2026-10-26)
 

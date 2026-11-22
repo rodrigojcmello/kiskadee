@@ -1,7 +1,7 @@
 import { withAlpha } from '@kiskadee/core';
 import { buildBySegment } from '../../../utils/buildBySegment.ts';
 import type { PresetColorGetter } from '../../../utils/presetColor.ts';
-import { splitCardSurfaceSchema } from '../../../utils/splitCardSurfaceSchema.ts';
+import { splitDerivedCardSurfaceSchema } from '../../../utils/splitCardSurfaceSchema.ts';
 
 type Material3GoogleSegmentName = 'default' | 'dynamic' | 'purple';
 
@@ -16,34 +16,17 @@ export function createMaterial3GoogleCardSchema({
   segmentNames
 }: CreateMaterial3GoogleCardSchemaArgs) {
   const surfaces = [
-    { intent: 'neutral', emphasis: 'lowest', contentSurfaceContext: 'onSubtle' },
-    { intent: 'neutral', emphasis: 'low', contentSurfaceContext: 'onSubtle' },
-    { intent: 'neutral', emphasis: 'medium', contentSurfaceContext: 'onSubtle' },
-    { intent: 'support', emphasis: 'lowest', contentSurfaceContext: 'onSubtle' },
-    { intent: 'support', emphasis: 'low', contentSurfaceContext: 'onSubtle' },
-    { intent: 'support', emphasis: 'medium', contentSurfaceContext: 'onSubtle' },
-    { intent: 'primary', emphasis: 'lowest', contentSurfaceContext: 'onSubtle' },
-    { intent: 'primary', emphasis: 'low', contentSurfaceContext: 'onSubtle' },
-    { intent: 'primary', emphasis: 'medium', contentSurfaceContext: 'onSubtle' },
-    { intent: 'primary', emphasis: 'highest', contentSurfaceContext: 'onVivid' }
+    { intent: 'neutral', emphasis: 'lowest' },
+    { intent: 'neutral', emphasis: 'low', referenceFor: 'onSubtle' },
+    { intent: 'neutral', emphasis: 'medium' },
+    { intent: 'support', emphasis: 'lowest' },
+    { intent: 'support', emphasis: 'low' },
+    { intent: 'support', emphasis: 'medium' },
+    { intent: 'primary', emphasis: 'lowest' },
+    { intent: 'primary', emphasis: 'low' },
+    { intent: 'primary', emphasis: 'medium' },
+    { intent: 'primary', emphasis: 'highest', referenceFor: 'onVivid' }
   ] as const;
-  const context = Object.fromEntries(
-    ['neutral', 'primary', 'support'].map((intent) => [
-      intent,
-      Object.fromEntries(
-        surfaces
-          .filter((entry) => entry.intent === intent)
-          .map((entry) => [
-            entry.emphasis,
-            {
-              rest: entry.contentSurfaceContext,
-              selected: entry.contentSurfaceContext,
-              disabled: 'onSubtle'
-            }
-          ])
-      )
-    ])
-  );
   const borderOptions = (surface: 'onSubtle' | 'onVivid') => ({
     support: { lowest: surface === 'onSubtle', low: false, medium: false },
     neutral: {
@@ -141,11 +124,7 @@ export function createMaterial3GoogleCardSchema({
       }
     };
   };
-  return splitCardSurfaceSchema<Material3GoogleSegmentName>({
-    contentSurfaceContext: buildBySegment(segmentNames, () => ({
-      light: { onSubtle: { standard: context }, onVivid: { standard: context } },
-      dark: { onSubtle: { standard: context }, onVivid: { standard: context } }
-    })),
+  return splitDerivedCardSurfaceSchema<Material3GoogleSegmentName>({
     options: {
       canonicalSurfaces: Object.fromEntries(
         segmentNames.map((segment) => [segment, { light: surfaces, dark: surfaces }])

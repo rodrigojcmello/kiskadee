@@ -233,10 +233,12 @@ Decision:
   background color, contrast, DOM ancestry, or runtime color measurement.
 - p-react resolves an explicit `surfaceContext` prop first, then the nearest
   `SurfaceContextProvider`, then the `onSubtle` portability default. Components that create a
-  semantic descendant surface resolve their published `contentSurfaceContext` output and
-  publish it through a nested Provider.
-- Surface Builder materializes authored output maps and declared derivations in a portable,
-  revision-bound `surface-contexts.json` before platform publication.
+  semantic descendant surface resolve the effective recipe for each painted region and publish its
+  generated result through the Provider covering that region.
+- Surface Builder writes region maps and any indeterminate paint coordinates to one revision-bound
+  `generated/surface-contexts.json` (v2) per preset. Web Builder publishes the selected segment and
+  theme in the v5 palette descriptor. Consult [Surface Builder](packages/surface-builder/README.md)
+  for the classification rule and [Web resources](packages/web-builder/docs/definitions/component-resources.md) for encoding.
 - `contentSurfaceContext` uses the same context/variant axes and whole-state-map inheritance.
   Button normalizes qualified system intents such as `primary-alt` to semantic `primary` and
   `alternative`, while plain intents select `standard`. External `brand.*` names are normalized

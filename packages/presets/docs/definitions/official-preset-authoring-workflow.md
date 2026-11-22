@@ -113,7 +113,7 @@ For each component, author the palettes it can render on the surrounding surface
 
 The canonical component palette path is
 `segment -> theme -> surfaceContext -> colorVariant -> colorProperty -> intent -> emphasis -> state`.
-The descendant `contentSurfaceContext` maps also include the color-variant level. Alternative
+The portable pre-build derives output per painted region from this coordinate. A region layered over another may additionally depend on the parent paint recipe. Retain a manual declaration only where the authored form requires it or where indeterminate paint needs the previous output. The generated region maps also include the color-variant level. Alternative
 is sparse at property/intent/emphasis boundaries: an omitted leaf inherits the whole Standard
 state map, while an authored leaf owns all states. Missing states retain that leaf's Rest.
 Do not copy Neutral or another unchanged leaf solely to advertise an Alternative capability.

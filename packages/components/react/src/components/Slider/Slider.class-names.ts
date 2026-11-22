@@ -32,6 +32,7 @@ import {
   resolveSchemaElementClassName,
   resolveRadiusClassName as resolveSharedRadiusClassName
 } from '../../shared/class-resolution/classNames.ts';
+import { neutralMediumFallback } from '../../shared/class-resolution/regionPaint.ts';
 import type {
   SliderClassesMap,
   SliderClassNames,
@@ -109,9 +110,7 @@ function elem(
     emphasis: options.emphasis,
     surfaceContext: options.surfaceContext,
     intentOptions: {
-      fallbackIntent: 'neutral',
-      useFirstIntentFallback: true,
-      emphasisFallbackOrder: ['m', 'h', 'hh', 'l', 'll']
+      ...neutralMediumFallback
     }
   });
 }

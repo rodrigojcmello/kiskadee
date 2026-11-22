@@ -163,40 +163,6 @@ export function createCarbonIbmChipSchema({ c }: { c: CarbonIbmColorResolver }):
   };
   return {
     options: { density: { compact: 's:sm:1', regular: 's:md:1', spacious: 's:lg:1' } },
-    contentSurfaceContext: {
-      default: Object.fromEntries(
-        (['light', 'dark', 'darker'] as const).map((theme) => [
-          theme,
-          Object.fromEntries(
-            (['onSubtle', 'onVivid'] as const).map((context) => [
-              context,
-              {
-                standard: Object.fromEntries(
-                  INTENTS.map((intent) => [
-                    intent,
-                    Object.fromEntries(
-                      EMPHASES.map((emphasis) => [
-                        emphasis,
-                        {
-                          rest:
-                            emphasis === 'high'
-                              ? intent === 'neutral' && theme !== 'light'
-                                ? 'onSubtle'
-                                : 'onVivid'
-                              : 'inherit',
-                          selected: theme === 'light' ? 'onVivid' : 'onSubtle',
-                          disabled: 'onSubtle'
-                        }
-                      ])
-                    )
-                  ])
-                )
-              }
-            ])
-          )
-        ])
-      )
-    },
     elements: {
       e1: { name: 'chip-container' },
       e2: {

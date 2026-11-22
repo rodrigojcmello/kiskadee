@@ -1,6 +1,15 @@
+import {
+  neutralMediumFallback,
+  resolveRegionPaint
+} from '../../shared/class-resolution/regionPaint.ts';
 import { withComponentResources } from '../../shared/contexts/ComponentResourceBoundary.tsx';
 import { useComponentScale } from '../../shared/contexts/DensityContext.tsx';
-import { useSurfaceContext } from '../../shared/contexts/SurfaceContext.tsx';
+import { useKiskadee } from '../../shared/contexts/KiskadeeContext.tsx';
+import {
+  SurfaceContextProvider,
+  useSurfaceContext
+} from '../../shared/contexts/SurfaceContext.tsx';
+import { resolveRegionSurface, useRegionSurfaces } from '../../shared/contexts/useRegionSurface.ts';
 import './Slider.structural.scss';
 import {
   resolveActivationFeedbackSetting,
@@ -564,27 +573,43 @@ function SliderRoot(props: SliderProps) {
     if (getThumbAriaLabelledBy(index)) return undefined;
     return thumbAriaLabels?.[resolveThumbKey(index)] ?? (hasLabel ? undefined : ariaLabel);
   };
+  const { segment, theme } = useKiskadee();
+  const regions = useRegionSurfaces('slider', resolvedVariant, resolvedMode);
+  const state = {
+    intent,
+    emphasis,
+    surfaceContext,
+    disabled: !!disabled || status === 'disabled',
+    pending: status === 'pending'
+  };
+  const thumbPaint = resolveRegionPaint(elements.e10, state, neutralMediumFallback);
+  const thumbSurface = resolveRegionSurface(regions?.e10, { ...thumbPaint, segment, theme });
+  const innerPaint = resolveRegionPaint(elements.e11, state, neutralMediumFallback);
+  const iconSurface = resolveRegionSurface(regions?.e11, {
+    ...innerPaint,
+    segment,
+    theme,
+    surfaceContext: thumbSurface,
+    parent: thumbPaint
+  });
+  const tooltipPaint = resolveRegionPaint(elements.e14, state, neutralMediumFallback);
+  const tooltipSurface = resolveRegionSurface(regions?.e14, { ...tooltipPaint, segment, theme });
   const renderValueIndicator = (index: 0 | 1) => {
     if (!hasValueIndicator) return null;
 
     const valueIndicatorRef = index === 0 ? startValueIndicatorRef : endValueIndicatorRef;
 
-    return resolvedValueAnimation === 'rolling' ? (
-      <HeadlessSlider.ValueIndicator
-        ref={valueIndicatorRef}
-        index={index}
-        className={valueIndicatorClassName}
-        aria-hidden="true"
-      >
-        {(details) => renderSliderValueIndicator(resolvedValueAnimation, details)}
-      </HeadlessSlider.ValueIndicator>
-    ) : (
-      <HeadlessSlider.ValueIndicator
-        ref={valueIndicatorRef}
-        index={index}
-        className={valueIndicatorClassName}
-        aria-hidden="true"
-      />
+    return (
+      <SurfaceContextProvider value={tooltipSurface}>
+        <HeadlessSlider.ValueIndicator
+          ref={valueIndicatorRef}
+          index={index}
+          className={valueIndicatorClassName}
+          aria-hidden="true"
+        >
+          {(details) => renderSliderValueIndicator(resolvedValueAnimation, details)}
+        </HeadlessSlider.ValueIndicator>
+      </SurfaceContextProvider>
     );
   };
   const renderValueSummary = () =>
@@ -600,7 +625,11 @@ function SliderRoot(props: SliderProps) {
 
     return (
       <HeadlessSlider.ThumbIcon index={index}>
-        {(details) => renderSliderThumbIcon(thumbIcon, details)}
+        {(details) => (
+          <SurfaceContextProvider value={iconSurface}>
+            {renderSliderThumbIcon(thumbIcon, details)}
+          </SurfaceContextProvider>
+        )}
       </HeadlessSlider.ThumbIcon>
     );
   };

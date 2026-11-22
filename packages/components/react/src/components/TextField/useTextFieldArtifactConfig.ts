@@ -7,7 +7,7 @@ import type {
   TextFieldModeByVariant,
   TextFieldVariant
 } from '@kiskadee/core';
-import type { TextFieldComponentArtifactJSON } from '@kiskadee/web-builder/types';
+import type { SurfaceRegions, TextFieldComponentArtifactJSON } from '@kiskadee/web-builder/types';
 import { useKiskadee } from '../../shared/contexts/KiskadeeContext.tsx';
 import { useComponentClassMap } from '../../shared/contexts/useComponentClassMap.ts';
 import { useComponentMetadata } from '../../shared/contexts/useComponentMetadata.ts';
@@ -24,6 +24,7 @@ export type TextFieldVariantsConfig = {
       Record<
         TextFieldModeByVariant[TVariant],
         {
+          regions?: SurfaceRegions;
           contentSurfaceContext?: ContentSurfaceContextMap;
           contentRegionSurfaceContext?: ContentSurfaceContextMap;
           options?: {

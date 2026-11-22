@@ -1,10 +1,4 @@
-import {
-  type Color,
-  type ContentSurfaceContextMap,
-  fg,
-  type Schema,
-  type TextFieldElements
-} from '@kiskadee/core';
+import { type Color, fg, type Schema, type TextFieldElements } from '@kiskadee/core';
 import type { Fluent2MicrosoftColorResolver } from '../fluent-2-microsoft.color.ts';
 import {
   createFieldVisualRecipe,
@@ -372,30 +366,6 @@ export function createFluent2MicrosoftTextFieldSchema({
     }
     return light;
   };
-  const contentSurfaceContext = (filled: boolean, region = false): ContentSurfaceContextMap => ({
-    default: Object.fromEntries(
-      ['light', 'dark', 'darker'].map((theme) => [
-        theme,
-        Object.fromEntries(
-          ['onSubtle', 'onVivid'].map((context) => [
-            context,
-            {
-              standard: Object.fromEntries(
-                ['neutral', 'error', 'warning'].map((intent) => [
-                  intent,
-                  {
-                    ...(region ? { lowest: { rest: 'inherit' } } : {}),
-                    medium: { rest: filled ? 'onSubtle' : 'inherit' }
-                  }
-                ])
-              )
-            }
-          ])
-        )
-      ])
-    )
-  });
-
   return {
     options: {
       variant: 'standard',
@@ -408,20 +378,14 @@ export function createFluent2MicrosoftTextFieldSchema({
         options: { mode: 'outline', labelPlacement: 'top' },
         modes: {
           outline: {
-            contentSurfaceContext: contentSurfaceContext(false),
-            contentRegionSurfaceContext: contentSurfaceContext(true, true),
             options: { labelOffset: { square: 'none', rounded: 'none', pill: 'radius' } },
             elements: elements('outline')
           },
           underline: {
-            contentSurfaceContext: contentSurfaceContext(false),
-            contentRegionSurfaceContext: contentSurfaceContext(true, true),
             options: { labelOffset: { square: 'none', rounded: 'none', pill: 'none' } },
             elements: elements('underline')
           },
           borderless: {
-            contentSurfaceContext: contentSurfaceContext(true),
-            contentRegionSurfaceContext: contentSurfaceContext(true, true),
             options: { labelOffset: { square: 'none', rounded: 'none', pill: 'input-start' } },
             elements: elements('borderless')
           }
@@ -431,14 +395,10 @@ export function createFluent2MicrosoftTextFieldSchema({
         options: { mode: 'notched' },
         modes: {
           notched: {
-            contentSurfaceContext: contentSurfaceContext(true),
-            contentRegionSurfaceContext: contentSurfaceContext(true, true),
             options: { labelOffset: { square: 'none', rounded: 'radius', pill: 'input-start' } },
             elements: elements('notched')
           },
           inside: {
-            contentSurfaceContext: contentSurfaceContext(true),
-            contentRegionSurfaceContext: contentSurfaceContext(true, true),
             options: {
               labelOffset: { square: 'input-start', rounded: 'input-start', pill: 'schema' }
             },

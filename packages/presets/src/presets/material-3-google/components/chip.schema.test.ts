@@ -1,5 +1,6 @@
 import { expect, it } from 'vitest';
 import { createPresetColorGetter } from '../../../utils/presetColor.ts';
+import { expectedSurface, readSurfaceCompanion } from '../../surface-companion.test-support.ts';
 import { schemaColors } from '../material-3-google.colors.ts';
 import { createMaterial3GoogleChipSchema } from './chip.schema.ts';
 
@@ -141,24 +142,34 @@ it('keeps dark Material Chip content at or above the compact text contrast floor
 });
 
 it('publishes effective parent surface contexts for Chip composition', () => {
+  const outputs = readSurfaceCompanion('material-3-google');
+  expect(chip.contentSurfaceContext).toBeUndefined();
   for (const segment of segmentNames)
     for (const theme of ['light', 'dark'] as const)
       for (const surface of ['onSubtle', 'onVivid'] as const)
         for (const intent of intents) {
-          const context =
-            chip.contentSurfaceContext?.[segment]?.[theme]?.[surface]?.standard?.[intent];
-          const high =
-            surface === 'onVivid' || (theme === 'dark' && intent === 'neutral')
-              ? 'onSubtle'
-              : 'onVivid';
-          expect(context?.high).toEqual({ rest: high, selected: high, disabled: surface });
-          expect(context?.medium).toEqual({ rest: 'onSubtle', selected: high, disabled: surface });
-          expect(context?.low).toEqual({ rest: 'inherit', selected: high, disabled: surface });
-          expect(context?.lowest).toEqual({
-            rest: 'inherit',
-            selected: high,
-            disabled: surface
-          });
+          const backdrop = outputs.container.options.canonicalSurfaces[segment][theme].find(
+            (entry) => entry.referenceFor === surface
+          )!.rest;
+          for (const id of ['e2', 'e5'] as const)
+            for (const emphasis of emphases) {
+              const context =
+                outputs.chip.regions[id].output[segment]?.[theme]?.[surface]?.standard[intent]?.[
+                  emphasis
+                ];
+              const paint =
+                chip.elements[id].palettes?.[segment]?.[theme]?.[surface]?.standard.boxColor?.[
+                  intent
+                ]?.[emphasis];
+              expect(context?.rest).toBe(expectedSurface(paint?.rest, backdrop, theme));
+              expect(context?.disabled ?? context?.rest).toBe(
+                expectedSurface(paint?.disabled ?? paint?.rest, backdrop, theme)
+              );
+              if (id === 'e2')
+                expect(context?.selected ?? context?.rest).toBe(
+                  expectedSurface(paint?.selected?.rest ?? paint?.rest, backdrop, theme)
+                );
+            }
         }
 });
 

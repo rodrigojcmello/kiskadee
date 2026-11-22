@@ -19,6 +19,7 @@ type StretchIndicatorPhase = 'idle' | 'stretch' | 'settle';
  */
 export default function TabsBoxMotionBarEnhancer({ children }: TabsMotionEngineProps) {
   const {
+    barSurface,
     selected,
     scale,
     intent,
@@ -208,6 +209,7 @@ export default function TabsBoxMotionBarEnhancer({ children }: TabsMotionEngineP
     ? (stretchDisplayRect ?? indicatorRect)
     : indicatorRect;
   const indicatorClassName = resolveIndicatorClassName({
+    surfaceContext: barSurface,
     structural,
     elements,
     classNames,

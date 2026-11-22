@@ -17,6 +17,7 @@ import {
 } from '../../shared/contexts/SurfaceContext.tsx';
 import { useComponentClassMap } from '../../shared/contexts/useComponentClassMap.ts';
 import { useControlCursorStyle } from '../../shared/contexts/useControlCursorStyle.ts';
+import { resolveRegionSurface } from '../../shared/contexts/useRegionSurface.ts';
 import { FamilyResolvedIcon } from '../Icon/FamilyResolvedIcon.tsx';
 import {
   DEFAULT_CHIP_EMPHASIS,
@@ -41,7 +42,10 @@ type ChipContextValue = {
   disabled: boolean;
   emphasis: NonNullable<ChipProps['emphasis']>;
   intent: NonNullable<ChipProps['intent']>;
-  resolveProducedSurface: (selected?: boolean) => ReturnType<typeof useSurfaceContext>;
+  resolveProducedSurface: (
+    element: 'e2' | 'e5',
+    action?: { selected?: boolean; disabled?: boolean }
+  ) => ReturnType<typeof useSurfaceContext>;
 };
 
 const ChipContext = createContext<ChipContextValue | undefined>(undefined);
@@ -91,7 +95,7 @@ const ChipContent = forwardRef<HTMLSpanElement, ChipContentProps>(function ChipC
   ref
 ) {
   const chip = useChip('Content');
-  const producedSurface = chip.resolveProducedSurface(false);
+  const producedSurface = chip.resolveProducedSurface('e2');
   return (
     <HeadlessChip.Content
       {...props}
@@ -124,7 +128,12 @@ const ChipSelect = forwardRef<HTMLButtonElement, ChipSelectProps>(function ChipS
       className={join(chip.classes.e2, className)}
     >
       {({ controlState }) => (
-        <SurfaceContextProvider value={chip.resolveProducedSurface(controlState)}>
+        <SurfaceContextProvider
+          value={chip.resolveProducedSurface('e2', {
+            selected: controlState,
+            disabled: props.disabled
+          })}
+        >
           <ChipPrimaryContext.Provider value>{children}</ChipPrimaryContext.Provider>
         </SurfaceContextProvider>
       )}
@@ -160,7 +169,11 @@ const ChipRemove = forwardRef<HTMLButtonElement, ChipRemoveProps>(function ChipR
       className={join(chip.classes.e5, className)}
     >
       <span className={chip.classes.e6} aria-hidden="true">
-        {content}
+        <SurfaceContextProvider
+          value={chip.resolveProducedSurface('e5', { disabled: props.disabled })}
+        >
+          {content}
+        </SurfaceContextProvider>
       </span>
     </HeadlessChip.Remove>
   );
@@ -211,17 +224,24 @@ const ChipRoot = forwardRef<HTMLSpanElement, ChipProps>(function ChipRoot(
     disabled,
     emphasis,
     intent,
-    resolveProducedSurface: (selected) =>
-      resolveContentSurfaceContext({
-        map: chipMetadata?.contentSurfaceContext,
+    resolveProducedSurface: (element, action) => {
+      const coordinate = {
         segment,
         theme,
-        consumedSurfaceContext,
+        surfaceContext: consumedSurfaceContext,
         intent,
         emphasis,
-        selected,
-        disabled
-      })
+        selected: action?.selected,
+        disabled: disabled || action?.disabled
+      };
+      const region = chipMetadata?.regions?.[element];
+      if (region || element === 'e5') return resolveRegionSurface(region, coordinate);
+      return resolveContentSurfaceContext({
+        ...coordinate,
+        consumedSurfaceContext,
+        map: chipMetadata?.contentSurfaceContext
+      });
+    }
   };
 
   return (

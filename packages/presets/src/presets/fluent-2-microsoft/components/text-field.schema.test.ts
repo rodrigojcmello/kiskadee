@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { readSurfaceCompanion } from '../../surface-companion.test-support.ts';
 import red from '../colors/r.red.v1.ts';
 import orange from '../colors/yr.orange.v1.ts';
 import { schema } from '../fluent-2-microsoft.schema.ts';
@@ -191,26 +192,27 @@ describe('Fluent TextField internal content', () => {
   });
 
   it('publishes the actual mode surface for descendants across segments and themes', () => {
+    const fieldOutput = readSurfaceCompanion('fluent-2-microsoft').textField;
     for (const [variant, config] of Object.entries(field.variants!)) {
       for (const [modeName, mode] of Object.entries(config.modes)) {
+        expect(mode.contentSurfaceContext).toBeUndefined();
+        expect(mode.contentRegionSurfaceContext).toBeUndefined();
+        const { e3, e8 } = fieldOutput.variants[variant].modes[modeName].regions;
         const expected =
           variant === 'standard' && modeName !== 'borderless' ? 'inherit' : 'onSubtle';
         for (const segment of ['default', 'teams'] as const) {
           for (const theme of ['light', 'dark', 'darker'] as const) {
             for (const context of ['onSubtle', 'onVivid'] as const) {
               for (const intent of ['neutral', 'error', 'warning'] as const) {
-                expect(
-                  mode.contentSurfaceContext![segment]![theme]![context]!.standard[intent]!.medium!
-                    .rest
-                ).toBe(expected);
-                expect(
-                  mode.contentRegionSurfaceContext![segment]![theme]![context]!.standard[intent]!
-                    .lowest!.rest
-                ).toBe('inherit');
-                expect(
-                  mode.contentRegionSurfaceContext![segment]![theme]![context]!.standard[intent]!
-                    .medium!.rest
-                ).toBe('onSubtle');
+                expect(e3.output[segment]![theme]![context]!.standard[intent]!.medium!.rest).toBe(
+                  expected
+                );
+                expect(e8.output[segment]![theme]![context]!.standard[intent]!.lowest!.rest).toBe(
+                  'inherit'
+                );
+                expect(e8.output[segment]![theme]![context]!.standard[intent]!.medium!.rest).toBe(
+                  'onSubtle'
+                );
               }
             }
           }

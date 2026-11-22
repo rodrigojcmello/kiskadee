@@ -10,13 +10,15 @@ import type {
   BottomSheetItemLayout,
   BottomSheetPageTransition,
   BottomSheetSwipeBehavior,
-  RadiusMode
+  RadiusMode,
+  SurfaceContext
 } from '@kiskadee/core';
 import {
   type BottomSheetContentRenderProps,
   type BottomSheetContentRenderState,
   BottomSheet as HeadlessBottomSheet
 } from '@kiskadee/react-headless/bottom-sheet';
+import type { SurfaceRegions } from '@kiskadee/web-builder/types';
 import { motion, type PanInfo, useDragControls } from 'motion/react';
 import type {
   ButtonHTMLAttributes,
@@ -39,8 +41,12 @@ import {
 import { joinClassNames } from '../../shared/class-resolution/classNames.ts';
 import { useEssentialIcon } from '../../shared/contexts/EssentialIconContext.tsx';
 import { useKiskadee } from '../../shared/contexts/KiskadeeContext.tsx';
-import { SurfaceContextProvider } from '../../shared/contexts/SurfaceContext.tsx';
+import {
+  SurfaceContextProvider,
+  useSurfaceContext
+} from '../../shared/contexts/SurfaceContext.tsx';
 import { useComponentClassMap } from '../../shared/contexts/useComponentClassMap.ts';
+import { resolveRegionSurface } from '../../shared/contexts/useRegionSurface.ts';
 import { Button } from '../Button/Button.tsx';
 import type { ButtonProps } from '../Button/Button.types.ts';
 import { FamilyResolvedIcon } from '../Icon/FamilyResolvedIcon.tsx';
@@ -105,6 +111,7 @@ type BottomSheetResolvedOptions = {
 };
 
 type BottomSheetVisualContextValue = {
+  regions?: SurfaceRegions;
   classesMap: BottomSheetClassesMap | undefined;
   classNames: BottomSheetClassNames;
   resolved: ReturnType<typeof resolveBottomSheetClassNames>;
@@ -113,6 +120,7 @@ type BottomSheetVisualContextValue = {
 };
 
 type BottomSheetRuntimeContextValue = {
+  panelInput: SurfaceContext;
   snapPoint: BottomSheetSnapPoint;
   overflow: boolean;
   setBodyElement: (element: HTMLDivElement | null) => void;
@@ -165,6 +173,7 @@ function BottomSheetVisualProvider({
   const scale = useComponentScale('bottomSheet', size);
   const { classesMap, global } = useKiskadee();
   const bottomSheetMetadata = useComponentMetadata('bottomSheet');
+  const regions = bottomSheetMetadata?.regions;
   const bottomSheetClassesMap = useComponentClassMap(
     'bottomSheet',
     classesMap.bottomSheet as BottomSheetClassesMap | undefined
@@ -205,12 +214,13 @@ function BottomSheetVisualProvider({
   const contextValue = useMemo<BottomSheetVisualContextValue>(
     () => ({
       classesMap: bottomSheetClassesMap,
+      regions,
       classNames,
       resolved,
       options,
       scale
     }),
-    [bottomSheetClassesMap, classNames, options, resolved, scale]
+    [bottomSheetClassesMap, classNames, options, regions, resolved, scale]
   );
 
   return (
@@ -259,6 +269,7 @@ const BottomSheetTrigger = forwardRef<HTMLElement, BottomSheetTriggerProps>(
 );
 
 type BottomSheetMotionContentProps = {
+  portalled: boolean;
   children: ReactNode;
   contentRenderProps: BottomSheetContentRenderProps;
   contentState: BottomSheetContentRenderState;
@@ -267,13 +278,23 @@ type BottomSheetMotionContentProps = {
 };
 
 function BottomSheetMotionContent({
+  portalled,
   children,
   contentRenderProps,
   contentState,
   overlayProps,
   surfaceProps
 }: BottomSheetMotionContentProps) {
-  const { options, resolved } = useBottomSheetVisualContext('BottomSheet.Content');
+  const { options, regions, resolved } = useBottomSheetVisualContext('BottomSheet.Content');
+  const panelInput = useSurfaceContext(portalled ? 'onSubtle' : undefined);
+  const { segment, theme } = useKiskadee();
+  const panelSurface = resolveRegionSurface(regions?.e2, {
+    surfaceContext: panelInput,
+    segment,
+    theme,
+    intent: 'neutral',
+    emphasis: 'medium'
+  });
   const dragControls = useDragControls();
   const [snapPoint, setSnapPoint] = useState<BottomSheetSnapPoint>(options.initialHeight);
   const [bodyElement, setBodyElement] = useState<HTMLDivElement | null>(null);
@@ -367,13 +388,14 @@ function BottomSheetMotionContent({
   );
   const runtimeContext = useMemo<BottomSheetRuntimeContextValue>(
     () => ({
+      panelInput,
       snapPoint,
       overflow,
       setBodyElement,
       startDrag,
       swipeBehavior: options.swipeBehavior
     }),
-    [options.swipeBehavior, overflow, snapPoint, startDrag]
+    [options.swipeBehavior, overflow, panelInput, snapPoint, startDrag]
   );
   const {
     ref: dialogRef,
@@ -444,7 +466,7 @@ function BottomSheetMotionContent({
         onClickCapture={handleSurfaceClickCapture}
       >
         <BottomSheetRuntimeContext.Provider value={runtimeContext}>
-          <SurfaceContextProvider value="onSubtle">
+          <SurfaceContextProvider value={panelSurface}>
             {options.swipeBehavior === 'none' ? null : <BottomSheetHandle />}
             {children}
           </SurfaceContextProvider>
@@ -464,6 +486,7 @@ const BottomSheetContent = forwardRef<HTMLDivElement, BottomSheetContentProps>(
         forceMount
         render={(contentRenderProps, contentState) => (
           <BottomSheetMotionContent
+            portalled={props.portalled !== false}
             contentRenderProps={contentRenderProps}
             contentState={contentState}
             overlayProps={overlayProps}
@@ -629,9 +652,22 @@ const BottomSheetItem = forwardRef<HTMLElement, BottomSheetItemProps>(function B
   },
   forwardedRef
 ) {
-  const { classesMap, resolved, scale } = useBottomSheetVisualContext('BottomSheet.Item');
+  const { classesMap, resolved, scale, regions } = useBottomSheetVisualContext('BottomSheet.Item');
+  const { segment, theme } = useKiskadee();
+  const input = useSurfaceContext();
+  const panelInput = useContext(BottomSheetRuntimeContext)?.panelInput;
   const inheritedIntent = useContext(BottomSheetItemIntentContext);
   const intent = intentProp ?? inheritedIntent;
+  const itemSurface = resolveRegionSurface(regions?.e7, {
+    surfaceContext: input,
+    segment,
+    theme,
+    intent,
+    emphasis: 'medium',
+    selected,
+    disabled,
+    parent: panelInput && { surfaceContext: panelInput, intent: 'neutral', emphasis: 'medium' }
+  });
   const itemClassName = resolveBottomSheetItemClassName({
     baseClassName: resolved.e7,
     element: classesMap?.e7,
@@ -652,22 +688,21 @@ const BottomSheetItem = forwardRef<HTMLElement, BottomSheetItemProps>(function B
     children
   };
 
-  if (render) {
-    return (
-      <BottomSheetItemIntentContext.Provider value={intent}>
-        {render(renderProps, { selected, disabled })}
-      </BottomSheetItemIntentContext.Provider>
-    );
-  }
   const { ref, ...buttonProps } = renderProps;
   return (
     <BottomSheetItemIntentContext.Provider value={intent}>
-      <button
-        {...(buttonProps as ButtonHTMLAttributes<HTMLButtonElement>)}
-        ref={ref as Ref<HTMLButtonElement>}
-        type="button"
-        disabled={disabled}
-      />
+      <SurfaceContextProvider value={itemSurface}>
+        {render ? (
+          render(renderProps, { selected, disabled })
+        ) : (
+          <button
+            {...(buttonProps as ButtonHTMLAttributes<HTMLButtonElement>)}
+            ref={ref as Ref<HTMLButtonElement>}
+            type="button"
+            disabled={disabled}
+          />
+        )}
+      </SurfaceContextProvider>
     </BottomSheetItemIntentContext.Provider>
   );
 });

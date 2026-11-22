@@ -16,9 +16,11 @@ import {
   joinClassNames,
   normalizeScaleKey,
   resolveIntentClassName,
+  resolveIntentColorRecipe,
   resolveSchemaElementClassName,
   resolveRadiusClassName as resolveSharedRadiusClassName
 } from '../../shared/class-resolution/classNames.ts';
+import { neutralMediumFallback } from '../../shared/class-resolution/regionPaint.ts';
 import type { TextFieldContentClassNames, TextFieldContentEmphasis } from './TextField.content.tsx';
 import type { TextFieldStructuralDescriptor } from './TextField.structural.ts';
 import type {
@@ -83,10 +85,18 @@ export function resolveIntentClasses(
   intent: TextFieldIntent,
   emphasis: ComponentEmphasis | undefined
 ): string {
-  return resolveIntentClassName(element, intent, emphasis, {
-    fallbackIntent: 'neutral',
-    useFirstIntentFallback: true,
-    emphasisFallbackOrder: ['m', 'h', 'hh', 'l', 'll']
+  return resolveIntentClassName(element, intent, emphasis, neutralMediumFallback);
+}
+
+export function resolveControlColorRecipe(
+  element: ClassNameByElementJSON | undefined,
+  intent: TextFieldIntent,
+  emphasis: ComponentEmphasis,
+  surfaceContext: SurfaceContext
+) {
+  return resolveIntentColorRecipe(element, intent, emphasis, {
+    ...neutralMediumFallback,
+    surfaceContext
   });
 }
 
@@ -109,11 +119,7 @@ export function elem(
     scale: options.scale,
     intent: options.intent,
     emphasis: options.emphasis,
-    intentOptions: {
-      fallbackIntent: 'neutral',
-      useFirstIntentFallback: true,
-      emphasisFallbackOrder: ['m', 'h', 'hh', 'l', 'll']
-    }
+    intentOptions: neutralMediumFallback
   });
 }
 
@@ -128,6 +134,7 @@ export function resolveRadiusClassName(
 /** Resolves passive anatomy without coupling its emphasis to the control shell. */
 export function resolveTextFieldContentClassNames(options: {
   surfaceContext?: SurfaceContext;
+  paintSurfaceContext?: SurfaceContext;
   structural: TextFieldStructuralDescriptor;
   elements: TextFieldClassesMap;
   classNames: TextFieldClassNames;
@@ -141,7 +148,12 @@ export function resolveTextFieldContentClassNames(options: {
     elements[slot]
       ? (join(
           `k-txf-${slot}-${structural.letter}`,
-          elem(elements[slot], options),
+          elem(
+            elements[slot],
+            slot === 'e8' && options.paintSurfaceContext
+              ? { ...options, surfaceContext: options.paintSurfaceContext }
+              : options
+          ),
           classNames[slot]
         ) ?? '')
       : (classNames[slot] ?? '');

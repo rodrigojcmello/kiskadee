@@ -1,5 +1,5 @@
 import { type InteractionStateColorMap, primitive, type SolidColor } from '@kiskadee/core';
-import { splitCardSurfaceSchema } from '../../../utils/splitCardSurfaceSchema.ts';
+import { splitDerivedCardSurfaceSchema } from '../../../utils/splitCardSurfaceSchema.ts';
 import { absoluteCap, type CarbonIbmColorResolver, referenceColor } from '../carbon-ibm.color.ts';
 import { type CarbonTokenName, tokenColor } from '../carbon-ibm.tokens.ts';
 
@@ -139,39 +139,23 @@ export function createCarbonIbmCardSchema({ c }: { c: CarbonIbmColorResolver }) 
       ];
     })
   );
-  const contexts = () => ({
-    neutral: Object.fromEntries(levels.map((level) => [level, { rest: 'onSubtle' }])),
-    primary: {
-      ...Object.fromEntries(levels.map((level) => [level, { rest: 'onSubtle' }])),
-      highest: { rest: 'onVivid', disabled: 'onSubtle' }
-    }
-  });
   const catalog = [
     ...levels.map((emphasis) => ({
       intent: 'neutral' as const,
       emphasis,
-      contentSurfaceContext: 'onSubtle' as const
+      ...(emphasis === 'lowest' && { referenceFor: 'onSubtle' as const })
     })),
     ...(['low', 'medium', 'high'] as const).map((emphasis) => ({
       intent: 'primary' as const,
-      emphasis,
-      contentSurfaceContext: 'onSubtle' as const
+      emphasis
     })),
     {
       intent: 'primary' as const,
       emphasis: 'highest' as const,
-      contentSurfaceContext: 'onVivid' as const
+      referenceFor: 'onVivid' as const
     }
   ];
-  return splitCardSurfaceSchema<never>({
-    contentSurfaceContext: {
-      default: Object.fromEntries(
-        themes.map((theme) => [
-          theme,
-          { onSubtle: { standard: contexts() }, onVivid: { standard: contexts() } }
-        ])
-      )
-    },
+  return splitDerivedCardSurfaceSchema<never>({
     options: {
       canonicalSurfaces: { default: Object.fromEntries(themes.map((theme) => [theme, catalog])) },
       border: {

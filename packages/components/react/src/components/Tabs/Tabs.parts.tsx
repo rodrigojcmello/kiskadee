@@ -1,10 +1,15 @@
 import { HeadlessTabs } from '@kiskadee/react-headless';
 import { forwardRef, type ReactNode } from 'react';
+import { resolveRegionPaint } from '../../shared/class-resolution/regionPaint.ts';
+import { SurfaceContextProvider } from '../../shared/contexts/SurfaceContext.tsx';
+import { useRegionSurface } from '../../shared/contexts/useRegionSurface.ts';
 import {
+  DEFAULT_EMPHASIS,
   joinClassNames,
   resolveIconClassName,
   resolveLabelClassName,
-  resolveTriggerClassName
+  resolveTriggerClassName,
+  tabsColorFallback
 } from './Tabs.class-names';
 import { TabsTabContextProvider, useTabsTabContext, useTabsVisualContext } from './Tabs.context.ts';
 import { getTabsSlot } from './Tabs.structural.ts';
@@ -28,18 +33,34 @@ export function TabsSlotContent({
   label,
   icon
 }: Pick<TabsTabProps, 'children' | 'label' | 'icon'>) {
-  const { structural } = useTabsVisualContext();
+  const { structural, barPaint, barSurface, elements, variant, emphasis, intent } =
+    useTabsVisualContext();
+  const { isSelected } = useTabsTabContext();
+  const paintElement = variant === 'bridge' && isSelected ? elements.e5 : elements.e2;
+  const paint = resolveRegionPaint(
+    paintElement,
+    {
+      intent,
+      emphasis: emphasis ?? DEFAULT_EMPHASIS,
+      surfaceContext: barSurface,
+      selected: isSelected
+    },
+    tabsColorFallback
+  );
+  const surface = useRegionSurface('tabs', 'e2', { ...paint, variant, parent: barPaint });
 
   return (
     <span className={joinClassNames('k-tab-x1', getTabsSlot(structural, 'x1'))}>
-      {children ? (
-        children
-      ) : (
-        <>
-          {icon ? <TabsIconBase>{icon}</TabsIconBase> : null}
-          {label ? <TabsLabelBase>{label}</TabsLabelBase> : null}
-        </>
-      )}
+      <SurfaceContextProvider value={surface}>
+        {children ? (
+          children
+        ) : (
+          <>
+            {icon ? <TabsIconBase>{icon}</TabsIconBase> : null}
+            {label ? <TabsLabelBase>{label}</TabsLabelBase> : null}
+          </>
+        )}
+      </SurfaceContextProvider>
     </span>
   );
 }
@@ -54,6 +75,7 @@ export function TabsSlotContent({
 export function useTabsTabState(value: string, className?: string) {
   const {
     selected,
+    barSurface,
     scale,
     intent,
     emphasis,
@@ -69,6 +91,7 @@ export function useTabsTabState(value: string, className?: string) {
   return {
     isSelected,
     triggerClassName: resolveTriggerClassName({
+      surfaceContext: barSurface,
       structural,
       elements,
       classNames,
@@ -137,9 +160,11 @@ export const TabsLabelBase = forwardRef<HTMLSpanElement, TabsLabelProps>(functio
   ref
 ) {
   useTabsTabContext();
-  const { scale, intent, emphasis, classNames, elements, structural } = useTabsVisualContext();
+  const { scale, intent, emphasis, classNames, elements, structural, barSurface } =
+    useTabsVisualContext();
 
   const labelClassName = resolveLabelClassName({
+    surfaceContext: barSurface,
     structural,
     elements,
     classNames,
@@ -168,9 +193,11 @@ export const TabsIconBase = forwardRef<HTMLSpanElement, TabsIconProps>(function 
   ref
 ) {
   useTabsTabContext();
-  const { scale, intent, emphasis, classNames, elements, structural } = useTabsVisualContext();
+  const { scale, intent, emphasis, classNames, elements, structural, barSurface } =
+    useTabsVisualContext();
 
   const iconClassName = resolveIconClassName({
+    surfaceContext: barSurface,
     structural,
     elements,
     classNames,

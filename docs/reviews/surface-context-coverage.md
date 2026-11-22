@@ -1,11 +1,50 @@
 # Auditoria de superfícies dos componentes
 
+## Resultado da migração · 21 de novembro de 2026
+
+O pré-build publica uma saída por região no companion v2 de cada preset. A Web entrega o recorte v5 por componente, segmento e tema. O runtime consulta a receita efetiva e fornece ao filho um único contexto. A classificação abrange os estados estáveis suportados por cada componente. Hover, Focus e Pressed continuam sendo estados de pintura interativa.
+
+| Componente | Carbon | Elegant | FK | FM | iOS 18 | iOS 27 | M3 | S0 | S2 | S3 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Accordion | — | — | — | D | — | — | — | — | — | — |
+| Badge | C | — | — | C | — | C | C | — | — | — |
+| BottomSheet | C | — | — | C | — | C | C | — | — | — |
+| Button | C | C | P | C | — | C | C | — | — | — |
+| Card | C | C | — | C | — | C | C | C | C | C |
+| Chip | C | — | — | C | — | — | C | — | — | — |
+| Container | C | C | — | C | — | C | C | C | C | C |
+| Dropdown | C | — | — | C | — | C | C | C | — | — |
+| Icon | H | — | — | H | — | H | H | — | — | — |
+| Layout | H | H | — | H | — | H | H | H | H | H |
+| Progress | H | — | — | H | — | H | H | — | — | — |
+| Select | — | — | — | C | — | — | — | C | — | — |
+| Separator | H | — | — | H | — | H | H | — | — | — |
+| Slider | C | — | — | C | — | C | C | C | C | C |
+| Switch | C | C | — | C | C | C | C | C | C | C |
+| Tabs | — | — | — | — | — | — | C | — | — | — |
+| Text | H | — | — | H | — | H | H | — | — | — |
+| TextField | — | — | — | C | — | — | C | — | — | — |
+
+**C** = cálculo portátil por região; **P** = cálculo com exceções identificadas; **D** = delegação às superfícies da composição; **H** = herança/consumo do ambiente; **—** = componente ausente. FK = Fluent Kiskadee; FM = Fluent Microsoft; M3 = Material Google; S0/S2/S3 = Sandbox. A tabela cobre 84 combinações existentes e 96 ausentes. Uma célula registra o mecanismo validado, e não uma aprovação visual de cada cor.
+
+- **Paridade e mudança.** Nas 5.039 coordenadas de Button, Container e Card/CardAction da auditoria inicial, 4.671 mantêm a saída, 354 passam a outra paleta e 14 são parciais. Button concentra 265 das mudanças, Container 6 e Card/CardAction 83. Os 1.624 resultados desses produtores no Fluent Microsoft coincidem com a base. As cores de origem e as receitas de interação dos dez presets foram comparadas com a revisão anterior; a mudança é no contexto entregue ao filho.
+- **Demais regiões.** Em 5.492 consultas adicionais de estado estável, 4.185 resultados coincidiram e 1.307 mudaram de contexto. A comparação usou as receitas autoradas, a entrada recebida e a coordenada da camada anterior onde aplicável. Inclui, por exemplo, as duas ações irmãs de Chip, o ícone contido em Badge.Mark, o gatilho de Select e os slots de Tabs. As contagens são de coordenadas e regiões; uma mesma composição pode envolver mais de uma consulta.
+- **Exceções atuais.** Somente o Button Fluent Kiskadee tem coordenadas indeterminadas: seis com gradiente misto, seis com cor dependente do runtime e duas translúcidas sem fundo canônico. O companion lista o caminho de cada receita e o motivo. O pré-build conserva a saída anterior ou a herança para essas entradas. [Diagnósticos no arquivo do preset](../../packages/presets/src/presets/fluent-2-kiskadee/generated/surface-contexts.json)
+- **Onde o filho recebe o contexto.** Chip Content/Select e Remove são irmãos; cada um publica sua própria pintura. TextField Start/End resolvem a pintura sobre o controle e publicam a saída para os filhos. Dropdown e BottomSheet distinguem o painel de cada linha; Select fechado distingue controle e trigger. Badge.Mark contained, Switch, Slider e Tabs publicam para o conteúdo realmente coberto pela tinta. A arte full-bleed, o Badge externo ao Button, labels externos e o painel de conteúdo das Tabs conservam seu ambiente.
+- **Como verificar.** Rode `pnpm --filter @kiskadee/surface-builder check` para conferir os dez companions registrados. Veja o estado por componente na rota `/component-audit`. A geração Web e a fusão de metadata foram comparadas com os arquivos portáteis, inclusive as exceções indexadas pela pintura do pai. [Surface Builder](../../packages/surface-builder/README.md) · [Publicação Web](../../packages/web-builder/docs/definitions/component-resources.md#palette-surface-configuration)
+- **Validação de plataforma.** Os 282 descritores de paleta Web v5 foram confrontados com as saídas regionais portáteis. No Chrome foram verificados o Badge do Copilot sobre branco/azul, a passagem de contexto de campos e overlays, Badge.Mark, thumb de Switch, tooltip de Slider e aba selecionada do Material. As oito fixtures de Switch do iOS/Android foram preservadas byte a byte; a diferença preexistente entre a projeção nativa e as fixtures é a mesma da base. A verificação nativa aqui cobre dados e exportadores.
+
+## Levantamento anterior à migração
+
+O registro a seguir preserva os valores de referência, exemplos e recomendações da revisão inicial. A situação atual consta na matriz acima.
+
 **20 de novembro de 2026 · revisão `93fdcbd8` · 18 componentes × 10 presets.**
 
 **Atualizações posteriores ao levantamento.** Os dados abaixo descrevem a revisão auditada.
 
 - A lista do Select recebe `onSubtle` quando o painel do Dropdown tem preenchimento confirmado. Uma lista sem pintura de fundo conserva o contexto recebido. A decisão sobre conteúdo rico no controle fechado continua pendente. [Contrato da lista](../../packages/components/react/docs/definitions/select.md#open-list-and-independent-dropdown-presentation)
 - A divisória do Accordion já usa a superfície publicada pelo Card. No Fluent Light, a mesma moldura Medium usa a divisória Low tanto sobre uma página sutil quanto sobre uma página vívida. [Contrato do Accordion](../../packages/components/react/docs/definitions/accordion/accordion-contract.md)
+- O TextField já usa a intenção e a ênfase efetivas da receita do controle ao consultar sua saída de superfície. No Fluent Light sobre vívido, Borderless High e Medium produzem o mesmo contexto sutil para um Badge na região Lowest. A comparação dos preenchimentos translúcidos do Material ainda depende das referências de fundo. [Contrato do conteúdo do TextField](../../packages/components/react/docs/definitions/text-field/text-field-content.md#region-surfaces-and-passive-geometry)
 
 Os dez presets distribuem o arquivo portátil. O cálculo pelo contraste está habilitado em **Button e Container do Fluent 2 Microsoft** e nas pinturas interativas do **CardAction** desse preset. Card recebe do Container o resultado em repouso. A primeira correção indicada pela auditoria está no **Select**: o painel reutilizado do Dropdown já tem uma política adequada, mas a composição da lista não passa pelo Provider que a aplica.
 

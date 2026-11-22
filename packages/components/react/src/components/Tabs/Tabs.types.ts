@@ -3,6 +3,7 @@ import type {
   ComponentEmphasis,
   ComponentSize,
   RadiusMode,
+  SurfaceContext,
   TabsBoxIndicatorShape,
   TabsBridgeLowerCurve,
   TabsIndicatorPosition,
@@ -20,6 +21,7 @@ import type {
   TabsTabProps as HeadlessTabsTabProps
 } from '@kiskadee/react-headless';
 import type { HTMLAttributes, ReactNode, RefObject } from 'react';
+import type { RegionCoordinate } from '../../shared/contexts/useRegionSurface.ts';
 import type { TabsStructuralDescriptor } from './Tabs.structural.ts';
 
 // ============================================
@@ -188,6 +190,8 @@ export type TabsResolvedIndicator<TMotion extends TabsIndicatorMotion = TabsIndi
 };
 
 export type TabsVisualContextValue<TMotion extends TabsIndicatorMotion = TabsIndicatorMotion> = {
+  barPaint: RegionCoordinate;
+  barSurface: SurfaceContext;
   selected: string | undefined;
   scale: string;
   intent: string;

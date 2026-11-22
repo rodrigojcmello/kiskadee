@@ -61,12 +61,14 @@ function mergeSurfaceModes(
   return {
     ...base,
     ...Object.fromEntries(
-      Object.entries(selected).map(([variant, { modes }]) => {
+      Object.entries(selected).map(([variant, { modes, ...surface }]) => {
         const original = base?.[variant];
+        if (!modes) return [variant, { ...original, ...surface }];
         return [
           variant,
           {
             ...original,
+            ...surface,
             modes: {
               ...original?.modes,
               ...Object.fromEntries(
@@ -156,6 +158,7 @@ export function prepareComponentResources(
     return {
       metadata: {
         ...metadata,
+        ...(config.regions ? { regions: config.regions } : {}),
         ...(config.contentSurfaceContext
           ? { contentSurfaceContext: config.contentSurfaceContext }
           : {}),

@@ -6,6 +6,7 @@
   "description": "Portable preset surface context compilation.",
   "exports": {
     ".": "./src/index.ts",
+    "./region-types": "./src/region-types.ts",
     "./palettes/expandElementForeground": "./src/palettes/expandElementForeground.ts",
     "./palettes/expandElementSeparator": "./src/palettes/expandElementSeparator.ts",
     "./palettes/resolveContourReferences": "./src/palettes/resolveContourReferences.ts",

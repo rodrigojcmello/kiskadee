@@ -63,6 +63,10 @@ export type {
   SelectComponentArtifactJSON,
   SelectPresentationOptionsJSON
 } from './src/component-artifacts/selectComponentArtifact.ts';
+export type {
+  RegionSurface,
+  SurfaceRegions
+} from './src/component-artifacts/surfacePaletteWire.ts';
 // Manifest types (phase-7 publishMetadata) describing high-level
 // capabilities by design system.
 export type {

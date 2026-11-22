@@ -11,6 +11,7 @@ import type {
   RadiusMode
 } from '@kiskadee/core';
 import { Dropdown as HeadlessDropdown } from '@kiskadee/react-headless/dropdown';
+import type { SurfaceRegions } from '@kiskadee/web-builder/types';
 import {
   cloneElement,
   createContext,
@@ -31,6 +32,7 @@ import {
   useSurfaceContext
 } from '../../shared/contexts/SurfaceContext.tsx';
 import { useComponentClassMap } from '../../shared/contexts/useComponentClassMap.ts';
+import { resolveRegionSurface } from '../../shared/contexts/useRegionSurface.ts';
 import { useIsomorphicLayoutEffect } from '../../shared/utils/useIsomorphicLayoutEffect.ts';
 import { FamilyResolvedIcon } from '../Icon/FamilyResolvedIcon.tsx';
 import {
@@ -86,6 +88,7 @@ type DropdownPresenceRuntimeContextValue = {
 };
 
 type DropdownVisualContextValue = {
+  regions?: SurfaceRegions;
   panelFill: boolean;
   classesMap: DropdownClassesMap | undefined;
   classNames: DropdownClassNames;
@@ -100,6 +103,10 @@ type ResolvedDropdownPresentationOptions = Required<DropdownPresentationProps>;
 const DEFAULT_LEADING_ICON_COMPOSITION: DropdownLeadingIconComposition = 'item-and-selection';
 const DEFAULT_SELECTED_ITEM_BACKGROUND = true;
 const DROPDOWN_PANEL_CONTEXT = 'onSubtle';
+const panelRecipe = { intent: DEFAULT_DROPDOWN_INTENT, emphasis: 'medium' } as const;
+const DropdownPanelInput = createContext<ReturnType<typeof useSurfaceContext> | undefined>(
+  undefined
+);
 
 const DropdownItemIntentContext = createContext<DropdownIntent>(DEFAULT_DROPDOWN_INTENT);
 
@@ -146,6 +153,7 @@ function DropdownVisualProvider({
   const { classesMap, global } = useKiskadee();
   const dropdownMetadata = useComponentMetadata('dropdown');
   const panelFill = dropdownMetadata?.capabilities?.panelFill === true;
+  const regions = dropdownMetadata?.regions;
   const dropdownClassesMap = useComponentClassMap(
     'dropdown',
     classesMap.dropdown as DropdownClassesMap | undefined
@@ -200,12 +208,13 @@ function DropdownVisualProvider({
       classesMap: dropdownClassesMap,
       classNames,
       panelFill,
+      regions,
       options,
       presence: resolvedPresence,
       resolved,
       scale
     }),
-    [classNames, dropdownClassesMap, options, panelFill, resolved, resolvedPresence, scale]
+    [classNames, dropdownClassesMap, options, panelFill, regions, resolved, resolvedPresence, scale]
   );
 
   return (
@@ -426,8 +435,16 @@ const DropdownSurface = forwardRef<HTMLDivElement, DropdownSurfaceProps>(functio
   { className, ...props },
   ref
 ) {
-  const { panelFill, resolved } = useDropdownVisualContext('Dropdown.Surface');
-  const panelContext = useSurfaceContext(panelFill ? DROPDOWN_PANEL_CONTEXT : undefined);
+  const { regions, panelFill, resolved } = useDropdownVisualContext('Dropdown.Surface');
+  const input = useSurfaceContext();
+  const { segment, theme } = useKiskadee();
+  const panelContext = resolveRegionSurface(regions?.e1, {
+    ...panelRecipe,
+    segment,
+    theme,
+    surfaceContext: input,
+    fallback: panelFill ? DROPDOWN_PANEL_CONTEXT : input
+  });
   const presenceRuntime = useContext(DropdownPresenceRuntimeContext);
   const surfaceIdRef = useRef(Symbol('dropdown-surface'));
   useIsomorphicLayoutEffect(() => {
@@ -442,28 +459,30 @@ const DropdownSurface = forwardRef<HTMLDivElement, DropdownSurfaceProps>(functio
     className: `${resolved.e1} ${className ?? ''}`.trim()
   };
   return (
-    <SurfaceContextProvider value={panelContext}>
-      {presenceRuntime?.presence && presenceRuntime.effectModule ? (
-        <presenceRuntime.effectModule.DropdownPresenceEffect
-          onExitComplete={() => presenceRuntime.onSurfaceExitComplete(surfaceIdRef.current)}
-          open={presenceRuntime.state.open}
-          positioned={presenceRuntime.state.positioned}
-          placement={presenceRuntime.state.placement}
-          surfaceProps={surfaceProps}
-          profile={presenceRuntime.presence.profile}
-          profiles={presenceRuntime.presence.profiles}
-        />
-      ) : (
-        <div
-          {...surfaceProps}
-          style={
-            presenceRuntime && !presenceRuntime.state.open
-              ? { ...props.style, opacity: 0, pointerEvents: 'none' }
-              : props.style
-          }
-        />
-      )}
-    </SurfaceContextProvider>
+    <DropdownPanelInput.Provider value={input}>
+      <SurfaceContextProvider value={panelContext}>
+        {presenceRuntime?.presence && presenceRuntime.effectModule ? (
+          <presenceRuntime.effectModule.DropdownPresenceEffect
+            onExitComplete={() => presenceRuntime.onSurfaceExitComplete(surfaceIdRef.current)}
+            open={presenceRuntime.state.open}
+            positioned={presenceRuntime.state.positioned}
+            placement={presenceRuntime.state.placement}
+            surfaceProps={surfaceProps}
+            profile={presenceRuntime.presence.profile}
+            profiles={presenceRuntime.presence.profiles}
+          />
+        ) : (
+          <div
+            {...surfaceProps}
+            style={
+              presenceRuntime && !presenceRuntime.state.open
+                ? { ...props.style, opacity: 0, pointerEvents: 'none' }
+                : props.style
+            }
+          />
+        )}
+      </SurfaceContextProvider>
+    </DropdownPanelInput.Provider>
   );
 });
 
@@ -731,8 +750,21 @@ const DropdownItem = forwardRef<HTMLElement, DropdownItemProps>(function Dropdow
   },
   forwardedRef
 ) {
-  const { classesMap, resolved, scale } = useDropdownVisualContext('Dropdown.Item');
+  const { classesMap, resolved, scale, regions } = useDropdownVisualContext('Dropdown.Item');
+  const { segment, theme } = useKiskadee();
+  const input = useSurfaceContext();
+  const panelInput = useContext(DropdownPanelInput);
   const { selectedItemBackground } = useDropdownResolvedOptions();
+  const itemSurface = resolveRegionSurface(regions?.e2, {
+    segment,
+    theme,
+    surfaceContext: input,
+    intent,
+    emphasis: 'medium',
+    disabled,
+    selected: selected && selectedItemBackground,
+    parent: panelInput && { ...panelRecipe, surfaceContext: panelInput }
+  });
   const itemClassName = resolveDropdownItemClassName({
     baseClassName: resolved.e2,
     element: classesMap?.e2,
@@ -759,22 +791,25 @@ const DropdownItem = forwardRef<HTMLElement, DropdownItemProps>(function Dropdow
   } as const;
   const leadingTrackPlaceholders = resolveDropdownLeadingTrackPlaceholders(classesMap, scale);
 
-  if (render) {
-    const renderedItem = render(renderProps, { selected, hovered, disabled });
-    const renderedChildren = (renderedItem.props as { children?: React.ReactNode }).children;
-    return (
-      <DropdownItemIntentContext.Provider value={intent}>
-        {cloneElement(renderedItem, undefined, leadingTrackPlaceholders, renderedChildren)}
-      </DropdownItemIntentContext.Provider>
-    );
-  }
+  const rendered = render?.(renderProps, { selected, hovered, disabled });
   const { ref: nativeRef, ...nativeProps } = renderProps;
   return (
     <DropdownItemIntentContext.Provider value={intent}>
-      <div {...nativeProps} ref={nativeRef as React.Ref<HTMLDivElement>}>
-        {leadingTrackPlaceholders}
-        {children}
-      </div>
+      <SurfaceContextProvider value={itemSurface}>
+        {rendered ? (
+          cloneElement(
+            rendered,
+            undefined,
+            leadingTrackPlaceholders,
+            (rendered.props as { children?: React.ReactNode }).children
+          )
+        ) : (
+          <div {...nativeProps} ref={nativeRef as React.Ref<HTMLDivElement>}>
+            {leadingTrackPlaceholders}
+            {children}
+          </div>
+        )}
+      </SurfaceContextProvider>
     </DropdownItemIntentContext.Provider>
   );
 });

@@ -163,7 +163,7 @@ The exception does not authorize runtime authorship of geometry, color, or other
 
 - **Authority:** the portable surface pre-build and its `surface-contexts.json` transport contract.
 - **Consumes/adapts:** Core contracts, authored presets and Tonal Scale color utilities to resolve
-  effective paint and materialize declared Surface Context maps or derivations.
+  effective region paint, compose nested layers and classify the surfaces that descendants consume.
 - **Produces:** one revision-bound surface artifact per preset for Web Builder and future native
   exporters.
 - **Must not own:** preset color values, Schema authorship, CSS or platform rendering decisions.

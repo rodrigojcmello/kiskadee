@@ -1,6 +1,6 @@
 import { contour } from '@kiskadee/core';
 import type { PresetColorGetter } from '../../../utils/presetColor.ts';
-import { splitCardSurfaceSchema } from '../../../utils/splitCardSurfaceSchema.ts';
+import { splitDerivedCardSurfaceSchema } from '../../../utils/splitCardSurfaceSchema.ts';
 import type { Segment } from '../ios-27-apple.schema.ts';
 
 type ThemeName = 'light' | 'dark' | 'darker';
@@ -12,12 +12,12 @@ type CreateIos27AppleCardSchemaArgs = {
 const themes = ['light', 'dark', 'darker'] as const;
 const contexts = ['onSubtle', 'onVivid'] as const;
 const canonical = [
-  { intent: 'neutral', emphasis: 'lowest', contentSurfaceContext: 'onSubtle' },
-  { intent: 'neutral', emphasis: 'low', contentSurfaceContext: 'onSubtle' },
-  { intent: 'neutral', emphasis: 'medium', contentSurfaceContext: 'onSubtle' },
-  { intent: 'primary', emphasis: 'medium', contentSurfaceContext: 'onSubtle' },
-  { intent: 'primary', emphasis: 'high', contentSurfaceContext: 'onVivid' },
-  { intent: 'primary', emphasis: 'highest', contentSurfaceContext: 'onVivid' }
+  { intent: 'neutral', emphasis: 'lowest' },
+  { intent: 'neutral', emphasis: 'low', referenceFor: 'onSubtle' },
+  { intent: 'neutral', emphasis: 'medium' },
+  { intent: 'primary', emphasis: 'medium' },
+  { intent: 'primary', emphasis: 'high' },
+  { intent: 'primary', emphasis: 'highest', referenceFor: 'onVivid' }
 ] as const;
 
 export function createIos27AppleCardSchema({ c, segmentNames }: CreateIos27AppleCardSchemaArgs) {
@@ -61,30 +61,7 @@ export function createIos27AppleCardSchema({ c, segmentNames }: CreateIos27Apple
       }
     };
   };
-  const content = {
-    neutral: {
-      lowest: { rest: 'onSubtle', selected: 'onVivid' },
-      low: { rest: 'onSubtle', selected: 'onVivid' },
-      medium: { rest: 'onSubtle', selected: 'onVivid' }
-    },
-    primary: {
-      medium: { rest: 'onSubtle', selected: 'onVivid' },
-      high: { rest: 'onVivid' },
-      highest: { rest: 'onVivid' }
-    }
-  } as const;
-  return splitCardSurfaceSchema<Segment>({
-    contentSurfaceContext: Object.fromEntries(
-      segmentNames.map((segment) => [
-        segment,
-        Object.fromEntries(
-          themes.map((theme) => [
-            theme,
-            { onSubtle: { standard: content }, onVivid: { standard: content } }
-          ])
-        )
-      ])
-    ),
+  return splitDerivedCardSurfaceSchema<Segment>({
     options: {
       canonicalSurfaces: Object.fromEntries(
         segmentNames.map((segment) => [

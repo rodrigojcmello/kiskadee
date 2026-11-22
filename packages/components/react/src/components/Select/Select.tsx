@@ -15,7 +15,7 @@ import {
   type SelectProps as HeadlessSelectProps,
   useSelectState
 } from '@kiskadee/react-headless/select';
-import type { SelectComponentArtifactJSON } from '@kiskadee/web-builder/types';
+import type { SelectComponentArtifactJSON, SurfaceRegions } from '@kiskadee/web-builder/types';
 import { type ReactNode, useId, useState } from 'react';
 import {
   joinClassNames,
@@ -25,10 +25,14 @@ import {
 import { useComponentScale } from '../../shared/contexts/DensityContext.tsx';
 import { useEssentialIcon } from '../../shared/contexts/EssentialIconContext.tsx';
 import { useKiskadee } from '../../shared/contexts/KiskadeeContext.tsx';
-import { useSurfaceContext } from '../../shared/contexts/SurfaceContext.tsx';
+import {
+  SurfaceContextProvider,
+  useSurfaceContext
+} from '../../shared/contexts/SurfaceContext.tsx';
 import { useComponentClassMapResolution } from '../../shared/contexts/useComponentClassMap.ts';
 import { useControlCursorStyle } from '../../shared/contexts/useControlCursorStyle.ts';
 import { useLoadedComponentArtifact } from '../../shared/contexts/useLoadedComponentArtifact.ts';
+import { getSurfaceRegions, resolveRegionSurface } from '../../shared/contexts/useRegionSurface.ts';
 import { Dropdown } from '../Dropdown/index.ts';
 import { FamilyResolvedIcon } from '../Icon/FamilyResolvedIcon.tsx';
 import { useSelectPositioning } from './useSelectPositioning.ts';
@@ -157,6 +161,8 @@ function SelectList({
 }
 
 type SelectControlProps = {
+  surfaceContext: SurfaceContext;
+  regions?: SurfaceRegions;
   cls: (key: SelectElementName) => string | undefined;
   styled: boolean;
   elements: Partial<Record<SelectElementName, ClassNameByElementJSON>> | undefined;
@@ -172,6 +178,8 @@ type SelectControlProps = {
 };
 
 function SelectControl({
+  surfaceContext,
+  regions,
   cls,
   styled,
   elements,
@@ -187,6 +195,26 @@ function SelectControl({
 }: SelectControlProps) {
   const cursorStyle = useControlCursorStyle();
   const state = useSelectState();
+  const { segment, theme } = useKiskadee();
+  const ambient = useSurfaceContext();
+  const control = {
+    segment,
+    theme,
+    surfaceContext,
+    intent: 'neutral',
+    emphasis: 'medium' as const,
+    selected: state.hasSelection,
+    disabled
+  };
+  const controlSurface = resolveRegionSurface(regions?.e3, control);
+  const valueSurface =
+    styled && regions
+      ? resolveRegionSurface(regions.e4, {
+          ...control,
+          surfaceContext: controlSurface,
+          parent: control
+        })
+      : ambient;
   const [focused, setFocused] = useState(false);
   const [focusVisible, setFocusVisible] = useState(false);
   const previousIcon = useEssentialIcon('chevron-left');
@@ -267,7 +295,9 @@ function SelectControl({
                 type="button"
               >
                 <span className={cls(selected ? 'e5' : 'e11')}>
-                  {selected?.label ?? placeholder}
+                  <SurfaceContextProvider value={valueSurface}>
+                    {selected?.label ?? placeholder}
+                  </SurfaceContextProvider>
                 </span>
                 {showChevron ? (
                   <span className={cls('e6')} aria-hidden="true">
@@ -418,6 +448,8 @@ export function Select({
         <HeadlessSelect.Label className={cls('e2')}>{label}</HeadlessSelect.Label>
       ) : null}
       <SelectControl
+        regions={getSurfaceRegions(artifact.currentArtifact, 'standard', mode)}
+        surfaceContext={surfaceContext}
         cls={cls}
         styled={styled}
         elements={elements}

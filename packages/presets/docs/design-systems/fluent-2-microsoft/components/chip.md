@@ -68,15 +68,10 @@ select existing `global.iconSizes` references. Spacing between Chip and nested B
 
 ## Surface context
 
-Chip consumes the nearest `surfaceContext` and publishes a serialized `contentSurfaceContext` for
-independent descendants. Transparent and subtle appearances preserve the received surface. Vivid
-filled presentations publish `onVivid`; selected tinted presentations may publish the authored
-state-specific value. This is a **Kiskadee extension** because Fluent Tag does not expose Kiskadee's
-surface-context propagation model.
-
-The map is authored sparsely. An omitted Selected or Disabled output inherits the Rest output;
-`inherit` explicitly preserves the consumed surface. No luminance, DOM, or class-name inference is
-permitted.
+The portable pre-build classifies the existing Content/Select and Remove fills independently.
+In Light, Primary Medium Selected paints `#85bfff` on either host and supplies onSubtle to its
+inline Badge. Primary Lowest Rest is transparent and passes through the surrounding context.
+Remove publishes its own fill to an independent icon. The class maps retain the original paints.
 
 ## Color And Token Provenance
 

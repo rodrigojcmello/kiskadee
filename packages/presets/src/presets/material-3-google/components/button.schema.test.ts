@@ -1,6 +1,7 @@
 import { isButtonDerivedContentSurfaceContext } from '@kiskadee/core';
 import { expect, it } from 'vitest';
 import { createPresetColorGetter } from '../../../utils/presetColor.ts';
+import { expectedSurface, readSurfaceCompanion } from '../../surface-companion.test-support.ts';
 import { schemaColors } from '../material-3-google.colors.ts';
 import { createMaterial3GoogleButtonSchema } from './button.schema.ts';
 import {
@@ -162,10 +163,9 @@ it('keeps selected content stable, publishes matching surface contexts and prese
     segmentNames: ['default', 'dynamic', 'purple'],
     transparent: 'transparent'
   });
-  const contentSurfaceContext = button.contentSurfaceContext;
-  if (isButtonDerivedContentSurfaceContext(contentSurfaceContext)) {
-    throw new Error('Material Button must retain its authored surface context');
-  }
+  expect(isButtonDerivedContentSurfaceContext(button.contentSurfaceContext)).toBe(true);
+  const outputs = readSurfaceCompanion('material-3-google');
+  const contentSurfaceContext = outputs.button.regions.e1.output;
   for (const segment of ['default', 'dynamic', 'purple'] as const)
     for (const theme of ['light', 'dark'] as const)
       for (const surface of ['onSubtle', 'onVivid'] as const)
@@ -195,17 +195,20 @@ it('keeps selected content stable, publishes matching surface contexts and prese
             }
             const context =
               contentSurfaceContext?.[segment]?.[theme]?.[surface]?.standard?.[intent]?.[emphasis];
-            expect(context?.selected).toBe(
-              emphasis === 'high'
-                ? surface === 'onVivid' || theme === 'dark'
-                  ? 'onSubtle'
-                  : 'onVivid'
-                : emphasis === 'medium'
-                  ? surface
-                  : 'inherit'
+            const paint =
+              button.elements.e1?.palettes?.[segment]?.[theme]?.[surface]?.standard.boxColor?.[
+                intent
+              ]?.[emphasis];
+            const backdrop = outputs.container.options.canonicalSurfaces[segment][theme].find(
+              (entry) => entry.referenceFor === surface
+            )!.rest;
+            expect(context?.rest).toBe(expectedSurface(paint?.rest, backdrop, theme));
+            expect(context?.selected ?? context?.rest).toBe(
+              expectedSurface(paint?.selected?.rest ?? paint?.rest, backdrop, theme)
             );
-            expect(context?.selected).toBe(context?.rest);
-            expect(context?.disabled).toBe('inherit');
+            expect(context?.disabled ?? context?.rest).toBe(
+              expectedSurface(paint?.disabled ?? paint?.rest, backdrop, theme)
+            );
           }
 });
 

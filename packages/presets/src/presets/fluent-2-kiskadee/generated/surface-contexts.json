@@ -1,5 +1,5 @@
 {
-  "formatVersion": 1,
+  "formatVersion": 2,
   "preset": {
     "key": "fluent-2-kiskadee",
     "version": [
@@ -9,5 +9,148 @@
     ],
     "revision": "05efe635e056b17bb2179131520af09e1f67314ada2d885fbce89a4ac3cc10c8"
   },
-  "components": {}
+  "components": {
+    "button": {
+      "regions": {
+        "e1": {
+          "output": {
+            "default": {
+              "light": {
+                "onSubtle": {
+                  "standard": {
+                    "primary": {
+                      "high": {
+                        "rest": "onVivid",
+                        "disabled": "onSubtle"
+                      }
+                    }
+                  }
+                }
+              },
+              "dark": {
+                "onSubtle": {
+                  "standard": {
+                    "primary": {
+                      "high": {
+                        "rest": "onVivid",
+                        "disabled": "onSubtle"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "modern": {
+              "light": {
+                "onSubtle": {
+                  "standard": {
+                    "primary": {
+                      "high": {
+                        "rest": "inherit",
+                        "disabled": "onSubtle"
+                      }
+                    }
+                  }
+                }
+              },
+              "dark": {
+                "onSubtle": {
+                  "standard": {
+                    "primary": {
+                      "high": {
+                        "rest": "inherit"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "dynamic": {
+              "light": {
+                "onSubtle": {
+                  "standard": {
+                    "primary": {
+                      "high": {
+                        "rest": "inherit",
+                        "disabled": "onSubtle"
+                      }
+                    }
+                  }
+                }
+              },
+              "dark": {
+                "onSubtle": {
+                  "standard": {
+                    "primary": {
+                      "high": {
+                        "rest": "inherit"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "diagnostics": [
+    {
+      "path": "components.button.elements.e1.palettes.modern.light.onSubtle.standard.boxColor.primary.high.rest",
+      "reason": "mixed-gradient"
+    },
+    {
+      "path": "components.button.elements.e1.palettes.modern.light.onSubtle.standard.boxColor.primary.high.selected",
+      "reason": "mixed-gradient"
+    },
+    {
+      "path": "components.button.elements.e1.palettes.modern.light.onSubtle.standard.boxColor.primary.high.pending",
+      "reason": "mixed-gradient"
+    },
+    {
+      "path": "components.button.elements.e1.palettes.modern.dark.onSubtle.standard.boxColor.primary.high.rest",
+      "reason": "mixed-gradient"
+    },
+    {
+      "path": "components.button.elements.e1.palettes.modern.dark.onSubtle.standard.boxColor.primary.high.selected",
+      "reason": "mixed-gradient"
+    },
+    {
+      "path": "components.button.elements.e1.palettes.modern.dark.onSubtle.standard.boxColor.primary.high.pending",
+      "reason": "mixed-gradient"
+    },
+    {
+      "path": "components.button.elements.e1.palettes.modern.dark.onSubtle.standard.boxColor.primary.high.disabled",
+      "reason": "missing-opaque-background"
+    },
+    {
+      "path": "components.button.elements.e1.palettes.dynamic.light.onSubtle.standard.boxColor.primary.high.rest",
+      "reason": "runtime-color"
+    },
+    {
+      "path": "components.button.elements.e1.palettes.dynamic.light.onSubtle.standard.boxColor.primary.high.selected",
+      "reason": "runtime-color"
+    },
+    {
+      "path": "components.button.elements.e1.palettes.dynamic.light.onSubtle.standard.boxColor.primary.high.pending",
+      "reason": "runtime-color"
+    },
+    {
+      "path": "components.button.elements.e1.palettes.dynamic.dark.onSubtle.standard.boxColor.primary.high.rest",
+      "reason": "runtime-color"
+    },
+    {
+      "path": "components.button.elements.e1.palettes.dynamic.dark.onSubtle.standard.boxColor.primary.high.selected",
+      "reason": "runtime-color"
+    },
+    {
+      "path": "components.button.elements.e1.palettes.dynamic.dark.onSubtle.standard.boxColor.primary.high.pending",
+      "reason": "runtime-color"
+    },
+    {
+      "path": "components.button.elements.e1.palettes.dynamic.dark.onSubtle.standard.boxColor.primary.high.disabled",
+      "reason": "missing-opaque-background"
+    }
+  ]
 }

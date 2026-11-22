@@ -13,3 +13,4 @@ export {
   readSurfaceContexts
 } from './io.ts';
 export { getSurfacePresetKey, loadSurfacePresets, type SurfacePreset } from './load-presets.ts';
+export type { RegionSurface, SurfaceDiagnostic, SurfaceRegionBranch } from './region-types.ts';

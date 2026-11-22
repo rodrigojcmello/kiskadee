@@ -16,6 +16,16 @@ export function createElegantCardSchema({
 }: CreateElegantCardSchemaArgs) {
   return splitCardSurfaceSchema<Segment>({
     options: {
+      canonicalSurfaces: buildBySegment(segmentNames, () => ({
+        light: [
+          {
+            intent: 'neutral',
+            emphasis: 'medium',
+            contentSurfaceContext: 'onSubtle',
+            referenceFor: 'onSubtle'
+          }
+        ]
+      })),
       border: {
         defaultMode: 'adaptive',
         adaptive: buildBySegment(segmentNames, () => ({

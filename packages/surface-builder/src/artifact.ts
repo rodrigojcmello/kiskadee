@@ -1,7 +1,6 @@
 import { createHash } from 'node:crypto';
 import {
   type CardSurfaceIntent,
-  type ChipIntent,
   type ComponentEmphasis,
   type ContainerIntent,
   ContainerIntentKeys,
@@ -10,22 +9,23 @@ import {
   isButtonDerivedContentSurfaceContext,
   isDerivedContainerComponent,
   type ManualContainerComponent,
-  materializeContainerSurfaceContext,
   resolveCardSurfaceSource,
   type Schema,
   type SolidColor,
   type SurfaceContext,
-  type SystemButtonIntent,
   type ThemeMode,
   validateContentSurfaceContextMap,
   validateSchemaComponentContracts
 } from '@kiskadee/core';
-import {
-  deriveCardSurfaceContext,
-  deriveContainerSurfaceContext,
-  resolveButtonContentSurfaceContext
-} from './derive.ts';
 import type { SurfacePreset } from './load-presets.ts';
+import type { SurfaceDiagnostic, SurfaceRegionBranch } from './region-types.ts';
+import {
+  compileSurfaceRegions,
+  parentSurfaceElement,
+  surfaceElementIds,
+  surfaceProducerNames,
+  usesSubtlePaint
+} from './regions.ts';
 
 type PublishedSurface<TIntent extends string> = {
   intent: TIntent;
@@ -40,29 +40,16 @@ type PublishedCatalog<TIntent extends string> = Record<
   Partial<Record<ThemeMode, readonly PublishedSurface<TIntent>[]>>
 >;
 
-type ComponentSurfaces<TIntent extends string = string> = {
-  contentSurfaceContext?: ContentSurfaceContextMap<TIntent>;
+type CatalogSurfaceBranch<TIntent extends string> = SurfaceRegionBranch & {
   options?: { canonicalSurfaces: PublishedCatalog<TIntent> };
 };
-
-type TextFieldModeSurfaces = {
-  contentSurfaceContext?: ContentSurfaceContextMap;
-  contentRegionSurfaceContext?: ContentSurfaceContextMap;
-};
-
-type TextFieldSurfaces = {
-  variants: Record<string, { modes: Record<string, TextFieldModeSurfaces> }>;
-};
-
 export type SurfaceContextsArtifact = {
-  formatVersion: 1;
+  formatVersion: 2;
+  diagnostics?: SurfaceDiagnostic[];
   preset: { key: string; version: Schema['version']; revision: string };
-  components: {
-    button?: ComponentSurfaces<SystemButtonIntent>;
-    container?: ComponentSurfaces<ContainerIntent>;
-    card?: ComponentSurfaces<CardSurfaceIntent>;
-    chip?: ComponentSurfaces<ChipIntent>;
-    textField?: TextFieldSurfaces;
+  components: Partial<Record<string, SurfaceRegionBranch>> & {
+    container?: CatalogSurfaceBranch<ContainerIntent>;
+    card?: CatalogSurfaceBranch<CardSurfaceIntent>;
   };
 };
 
@@ -120,7 +107,8 @@ function checkMap<TIntent extends string>(
 function resolveCatalog<TIntent extends string>(
   catalog: unknown,
   palettes: unknown,
-  owner: string
+  owner: string,
+  map: ContentSurfaceContextMap | undefined
 ): PublishedCatalog<TIntent> | undefined {
   if (!isRecord(catalog)) return undefined;
   const segments: PublishedCatalog<TIntent> = {};
@@ -131,7 +119,11 @@ function resolveCatalog<TIntent extends string>(
       if (!Array.isArray(entries) || entries.length === 0) continue;
       resolved[theme as ThemeMode] = entries.map(
         (entry: Omit<PublishedSurface<TIntent>, 'rest'>) => {
-          const { intent, emphasis, contentSurfaceContext, referenceFor } = entry;
+          const { intent, emphasis, referenceFor } = entry;
+          const output =
+            map?.[segment]?.[theme as ThemeMode]?.onSubtle?.standard?.[intent]?.[emphasis]?.rest;
+          const contentSurfaceContext =
+            output === 'inherit' ? 'onSubtle' : (output ?? entry.contentSurfaceContext);
           const rest = read(
             [segment, theme, 'onSubtle', 'standard', 'boxColor', intent, emphasis, 'rest'],
             palettes
@@ -157,89 +149,74 @@ function resolveCatalog<TIntent extends string>(
   return Object.keys(segments).length ? segments : undefined;
 }
 
-function collectTextFieldSurfaces(schema: Schema): TextFieldSurfaces | undefined {
-  const variants: TextFieldSurfaces['variants'] = {};
-  for (const [variant, value] of Object.entries(schema.components.textField?.variants ?? {})) {
-    const modes: Record<string, TextFieldModeSurfaces> = {};
-    for (const [mode, source] of Object.entries(value?.modes ?? {})) {
-      const { contentSurfaceContext, contentRegionSurfaceContext } = source ?? {};
-      if (contentSurfaceContext === undefined && contentRegionSurfaceContext === undefined)
-        continue;
-      modes[mode] = {
-        ...(contentSurfaceContext !== undefined && { contentSurfaceContext }),
-        ...(contentRegionSurfaceContext !== undefined && { contentRegionSurfaceContext })
-      };
-    }
-    if (Object.keys(modes).length) variants[variant] = { modes };
-  }
-  return Object.keys(variants).length ? { variants } : undefined;
-}
-
-function collectComponent<TIntent extends string>(
-  map: ContentSurfaceContextMap<TIntent> | undefined,
-  catalog?: PublishedCatalog<TIntent>
-): ComponentSurfaces<TIntent> | undefined {
-  return map !== undefined || catalog !== undefined
-    ? {
-        ...(map !== undefined && { contentSurfaceContext: map }),
-        ...(catalog !== undefined && { options: { canonicalSurfaces: catalog } })
-      }
-    : undefined;
-}
-
 /** Computes all component surface outputs while keeping the authored preset intact. */
 export function buildSurfaceContextsArtifact(preset: SurfacePreset): SurfaceContextsArtifact {
   const { schema, key } = preset;
   validateSchemaComponentContracts(schema);
-  const sourceContainer = schema.components.container;
-  const derived = sourceContainer !== undefined && isDerivedContainerComponent(sourceContainer);
-  const containerMap = derived
-    ? deriveContainerSurfaceContext(schema)
-    : sourceContainer?.contentSurfaceContext;
+  const diagnostics: SurfaceDiagnostic[] = [];
+  const components: SurfaceContextsArtifact['components'] = {};
+  const container = schema.components.container;
+  const containerRegions = compileSurfaceRegions(schema, 'container', diagnostics);
+  const containerMap =
+    containerRegions.regions?.e1?.output ??
+    (container && !isDerivedContainerComponent(container)
+      ? container.contentSurfaceContext
+      : undefined);
+  const containerCatalog = resolveCatalog<ContainerIntent>(
+    container?.options?.canonicalSurfaces,
+    container?.elements.e1.palettes,
+    'container',
+    containerMap
+  );
+  if (container && containerMap) {
+    components.container = {
+      ...containerRegions,
+      ...(containerCatalog && { options: { canonicalSurfaces: containerCatalog } })
+    };
+  }
+  // Card receives the materialized Container Rest before the rest of the anatomy is walked.
   const withContainer =
-    derived && containerMap ? materializeContainerSurfaceContext(schema, containerMap) : schema;
+    container && containerMap
+      ? {
+          ...schema,
+          components: {
+            ...schema.components,
+            container: {
+              elements: container.elements,
+              contentSurfaceContext: containerMap,
+              ...(containerCatalog && {
+                options: { canonicalSurfaces: stripCatalogRest(containerCatalog) }
+              })
+            } satisfies ManualContainerComponent
+          }
+        }
+      : schema;
   const effective = resolveCardSurfaceSource(withContainer);
-  if (derived) validateSchemaComponentContracts(effective);
-  const container = effective.components.container;
-  const card = effective.components.card;
-  const cardRest = checkMap<CardSurfaceIntent>(
-    card?.contentSurfaceContext,
-    'components.card.contentSurfaceContext'
-  );
-  const cardMap =
-    derived && schema.components.card?.surfaceSource === 'container' && cardRest
-      ? deriveCardSurfaceContext(effective, cardRest)
-      : cardRest;
-  const button = collectComponent(resolveButtonContentSurfaceContext(effective));
-  const containerData = collectComponent(
-    containerMap,
-    resolveCatalog<ContainerIntent>(
-      container?.options?.canonicalSurfaces,
-      container?.elements.e1.palettes,
-      'container'
-    )
-  );
-  const cardData = collectComponent(
-    cardMap,
-    resolveCatalog<CardSurfaceIntent>(
-      card?.options?.canonicalSurfaces,
-      card?.elements.e1?.palettes,
-      'card'
-    )
-  );
-  const chip = collectComponent(effective.components.chip?.contentSurfaceContext);
-  const textField = collectTextFieldSurfaces(effective);
-  return structuredClone({
-    formatVersion: 1,
+  for (const name of surfaceProducerNames) {
+    if (name === 'container') continue;
+    const branch = compileSurfaceRegions(effective, name, diagnostics);
+    if (!Object.keys(branch).length) continue;
+    if (name === 'card') {
+      const contentSurfaceContext = branch.regions?.e1?.output;
+      const card = effective.components.card;
+      const catalog = resolveCatalog<CardSurfaceIntent>(
+        card?.options?.canonicalSurfaces,
+        card?.elements.e1?.palettes,
+        'card',
+        contentSurfaceContext
+      );
+      components.card = {
+        ...branch,
+        ...(catalog && { options: { canonicalSurfaces: catalog } })
+      };
+    } else components[name] = branch;
+  }
+  return {
+    formatVersion: 2,
     preset: { key, version: schema.version, revision: getSurfacePresetRevision(schema) },
-    components: {
-      ...(button && { button }),
-      ...(containerData && { container: containerData }),
-      ...(cardData && { card: cardData }),
-      ...(chip && { chip }),
-      ...(textField && { textField })
-    }
-  });
+    components,
+    ...(diagnostics.length && { diagnostics })
+  };
 }
 
 function validateCatalog(value: unknown, path: string, owner: 'container' | 'card'): void {
@@ -281,43 +258,134 @@ function validateCatalog(value: unknown, path: string, owner: 'container' | 'car
   }
 }
 
-function validateTextField(value: unknown, path: string): void {
-  assertKeys(value, path, ['variants']);
-  const { variants } = value;
-  assertKeys(variants, `${path}.variants`, ['standard', 'floating']);
-  for (const [variant, entry] of Object.entries(variants)) {
-    const variantPath = `${path}.variants.${variant}`;
-    assertKeys(entry, variantPath, ['modes']);
-    assertKeys(
-      entry.modes,
-      `${variantPath}.modes`,
-      variant === 'standard' ? ['outline', 'underline', 'borderless'] : ['notched', 'inside']
-    );
-    for (const [mode, surfaces] of Object.entries(entry.modes)) {
-      const modePath = `${variantPath}.modes.${mode}`;
-      assertKeys(surfaces, modePath, ['contentSurfaceContext', 'contentRegionSurfaceContext']);
-      if (!Object.keys(surfaces).length) fail(modePath, 'expected at least one surface map');
-      for (const [field, map] of Object.entries(surfaces)) checkMap(map, `${modePath}.${field}`);
+function validateRegions(value: unknown, path: string, component: string, source: unknown): void {
+  if (!isRecord(value) || !Object.keys(value).length) fail(path, 'expected regions');
+  for (const [id, region] of Object.entries(value)) {
+    const location = `${path}.${id}`;
+    if (!surfaceElementIds(component).includes(id) || !read(['elements', id], source))
+      fail(location, 'unknown surface region');
+    assertKeys(region, location, ['output', 'against']);
+    if (!checkMap(region.output, `${location}.output`)) fail(location, 'missing region output');
+    if (!Object.keys(region.output as object).length)
+      fail(location, 'derived surface map cannot be empty');
+    if (region.against === undefined) continue;
+    if (!parentSurfaceElement(component, id))
+      fail(location, 'unexpected parent overrides for top-level surface');
+    if (!isRecord(region.against) || !Object.keys(region.against).length)
+      fail(`${location}.against`, 'expected override maps');
+    for (const [address, map] of Object.entries(region.against)) {
+      let coordinate: unknown;
+      try {
+        coordinate = JSON.parse(address);
+      } catch {
+        fail(`${location}.against`, 'invalid parent coordinate');
+      }
+      if (
+        !Array.isArray(coordinate) ||
+        coordinate.length !== 5 ||
+        JSON.stringify(coordinate) !== address ||
+        !['onSubtle', 'onVivid'].includes(coordinate[0]) ||
+        !['standard', 'alternative'].includes(coordinate[1]) ||
+        typeof coordinate[2] !== 'string' ||
+        !coordinate[2] ||
+        typeof coordinate[3] !== 'string' ||
+        !Object.hasOwn(componentEmphasisBuckets, coordinate[3]) ||
+        !['rest', 'selected', 'pending', 'disabled'].includes(coordinate[4])
+      )
+        fail(`${location}.against`, 'invalid parent coordinate');
+      if (!checkMap(map, `${location}.against.${address}`)) fail(location, 'missing override map');
     }
   }
 }
 
+function validateBranch(
+  value: unknown,
+  path: string,
+  component: string,
+  source: unknown,
+  depth = 0
+): void {
+  if (!isRecord(source)) fail(path, 'missing authored branch');
+  const keys = ['regions'];
+  if (depth === 0 && isRecord(source.variants)) keys.push('variants');
+  if (depth === 1 && isRecord(source.modes)) keys.push('modes');
+  if (depth === 0 && ['container', 'card'].includes(component)) keys.push('options');
+  assertKeys(value, path, keys);
+  if (!Object.keys(value).length) fail(path, 'expected at least one surface field');
+  if (value.regions !== undefined)
+    validateRegions(value.regions, `${path}.regions`, component, source);
+  if (value.options !== undefined && (component === 'container' || component === 'card')) {
+    assertKeys(value.options, `${path}.options`, ['canonicalSurfaces']);
+    validateCatalog(
+      value.options.canonicalSurfaces,
+      `${path}.options.canonicalSurfaces`,
+      component
+    );
+  }
+  for (const key of ['variants', 'modes']) {
+    if (value[key] === undefined) continue;
+    if (!isRecord(value[key])) fail(`${path}.${key}`, 'expected branches');
+    for (const [name, child] of Object.entries(value[key]))
+      validateBranch(
+        child,
+        `${path}.${key}.${name}`,
+        component,
+        read([key, name], source),
+        depth + 1
+      );
+  }
+}
+
+// segment / theme / consumed surface / color variant / color property / intent
+function hasRegionRecipe(value: unknown, remaining: number): boolean {
+  if (!isRecord(value)) return false;
+  if (remaining === 0)
+    return Object.keys(value).some((emphasis) => Object.hasOwn(componentEmphasisBuckets, emphasis));
+  return Object.values(value).some((child) => hasRegionRecipe(child, remaining - 1));
+}
+
+function requireAuthoredRegions(
+  component: string,
+  source: unknown,
+  published: unknown,
+  path: string
+) {
+  if (!isRecord(source)) return;
+  for (const id of surfaceElementIds(component)) {
+    const palettes = read(['elements', id, 'palettes'], source);
+    if (!isRecord(palettes)) continue;
+    const suppliesRecipe = usesSubtlePaint(component, id)
+      ? Object.values(palettes).some(
+          (themes) =>
+            isRecord(themes) &&
+            Object.values(themes).some(
+              (contexts) => isRecord(contexts) && hasRegionRecipe(contexts.onSubtle, 3)
+            )
+        )
+      : hasRegionRecipe(palettes, 6);
+    if (suppliesRecipe && !read(['regions', id, 'output'], published))
+      fail(`${path}.regions.${id}.output`, 'required surface map is missing');
+  }
+  for (const key of ['variants', 'modes']) {
+    const children = source[key];
+    if (!isRecord(children)) continue;
+    for (const [name, child] of Object.entries(children))
+      requireAuthoredRegions(
+        component,
+        child,
+        read([key, name], published),
+        `${path}.${key}.${name}`
+      );
+  }
+}
+
 function requireSuppliedMaps(preset: SurfacePreset, components: Record<string, unknown>): void {
-  const { button, card, chip, container } = preset.schema.components;
-  for (const [name, required] of [
-    ['button', button?.contentSurfaceContext !== undefined],
-    ['card', card?.surfaceSource === 'container' || card?.contentSurfaceContext !== undefined],
-    ['chip', chip?.contentSurfaceContext !== undefined],
-    ['container', container !== undefined]
-  ] as const) {
-    if (required && read([name, 'contentSurfaceContext'], components) === undefined)
-      fail(`components.${name}.contentSurfaceContext`, 'required surface map is missing');
-  }
-  if (isButtonDerivedContentSurfaceContext(button?.contentSurfaceContext)) {
-    const map = read(['button', 'contentSurfaceContext'], components);
-    if (isRecord(map) && !Object.keys(map).length)
-      fail('components.button.contentSurfaceContext', 'derived surface map cannot be empty');
-  }
+  const { button, card, container } = preset.schema.components;
+  if (
+    isButtonDerivedContentSurfaceContext(button?.contentSurfaceContext) &&
+    read(['button', 'regions', 'e1', 'output'], components) === undefined
+  )
+    fail('components.button.regions.e1.output', 'required surface map is missing');
   for (const [name, declared] of [
     ['container', container?.options?.canonicalSurfaces],
     ['card', card?.options?.canonicalSurfaces]
@@ -328,24 +396,19 @@ function requireSuppliedMaps(preset: SurfacePreset, components: Record<string, u
     if (populated && read([name, 'options', 'canonicalSurfaces'], components) === undefined)
       fail(`components.${name}.options.canonicalSurfaces`, 'required catalog is missing');
   }
-  const textField = collectTextFieldSurfaces(preset.schema);
-  for (const [variant, { modes }] of Object.entries(textField?.variants ?? {})) {
-    for (const [mode, declared] of Object.entries(modes)) {
-      for (const field of Object.keys(declared)) {
-        const path = ['textField', 'variants', variant, 'modes', mode, field];
-        if (read(path, components) === undefined)
-          fail(`components.${path.join('.')}`, 'required surface map is missing');
-      }
-    }
-  }
 }
 
 export function validateSurfaceContextsArtifact(
   value: unknown,
   preset: SurfacePreset
 ): asserts value is SurfaceContextsArtifact {
-  assertKeys(value, 'surface-contexts.json', ['formatVersion', 'preset', 'components']);
-  if (value.formatVersion !== 1)
+  assertKeys(value, 'surface-contexts.json', [
+    'formatVersion',
+    'preset',
+    'components',
+    'diagnostics'
+  ]);
+  if (value.formatVersion !== 2)
     fail('formatVersion', `unsupported portable surface format "${String(value.formatVersion)}"`);
   const identity = value.preset;
   assertKeys(identity, 'preset', ['key', 'version', 'revision']);
@@ -357,27 +420,33 @@ export function validateSurfaceContextsArtifact(
   if (identity.revision !== getSurfacePresetRevision(preset.schema))
     fail('preset.revision', `stale surface data for "${preset.key}"`);
   const components = value.components;
-  assertKeys(components, 'components', ['button', 'container', 'card', 'chip', 'textField']);
+  assertKeys(components, 'components', surfaceProducerNames);
   for (const [component, entry] of Object.entries(components)) {
-    const path = `components.${component}`;
-    if (component === 'textField') {
-      validateTextField(entry, path);
-      continue;
-    }
-    const hasCatalog = component === 'container' || component === 'card';
-    assertKeys(entry, path, ['contentSurfaceContext', ...(hasCatalog ? ['options'] : [])]);
-    if (!Object.keys(entry).length) fail(path, 'expected at least one surface field');
-    checkMap(entry.contentSurfaceContext, `${path}.contentSurfaceContext`);
-    if (entry.options !== undefined && hasCatalog) {
-      assertKeys(entry.options, `${path}.options`, ['canonicalSurfaces']);
-      validateCatalog(
-        entry.options.canonicalSurfaces,
-        `${path}.options.canonicalSurfaces`,
-        component
-      );
+    if (!Object.hasOwn(preset.schema.components, component))
+      fail(`components.${component}`, 'component absent from preset');
+    validateBranch(
+      entry,
+      `components.${component}`,
+      component,
+      read([component], preset.schema.components)
+    );
+  }
+  if (value.diagnostics !== undefined) {
+    if (!Array.isArray(value.diagnostics)) fail('diagnostics', 'expected list of diagnostics');
+    for (const item of value.diagnostics) {
+      assertKeys(item, 'diagnostics', ['path', 'reason']);
+      if (typeof item.path !== 'string' || typeof item.reason !== 'string')
+        fail('diagnostics', 'invalid diagnostic');
     }
   }
   requireSuppliedMaps(preset, components);
+  for (const name of surfaceProducerNames)
+    requireAuthoredRegions(
+      name,
+      read([name], preset.schema.components),
+      components[name],
+      `components.${name}`
+    );
 }
 
 function stripCatalogRest<TIntent extends string>(catalog: PublishedCatalog<TIntent>) {
@@ -396,15 +465,16 @@ function stripCatalogRest<TIntent extends string>(catalog: PublishedCatalog<TInt
 
 function applyTextFieldSurfaces(
   component: NonNullable<Schema['components']['textField']>,
-  surfaces: TextFieldSurfaces
+  surfaces: SurfaceRegionBranch
 ): NonNullable<Schema['components']['textField']> {
   const result = structuredClone(component);
-  for (const [variant, { modes }] of Object.entries(surfaces.variants)) {
-    for (const [mode, fields] of Object.entries(modes)) {
+  for (const [variant, { modes }] of Object.entries(surfaces.variants ?? {})) {
+    for (const [mode, fields] of Object.entries(modes ?? {})) {
       const destination = read(['variants', variant, 'modes', mode], result);
       if (!isRecord(destination))
         fail(`components.textField.variants.${variant}.modes.${mode}`, 'missing authored mode');
-      Object.assign(destination, fields);
+      if (fields.regions?.e3) destination.contentSurfaceContext = fields.regions.e3.output;
+      if (fields.regions?.e8) destination.contentRegionSurfaceContext = fields.regions.e8.output;
     }
   }
   return result;
@@ -418,10 +488,10 @@ export function materializeSurfaceContexts(
   const { button, container, card, chip, textField } = structuredClone(artifact.components);
   const authoredContainer = schema.components.container;
   const materializedContainer: ManualContainerComponent | undefined =
-    authoredContainer && container?.contentSurfaceContext
+    authoredContainer && container?.regions?.e1?.output
       ? {
           elements: authoredContainer.elements,
-          contentSurfaceContext: container.contentSurfaceContext,
+          contentSurfaceContext: container.regions.e1.output,
           ...(container.options && {
             options: {
               canonicalSurfaces: stripCatalogRest(container.options.canonicalSurfaces)
@@ -438,16 +508,16 @@ export function materializeSurfaceContexts(
     ...effective,
     components: {
       ...source,
-      ...(button?.contentSurfaceContext &&
+      ...(button?.regions?.e1?.output &&
         source.button && {
-          button: { ...source.button, contentSurfaceContext: button.contentSurfaceContext }
+          button: { ...source.button, contentSurfaceContext: button.regions.e1.output }
         }),
       ...(card &&
         source.card && {
           card: {
             ...source.card,
-            ...(card.contentSurfaceContext && {
-              contentSurfaceContext: card.contentSurfaceContext
+            ...(card.regions?.e1?.output && {
+              contentSurfaceContext: card.regions.e1.output
             }),
             ...(card.options && {
               options: {
@@ -457,9 +527,9 @@ export function materializeSurfaceContexts(
             })
           }
         }),
-      ...(chip?.contentSurfaceContext &&
+      ...(chip?.regions?.e2?.output &&
         source.chip && {
-          chip: { ...source.chip, contentSurfaceContext: chip.contentSurfaceContext }
+          chip: { ...source.chip, contentSurfaceContext: chip.regions.e2.output }
         }),
       ...(textField &&
         source.textField && {

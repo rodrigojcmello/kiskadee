@@ -1,7 +1,7 @@
 import type { Schema } from '@kiskadee/core';
 import { buildBySegment } from '../../../utils/buildBySegment.ts';
 import type { PresetColorGetter } from '../../../utils/presetColor.ts';
-import { createMaterialButtonIntent, MATERIAL_BUTTON_INTENTS } from './button-color-formula.ts';
+import { createMaterialButtonIntent } from './button-color-formula.ts';
 import { createMaterialButtonIndicatorPalettes } from './button-indicator-palettes.ts';
 
 type Material3GoogleSegmentName = 'default' | 'dynamic' | 'purple';
@@ -94,36 +94,13 @@ export function createMaterial3GoogleButtonSchema({
       }
     };
   };
-  const contentContext = (surface: 'onSubtle' | 'onVivid', theme: 'light' | 'dark') => {
-    const filled = surface === 'onVivid' || theme === 'dark' ? 'onSubtle' : 'onVivid';
-    return Object.fromEntries(
-      MATERIAL_BUTTON_INTENTS.map((intent) => [
-        intent,
-        {
-          high: { rest: filled, selected: filled, disabled: 'inherit' },
-          medium: { rest: surface, selected: surface, disabled: 'inherit' },
-          low: { rest: 'inherit', selected: 'inherit', disabled: 'inherit' },
-          lowest: { rest: 'inherit', selected: 'inherit', disabled: 'inherit' }
-        }
-      ])
-    );
-  };
   return {
     options: {
       iconLayout: 'inline',
       indicatorPlacement: 'inside',
       selectionEmphasis: 'lowest'
     },
-    contentSurfaceContext: buildBySegment(segmentNames, () => ({
-      light: {
-        onSubtle: { standard: contentContext('onSubtle', 'light') },
-        onVivid: { standard: contentContext('onVivid', 'light') }
-      },
-      dark: {
-        onSubtle: { standard: contentContext('onSubtle', 'dark') },
-        onVivid: { standard: contentContext('onVivid', 'dark') }
-      }
-    })),
+    contentSurfaceContext: { derive: { element: 'e1', property: 'boxColor' } },
     effects: {
       activationFeedback: {
         profile: 'ripple',

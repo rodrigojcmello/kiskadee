@@ -201,14 +201,20 @@ export async function runBuild(): Promise<void> {
       const artifacts = await readSurfaceContexts(preset);
       const schema = materializeSurfaceContexts(preset.schema, artifacts);
       validateSchemaComponentContracts(schema);
-      return { ...preset, schema };
+      return { ...preset, schema, surfaces: artifacts };
     })
   );
 
   await rm(baseBuildDir, { recursive: true, force: true });
   await mkdir(baseBuildDir, { recursive: true });
 
-  for (const { schema, schemaPath, buildExtensions, key: outDirSlug } of preparedPresets) {
+  for (const {
+    schema,
+    schemaPath,
+    buildExtensions,
+    key: outDirSlug,
+    surfaces
+  } of preparedPresets) {
     // One concise log per preset, e.g. "[web-builder] Material Design 3.0.0 by Google"
     const presetVersion = Array.isArray(schema.version) ? schema.version.join('.') : '';
     const presetAuthor = schema.author ? ` by ${schema.author}` : '';
@@ -319,7 +325,7 @@ export async function runBuild(): Promise<void> {
         : undefined
     });
 
-    await publishComponentResources(resolve(baseBuildDir, outDirSlug), schema);
+    await publishComponentResources(resolve(baseBuildDir, outDirSlug), schema, surfaces.components);
 
     // Optional brand packs are deliberately published outside the preset's
     // global CSS, colors catalog, and normal component class maps.

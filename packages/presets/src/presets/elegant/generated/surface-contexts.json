@@ -1,5 +1,5 @@
 {
-  "formatVersion": 1,
+  "formatVersion": 2,
   "preset": {
     "key": "elegant-1-kiskadee",
     "version": [
@@ -7,18 +7,63 @@
       0,
       0
     ],
-    "revision": "a343e41fd3cbd7780adc943ba26eca1111e4be178d71f3b410c93fa579944a86"
+    "revision": "162b5f3a352e52466342f72812b984a3907ba216ac9ce246842254d71cc630d4"
   },
   "components": {
     "container": {
-      "contentSurfaceContext": {
-        "default": {
-          "light": {
-            "onSubtle": {
-              "standard": {
-                "neutral": {
-                  "medium": {
-                    "rest": "inherit"
+      "regions": {
+        "e1": {
+          "output": {
+            "default": {
+              "light": {
+                "onSubtle": {
+                  "standard": {
+                    "neutral": {
+                      "medium": {
+                        "rest": "onSubtle"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "options": {
+        "canonicalSurfaces": {
+          "default": {
+            "light": [
+              {
+                "intent": "neutral",
+                "emphasis": "medium",
+                "contentSurfaceContext": "onSubtle",
+                "rest": "#ffffff",
+                "referenceFor": "onSubtle"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "button": {
+      "regions": {
+        "e1": {
+          "output": {
+            "default": {
+              "light": {
+                "onSubtle": {
+                  "standard": {
+                    "primary": {
+                      "high": {
+                        "rest": "onVivid",
+                        "selected": "onSubtle",
+                        "disabled": "onSubtle"
+                      },
+                      "medium": {
+                        "rest": "onSubtle"
+                      }
+                    }
                   }
                 }
               }
@@ -28,14 +73,79 @@
       }
     },
     "card": {
-      "contentSurfaceContext": {
-        "default": {
-          "light": {
-            "onSubtle": {
-              "standard": {
-                "neutral": {
-                  "medium": {
-                    "rest": "inherit"
+      "regions": {
+        "e1": {
+          "output": {
+            "default": {
+              "light": {
+                "onSubtle": {
+                  "standard": {
+                    "neutral": {
+                      "medium": {
+                        "rest": "onSubtle",
+                        "selected": "onVivid"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "options": {
+        "canonicalSurfaces": {
+          "default": {
+            "light": [
+              {
+                "intent": "neutral",
+                "emphasis": "medium",
+                "contentSurfaceContext": "onSubtle",
+                "rest": "#ffffff"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "switch": {
+      "variants": {
+        "standard": {
+          "modes": {
+            "base": {
+              "regions": {
+                "e2": {
+                  "output": {
+                    "default": {
+                      "light": {
+                        "onSubtle": {
+                          "standard": {
+                            "neutral": {
+                              "medium": {
+                                "rest": "onSubtle"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "e3": {
+                  "output": {
+                    "default": {
+                      "light": {
+                        "onSubtle": {
+                          "standard": {
+                            "neutral": {
+                              "medium": {
+                                "rest": "onSubtle"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
                   }
                 }
               }

@@ -18,9 +18,11 @@ unless explicit children are supplied. If neither resolves, p-react omits the co
 affordance and warns in development. `Chip.Badge` is valid only inside `Chip.Content` or
 `Chip.Select`; it applies only authored relation spacing around an independent Rest-only Badge.
 
-Chip consumes its surrounding Surface Context and publishes the surface authored for descendants
-inside Content or Select. Remove remains a sibling and does not inherit that primary content
-surface accidentally.
+Chip uses the same input Surface Context for the independent regions `e2` (Content/Select)
+and `e5` (Remove). Selection affects the `e2` output consumed by the inline Badge. Remove
+publishes its own Rest or Disabled output for its icon. Neither sibling reads the other's
+produced context. Each action uses its Disabled output when either that action or the root
+is disabled. Disabling only one action leaves the sibling on its own active recipe.
 
 Chip scale values are local to Chip. Kiskadee-authored official presets should normally keep a Chip
 visually smaller than the corresponding Button so represented entities remain subordinate to

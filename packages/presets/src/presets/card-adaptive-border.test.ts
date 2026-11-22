@@ -46,7 +46,7 @@ describe('Card border policy migration', () => {
       [sandbox2, 'primary', 'medium'],
       [sandbox3, 'neutral', 'lowest']
     ] as const) {
-      const card = resolveCardSurfaceSource(schema).components.card!;
+      const card = schema.components.card!;
       const policy = card.options!.border!.adaptive.default!.light!.onSubtle![intent]![emphasis];
       const rest =
         card.elements.e1!.palettes!.default!.light!.onSubtle!.standard.borderColor![intent]![

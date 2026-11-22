@@ -15,6 +15,7 @@ type TabsDotStaticBarEnhancerProps = {
  */
 function TabsDotStaticIndicator() {
   const {
+    barSurface,
     selected,
     scale,
     intent,
@@ -67,6 +68,7 @@ function TabsDotStaticIndicator() {
   }, [barRef, selected, updateIndicatorRect]);
 
   const indicatorClassName = resolveIndicatorClassName({
+    surfaceContext: barSurface,
     structural,
     elements,
     classNames,

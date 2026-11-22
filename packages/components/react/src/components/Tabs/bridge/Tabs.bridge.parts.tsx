@@ -71,6 +71,7 @@ export function TabsBridgeTabBase({
 }: TabsTabProps & TabsBridgeVisualOrderProps) {
   const {
     selected,
+    barSurface,
     scale,
     intent,
     emphasis,
@@ -88,6 +89,7 @@ export function TabsBridgeTabBase({
     tabWidth
   });
   const triggerClassName = resolveBridgeTriggerClassName({
+    surfaceContext: barSurface,
     structural,
     elements,
     classNames,

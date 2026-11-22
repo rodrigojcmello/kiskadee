@@ -1,5 +1,5 @@
 {
-  "formatVersion": 1,
+  "formatVersion": 2,
   "preset": {
     "key": "sandbox-2-kiskadee",
     "version": [
@@ -7,163 +7,403 @@
       0,
       0
     ],
-    "revision": "8bd16ad160fc65dcf813043d1456f0e92d837553936a7bc70d9c38bf39c0b0af"
+    "revision": "fca460f466953fb112e153fa637681fbc878a7ab96e7598ed55b998794696a65"
   },
   "components": {
     "container": {
-      "contentSurfaceContext": {
-        "default": {
-          "light": {
-            "onSubtle": {
-              "standard": {
-                "neutral": {
-                  "lowest": {
-                    "rest": "onSubtle"
-                  },
-                  "low": {
-                    "rest": "onSubtle"
-                  },
-                  "medium": {
-                    "rest": "onSubtle"
-                  },
-                  "high": {
-                    "rest": "onSubtle"
-                  },
-                  "highest": {
-                    "rest": "onSubtle"
+      "regions": {
+        "e1": {
+          "output": {
+            "default": {
+              "light": {
+                "onSubtle": {
+                  "standard": {
+                    "neutral": {
+                      "highest": {
+                        "rest": "onSubtle"
+                      },
+                      "high": {
+                        "rest": "onSubtle"
+                      },
+                      "medium": {
+                        "rest": "onSubtle"
+                      },
+                      "low": {
+                        "rest": "onSubtle"
+                      },
+                      "lowest": {
+                        "rest": "onSubtle"
+                      }
+                    },
+                    "primary": {
+                      "highest": {
+                        "rest": "onVivid"
+                      },
+                      "high": {
+                        "rest": "onVivid"
+                      },
+                      "medium": {
+                        "rest": "onSubtle"
+                      },
+                      "low": {
+                        "rest": "onSubtle"
+                      },
+                      "lowest": {
+                        "rest": "onSubtle"
+                      }
+                    }
                   }
                 },
-                "primary": {
-                  "lowest": {
-                    "rest": "onSubtle"
-                  },
-                  "low": {
-                    "rest": "onSubtle"
-                  },
-                  "medium": {
-                    "rest": "onSubtle"
-                  },
-                  "high": {
-                    "rest": "onVivid"
-                  },
-                  "highest": {
-                    "rest": "onVivid"
+                "onVivid": {
+                  "standard": {
+                    "neutral": {
+                      "highest": {
+                        "rest": "onSubtle"
+                      },
+                      "high": {
+                        "rest": "onSubtle"
+                      },
+                      "medium": {
+                        "rest": "onSubtle"
+                      },
+                      "low": {
+                        "rest": "onSubtle"
+                      },
+                      "lowest": {
+                        "rest": "onSubtle"
+                      }
+                    },
+                    "primary": {
+                      "highest": {
+                        "rest": "onVivid"
+                      },
+                      "high": {
+                        "rest": "onVivid"
+                      },
+                      "medium": {
+                        "rest": "onSubtle"
+                      },
+                      "low": {
+                        "rest": "onSubtle"
+                      },
+                      "lowest": {
+                        "rest": "onSubtle"
+                      }
+                    }
                   }
                 }
-              }
-            },
-            "onVivid": {
-              "standard": {
-                "neutral": {
-                  "lowest": {
-                    "rest": "onSubtle"
-                  },
-                  "low": {
-                    "rest": "onSubtle"
-                  },
-                  "medium": {
-                    "rest": "onSubtle"
-                  },
-                  "high": {
-                    "rest": "onSubtle"
-                  },
-                  "highest": {
-                    "rest": "onSubtle"
+              },
+              "dark": {
+                "onSubtle": {
+                  "standard": {
+                    "neutral": {
+                      "highest": {
+                        "rest": "onSubtle"
+                      },
+                      "high": {
+                        "rest": "onSubtle"
+                      },
+                      "medium": {
+                        "rest": "onSubtle"
+                      },
+                      "low": {
+                        "rest": "onSubtle"
+                      },
+                      "lowest": {
+                        "rest": "onSubtle"
+                      }
+                    },
+                    "primary": {
+                      "highest": {
+                        "rest": "onVivid"
+                      },
+                      "high": {
+                        "rest": "onVivid"
+                      },
+                      "medium": {
+                        "rest": "onSubtle"
+                      },
+                      "low": {
+                        "rest": "onSubtle"
+                      },
+                      "lowest": {
+                        "rest": "onSubtle"
+                      }
+                    }
                   }
                 },
-                "primary": {
-                  "lowest": {
-                    "rest": "onSubtle"
-                  },
-                  "low": {
-                    "rest": "onSubtle"
-                  },
-                  "medium": {
-                    "rest": "onSubtle"
-                  },
-                  "high": {
-                    "rest": "onVivid"
-                  },
-                  "highest": {
-                    "rest": "onVivid"
+                "onVivid": {
+                  "standard": {
+                    "neutral": {
+                      "highest": {
+                        "rest": "onSubtle"
+                      },
+                      "high": {
+                        "rest": "onSubtle"
+                      },
+                      "medium": {
+                        "rest": "onSubtle"
+                      },
+                      "low": {
+                        "rest": "onSubtle"
+                      },
+                      "lowest": {
+                        "rest": "onSubtle"
+                      }
+                    },
+                    "primary": {
+                      "highest": {
+                        "rest": "onVivid"
+                      },
+                      "high": {
+                        "rest": "onVivid"
+                      },
+                      "medium": {
+                        "rest": "onSubtle"
+                      },
+                      "low": {
+                        "rest": "onSubtle"
+                      },
+                      "lowest": {
+                        "rest": "onSubtle"
+                      }
+                    }
                   }
                 }
               }
             }
-          },
-          "dark": {
-            "onSubtle": {
-              "standard": {
-                "neutral": {
-                  "lowest": {
-                    "rest": "onSubtle"
-                  },
-                  "low": {
-                    "rest": "onSubtle"
-                  },
-                  "medium": {
-                    "rest": "onSubtle"
-                  },
-                  "high": {
-                    "rest": "onSubtle"
-                  },
-                  "highest": {
-                    "rest": "onSubtle"
+          }
+        }
+      },
+      "options": {
+        "canonicalSurfaces": {
+          "default": {
+            "light": [
+              {
+                "intent": "neutral",
+                "emphasis": "lowest",
+                "contentSurfaceContext": "onSubtle",
+                "rest": "#ffffff"
+              },
+              {
+                "intent": "neutral",
+                "emphasis": "low",
+                "contentSurfaceContext": "onSubtle",
+                "rest": "#f6f6f6",
+                "referenceFor": "onSubtle"
+              },
+              {
+                "intent": "neutral",
+                "emphasis": "medium",
+                "contentSurfaceContext": "onSubtle",
+                "rest": "#e9e9e9"
+              },
+              {
+                "intent": "primary",
+                "emphasis": "highest",
+                "contentSurfaceContext": "onVivid",
+                "rest": "#3b82f6",
+                "referenceFor": "onVivid"
+              }
+            ],
+            "dark": [
+              {
+                "intent": "neutral",
+                "emphasis": "lowest",
+                "contentSurfaceContext": "onSubtle",
+                "rest": "#000000"
+              },
+              {
+                "intent": "neutral",
+                "emphasis": "low",
+                "contentSurfaceContext": "onSubtle",
+                "rest": "#0e0e0e",
+                "referenceFor": "onSubtle"
+              },
+              {
+                "intent": "neutral",
+                "emphasis": "medium",
+                "contentSurfaceContext": "onSubtle",
+                "rest": "#1d1d1d"
+              },
+              {
+                "intent": "primary",
+                "emphasis": "highest",
+                "contentSurfaceContext": "onVivid",
+                "rest": "#3b82f6",
+                "referenceFor": "onVivid"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "card": {
+      "regions": {
+        "e1": {
+          "output": {
+            "default": {
+              "light": {
+                "onSubtle": {
+                  "standard": {
+                    "neutral": {
+                      "highest": {
+                        "rest": "onSubtle"
+                      },
+                      "high": {
+                        "rest": "onSubtle"
+                      },
+                      "medium": {
+                        "rest": "onSubtle"
+                      },
+                      "low": {
+                        "rest": "onSubtle"
+                      },
+                      "lowest": {
+                        "rest": "onSubtle"
+                      }
+                    },
+                    "primary": {
+                      "highest": {
+                        "rest": "onVivid",
+                        "selected": "onSubtle"
+                      },
+                      "high": {
+                        "rest": "onVivid",
+                        "selected": "onSubtle"
+                      },
+                      "medium": {
+                        "rest": "onSubtle"
+                      },
+                      "low": {
+                        "rest": "onSubtle"
+                      },
+                      "lowest": {
+                        "rest": "onSubtle"
+                      }
+                    }
                   }
                 },
-                "primary": {
-                  "lowest": {
-                    "rest": "onSubtle"
-                  },
-                  "low": {
-                    "rest": "onSubtle"
-                  },
-                  "medium": {
-                    "rest": "onSubtle"
-                  },
-                  "high": {
-                    "rest": "onVivid"
-                  },
-                  "highest": {
-                    "rest": "onVivid"
+                "onVivid": {
+                  "standard": {
+                    "neutral": {
+                      "highest": {
+                        "rest": "onSubtle"
+                      },
+                      "high": {
+                        "rest": "onSubtle"
+                      },
+                      "medium": {
+                        "rest": "onSubtle"
+                      },
+                      "low": {
+                        "rest": "onSubtle"
+                      },
+                      "lowest": {
+                        "rest": "onSubtle"
+                      }
+                    },
+                    "primary": {
+                      "highest": {
+                        "rest": "onVivid",
+                        "selected": "onSubtle"
+                      },
+                      "high": {
+                        "rest": "onVivid",
+                        "selected": "onSubtle"
+                      },
+                      "medium": {
+                        "rest": "onSubtle"
+                      },
+                      "low": {
+                        "rest": "onSubtle"
+                      },
+                      "lowest": {
+                        "rest": "onSubtle"
+                      }
+                    }
                   }
                 }
-              }
-            },
-            "onVivid": {
-              "standard": {
-                "neutral": {
-                  "lowest": {
-                    "rest": "onSubtle"
-                  },
-                  "low": {
-                    "rest": "onSubtle"
-                  },
-                  "medium": {
-                    "rest": "onSubtle"
-                  },
-                  "high": {
-                    "rest": "onSubtle"
-                  },
-                  "highest": {
-                    "rest": "onSubtle"
+              },
+              "dark": {
+                "onSubtle": {
+                  "standard": {
+                    "neutral": {
+                      "highest": {
+                        "rest": "onSubtle"
+                      },
+                      "high": {
+                        "rest": "onSubtle"
+                      },
+                      "medium": {
+                        "rest": "onSubtle"
+                      },
+                      "low": {
+                        "rest": "onSubtle"
+                      },
+                      "lowest": {
+                        "rest": "onSubtle"
+                      }
+                    },
+                    "primary": {
+                      "highest": {
+                        "rest": "onVivid",
+                        "selected": "onSubtle"
+                      },
+                      "high": {
+                        "rest": "onVivid",
+                        "selected": "onSubtle"
+                      },
+                      "medium": {
+                        "rest": "onSubtle"
+                      },
+                      "low": {
+                        "rest": "onSubtle"
+                      },
+                      "lowest": {
+                        "rest": "onSubtle"
+                      }
+                    }
                   }
                 },
-                "primary": {
-                  "lowest": {
-                    "rest": "onSubtle"
-                  },
-                  "low": {
-                    "rest": "onSubtle"
-                  },
-                  "medium": {
-                    "rest": "onSubtle"
-                  },
-                  "high": {
-                    "rest": "onVivid"
-                  },
-                  "highest": {
-                    "rest": "onVivid"
+                "onVivid": {
+                  "standard": {
+                    "neutral": {
+                      "highest": {
+                        "rest": "onSubtle"
+                      },
+                      "high": {
+                        "rest": "onSubtle"
+                      },
+                      "medium": {
+                        "rest": "onSubtle"
+                      },
+                      "low": {
+                        "rest": "onSubtle"
+                      },
+                      "lowest": {
+                        "rest": "onSubtle"
+                      }
+                    },
+                    "primary": {
+                      "highest": {
+                        "rest": "onVivid",
+                        "selected": "onSubtle"
+                      },
+                      "high": {
+                        "rest": "onVivid",
+                        "selected": "onSubtle"
+                      },
+                      "medium": {
+                        "rest": "onSubtle"
+                      },
+                      "low": {
+                        "rest": "onSubtle"
+                      },
+                      "lowest": {
+                        "rest": "onSubtle"
+                      }
+                    }
                   }
                 }
               }
@@ -230,230 +470,1000 @@
         }
       }
     },
-    "card": {
-      "contentSurfaceContext": {
-        "default": {
-          "light": {
-            "onSubtle": {
-              "standard": {
-                "primary": {
-                  "high": {
-                    "selected": "onSubtle",
-                    "rest": "onVivid"
-                  },
-                  "highest": {
-                    "selected": "onSubtle",
-                    "rest": "onVivid"
-                  },
-                  "lowest": {
-                    "rest": "onSubtle"
-                  },
-                  "low": {
-                    "rest": "onSubtle"
-                  },
-                  "medium": {
-                    "rest": "onSubtle"
+    "switch": {
+      "variants": {
+        "standard": {
+          "modes": {
+            "base": {
+              "regions": {
+                "e2": {
+                  "output": {
+                    "default": {
+                      "light": {
+                        "onSubtle": {
+                          "standard": {
+                            "neutral": {
+                              "high": {
+                                "rest": "onVivid",
+                                "disabled": "onSubtle"
+                              },
+                              "medium": {
+                                "rest": "onSubtle",
+                                "selected": "onVivid"
+                              },
+                              "low": {
+                                "rest": "onSubtle"
+                              },
+                              "lowest": {
+                                "rest": "inherit",
+                                "selected": "onSubtle",
+                                "disabled": "onSubtle"
+                              }
+                            },
+                            "primary": {
+                              "high": {
+                                "rest": "onVivid",
+                                "disabled": "onSubtle"
+                              },
+                              "medium": {
+                                "rest": "onVivid",
+                                "disabled": "onSubtle"
+                              },
+                              "low": {
+                                "rest": "onSubtle"
+                              },
+                              "lowest": {
+                                "rest": "inherit",
+                                "selected": "onSubtle",
+                                "disabled": "onSubtle"
+                              }
+                            },
+                            "polarity": {
+                              "high": {
+                                "rest": "onVivid",
+                                "selected": "onSubtle",
+                                "disabled": "onSubtle"
+                              },
+                              "medium": {
+                                "rest": "onVivid",
+                                "selected": "onSubtle",
+                                "disabled": "onSubtle"
+                              },
+                              "low": {
+                                "rest": "onSubtle"
+                              },
+                              "lowest": {
+                                "rest": "inherit",
+                                "selected": "onSubtle",
+                                "disabled": "onSubtle"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
                   }
                 },
-                "neutral": {
-                  "lowest": {
-                    "rest": "onSubtle"
+                "e3": {
+                  "output": {
+                    "default": {
+                      "light": {
+                        "onSubtle": {
+                          "standard": {
+                            "neutral": {
+                              "high": {
+                                "rest": "onSubtle",
+                                "selected": "onVivid"
+                              },
+                              "medium": {
+                                "rest": "onSubtle",
+                                "selected": "onVivid"
+                              },
+                              "low": {
+                                "rest": "onSubtle"
+                              },
+                              "lowest": {
+                                "rest": "onSubtle"
+                              }
+                            },
+                            "primary": {
+                              "high": {
+                                "rest": "onSubtle"
+                              },
+                              "medium": {
+                                "rest": "onSubtle"
+                              },
+                              "low": {
+                                "rest": "onSubtle"
+                              },
+                              "lowest": {
+                                "rest": "onSubtle"
+                              }
+                            },
+                            "polarity": {
+                              "high": {
+                                "rest": "onSubtle"
+                              },
+                              "medium": {
+                                "rest": "onSubtle"
+                              },
+                              "low": {
+                                "rest": "onSubtle"
+                              },
+                              "lowest": {
+                                "rest": "onSubtle"
+                              }
+                            }
+                          }
+                        },
+                        "onVivid": {
+                          "standard": {
+                            "neutral": {
+                              "high": {
+                                "rest": "inherit"
+                              },
+                              "medium": {
+                                "rest": "inherit"
+                              },
+                              "low": {
+                                "rest": "inherit"
+                              },
+                              "lowest": {
+                                "rest": "inherit"
+                              }
+                            },
+                            "primary": {
+                              "high": {
+                                "rest": "inherit"
+                              },
+                              "medium": {
+                                "rest": "inherit"
+                              },
+                              "low": {
+                                "rest": "inherit"
+                              },
+                              "lowest": {
+                                "rest": "inherit"
+                              }
+                            },
+                            "polarity": {
+                              "high": {
+                                "rest": "inherit"
+                              },
+                              "medium": {
+                                "rest": "inherit"
+                              },
+                              "low": {
+                                "rest": "inherit"
+                              },
+                              "lowest": {
+                                "rest": "inherit"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
                   },
-                  "low": {
-                    "rest": "onSubtle"
-                  },
-                  "medium": {
-                    "rest": "onSubtle"
-                  },
-                  "high": {
-                    "rest": "onSubtle"
-                  },
-                  "highest": {
-                    "rest": "onSubtle"
-                  }
-                }
-              }
-            },
-            "onVivid": {
-              "standard": {
-                "primary": {
-                  "high": {
-                    "selected": "onSubtle",
-                    "rest": "onVivid"
-                  },
-                  "highest": {
-                    "selected": "onSubtle",
-                    "rest": "onVivid"
-                  },
-                  "lowest": {
-                    "rest": "onSubtle"
-                  },
-                  "low": {
-                    "rest": "onSubtle"
-                  },
-                  "medium": {
-                    "rest": "onSubtle"
-                  }
-                },
-                "neutral": {
-                  "lowest": {
-                    "rest": "onSubtle"
-                  },
-                  "low": {
-                    "rest": "onSubtle"
-                  },
-                  "medium": {
-                    "rest": "onSubtle"
-                  },
-                  "high": {
-                    "rest": "onSubtle"
-                  },
-                  "highest": {
-                    "rest": "onSubtle"
-                  }
-                }
-              }
-            }
-          },
-          "dark": {
-            "onSubtle": {
-              "standard": {
-                "primary": {
-                  "high": {
-                    "selected": "onSubtle",
-                    "rest": "onVivid"
-                  },
-                  "highest": {
-                    "selected": "onSubtle",
-                    "rest": "onVivid"
-                  },
-                  "lowest": {
-                    "rest": "onSubtle"
-                  },
-                  "low": {
-                    "rest": "onSubtle"
-                  },
-                  "medium": {
-                    "rest": "onSubtle"
-                  }
-                },
-                "neutral": {
-                  "lowest": {
-                    "rest": "onSubtle"
-                  },
-                  "low": {
-                    "rest": "onSubtle"
-                  },
-                  "medium": {
-                    "rest": "onSubtle"
-                  },
-                  "high": {
-                    "rest": "onSubtle"
-                  },
-                  "highest": {
-                    "rest": "onSubtle"
-                  }
-                }
-              }
-            },
-            "onVivid": {
-              "standard": {
-                "primary": {
-                  "high": {
-                    "selected": "onSubtle",
-                    "rest": "onVivid"
-                  },
-                  "highest": {
-                    "selected": "onSubtle",
-                    "rest": "onVivid"
-                  },
-                  "lowest": {
-                    "rest": "onSubtle"
-                  },
-                  "low": {
-                    "rest": "onSubtle"
-                  },
-                  "medium": {
-                    "rest": "onSubtle"
-                  }
-                },
-                "neutral": {
-                  "lowest": {
-                    "rest": "onSubtle"
-                  },
-                  "low": {
-                    "rest": "onSubtle"
-                  },
-                  "medium": {
-                    "rest": "onSubtle"
-                  },
-                  "high": {
-                    "rest": "onSubtle"
-                  },
-                  "highest": {
-                    "rest": "onSubtle"
+                  "against": {
+                    "[\"onSubtle\",\"standard\",\"neutral\",\"high\",\"rest\"]": {
+                      "default": {
+                        "light": {
+                          "onVivid": {
+                            "standard": {
+                              "neutral": {
+                                "high": {
+                                  "rest": "onSubtle",
+                                  "selected": "onVivid"
+                                },
+                                "medium": {
+                                  "rest": "onSubtle",
+                                  "selected": "onVivid"
+                                },
+                                "low": {
+                                  "rest": "onSubtle"
+                                },
+                                "lowest": {
+                                  "rest": "onSubtle"
+                                }
+                              },
+                              "primary": {
+                                "high": {
+                                  "rest": "onSubtle"
+                                },
+                                "medium": {
+                                  "rest": "onSubtle"
+                                },
+                                "low": {
+                                  "rest": "onSubtle"
+                                },
+                                "lowest": {
+                                  "rest": "onSubtle"
+                                }
+                              },
+                              "polarity": {
+                                "high": {
+                                  "rest": "onSubtle"
+                                },
+                                "medium": {
+                                  "rest": "onSubtle"
+                                },
+                                "low": {
+                                  "rest": "onSubtle"
+                                },
+                                "lowest": {
+                                  "rest": "onSubtle"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "[\"onSubtle\",\"standard\",\"neutral\",\"high\",\"selected\"]": {
+                      "default": {
+                        "light": {
+                          "onVivid": {
+                            "standard": {
+                              "neutral": {
+                                "high": {
+                                  "rest": "onSubtle",
+                                  "selected": "onVivid"
+                                },
+                                "medium": {
+                                  "rest": "onSubtle",
+                                  "selected": "onVivid"
+                                },
+                                "low": {
+                                  "rest": "onSubtle"
+                                },
+                                "lowest": {
+                                  "rest": "onSubtle"
+                                }
+                              },
+                              "primary": {
+                                "high": {
+                                  "rest": "onSubtle"
+                                },
+                                "medium": {
+                                  "rest": "onSubtle"
+                                },
+                                "low": {
+                                  "rest": "onSubtle"
+                                },
+                                "lowest": {
+                                  "rest": "onSubtle"
+                                }
+                              },
+                              "polarity": {
+                                "high": {
+                                  "rest": "onSubtle"
+                                },
+                                "medium": {
+                                  "rest": "onSubtle"
+                                },
+                                "low": {
+                                  "rest": "onSubtle"
+                                },
+                                "lowest": {
+                                  "rest": "onSubtle"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "[\"onSubtle\",\"standard\",\"neutral\",\"high\",\"pending\"]": {
+                      "default": {
+                        "light": {
+                          "onVivid": {
+                            "standard": {
+                              "neutral": {
+                                "high": {
+                                  "rest": "onSubtle",
+                                  "selected": "onVivid"
+                                },
+                                "medium": {
+                                  "rest": "onSubtle",
+                                  "selected": "onVivid"
+                                },
+                                "low": {
+                                  "rest": "onSubtle"
+                                },
+                                "lowest": {
+                                  "rest": "onSubtle"
+                                }
+                              },
+                              "primary": {
+                                "high": {
+                                  "rest": "onSubtle"
+                                },
+                                "medium": {
+                                  "rest": "onSubtle"
+                                },
+                                "low": {
+                                  "rest": "onSubtle"
+                                },
+                                "lowest": {
+                                  "rest": "onSubtle"
+                                }
+                              },
+                              "polarity": {
+                                "high": {
+                                  "rest": "onSubtle"
+                                },
+                                "medium": {
+                                  "rest": "onSubtle"
+                                },
+                                "low": {
+                                  "rest": "onSubtle"
+                                },
+                                "lowest": {
+                                  "rest": "onSubtle"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "[\"onSubtle\",\"standard\",\"neutral\",\"medium\",\"selected\"]": {
+                      "default": {
+                        "light": {
+                          "onVivid": {
+                            "standard": {
+                              "neutral": {
+                                "high": {
+                                  "rest": "onSubtle",
+                                  "selected": "onVivid"
+                                },
+                                "medium": {
+                                  "rest": "onSubtle",
+                                  "selected": "onVivid"
+                                },
+                                "low": {
+                                  "rest": "onSubtle"
+                                },
+                                "lowest": {
+                                  "rest": "onSubtle"
+                                }
+                              },
+                              "primary": {
+                                "high": {
+                                  "rest": "onSubtle"
+                                },
+                                "medium": {
+                                  "rest": "onSubtle"
+                                },
+                                "low": {
+                                  "rest": "onSubtle"
+                                },
+                                "lowest": {
+                                  "rest": "onSubtle"
+                                }
+                              },
+                              "polarity": {
+                                "high": {
+                                  "rest": "onSubtle"
+                                },
+                                "medium": {
+                                  "rest": "onSubtle"
+                                },
+                                "low": {
+                                  "rest": "onSubtle"
+                                },
+                                "lowest": {
+                                  "rest": "onSubtle"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "[\"onSubtle\",\"standard\",\"primary\",\"high\",\"rest\"]": {
+                      "default": {
+                        "light": {
+                          "onVivid": {
+                            "standard": {
+                              "neutral": {
+                                "high": {
+                                  "rest": "onSubtle",
+                                  "selected": "onVivid"
+                                },
+                                "medium": {
+                                  "rest": "onSubtle",
+                                  "selected": "onVivid"
+                                },
+                                "low": {
+                                  "rest": "onSubtle"
+                                },
+                                "lowest": {
+                                  "rest": "onSubtle"
+                                }
+                              },
+                              "primary": {
+                                "high": {
+                                  "rest": "onSubtle"
+                                },
+                                "medium": {
+                                  "rest": "onSubtle"
+                                },
+                                "low": {
+                                  "rest": "onSubtle"
+                                },
+                                "lowest": {
+                                  "rest": "onSubtle"
+                                }
+                              },
+                              "polarity": {
+                                "high": {
+                                  "rest": "onSubtle"
+                                },
+                                "medium": {
+                                  "rest": "onSubtle"
+                                },
+                                "low": {
+                                  "rest": "onSubtle"
+                                },
+                                "lowest": {
+                                  "rest": "onSubtle"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "[\"onSubtle\",\"standard\",\"primary\",\"high\",\"selected\"]": {
+                      "default": {
+                        "light": {
+                          "onVivid": {
+                            "standard": {
+                              "neutral": {
+                                "high": {
+                                  "rest": "onSubtle",
+                                  "selected": "onVivid"
+                                },
+                                "medium": {
+                                  "rest": "onSubtle",
+                                  "selected": "onVivid"
+                                },
+                                "low": {
+                                  "rest": "onSubtle"
+                                },
+                                "lowest": {
+                                  "rest": "onSubtle"
+                                }
+                              },
+                              "primary": {
+                                "high": {
+                                  "rest": "onSubtle"
+                                },
+                                "medium": {
+                                  "rest": "onSubtle"
+                                },
+                                "low": {
+                                  "rest": "onSubtle"
+                                },
+                                "lowest": {
+                                  "rest": "onSubtle"
+                                }
+                              },
+                              "polarity": {
+                                "high": {
+                                  "rest": "onSubtle"
+                                },
+                                "medium": {
+                                  "rest": "onSubtle"
+                                },
+                                "low": {
+                                  "rest": "onSubtle"
+                                },
+                                "lowest": {
+                                  "rest": "onSubtle"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "[\"onSubtle\",\"standard\",\"primary\",\"high\",\"pending\"]": {
+                      "default": {
+                        "light": {
+                          "onVivid": {
+                            "standard": {
+                              "neutral": {
+                                "high": {
+                                  "rest": "onSubtle",
+                                  "selected": "onVivid"
+                                },
+                                "medium": {
+                                  "rest": "onSubtle",
+                                  "selected": "onVivid"
+                                },
+                                "low": {
+                                  "rest": "onSubtle"
+                                },
+                                "lowest": {
+                                  "rest": "onSubtle"
+                                }
+                              },
+                              "primary": {
+                                "high": {
+                                  "rest": "onSubtle"
+                                },
+                                "medium": {
+                                  "rest": "onSubtle"
+                                },
+                                "low": {
+                                  "rest": "onSubtle"
+                                },
+                                "lowest": {
+                                  "rest": "onSubtle"
+                                }
+                              },
+                              "polarity": {
+                                "high": {
+                                  "rest": "onSubtle"
+                                },
+                                "medium": {
+                                  "rest": "onSubtle"
+                                },
+                                "low": {
+                                  "rest": "onSubtle"
+                                },
+                                "lowest": {
+                                  "rest": "onSubtle"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "[\"onSubtle\",\"standard\",\"primary\",\"medium\",\"rest\"]": {
+                      "default": {
+                        "light": {
+                          "onVivid": {
+                            "standard": {
+                              "neutral": {
+                                "high": {
+                                  "rest": "onSubtle",
+                                  "selected": "onVivid"
+                                },
+                                "medium": {
+                                  "rest": "onSubtle",
+                                  "selected": "onVivid"
+                                },
+                                "low": {
+                                  "rest": "onSubtle"
+                                },
+                                "lowest": {
+                                  "rest": "onSubtle"
+                                }
+                              },
+                              "primary": {
+                                "high": {
+                                  "rest": "onSubtle"
+                                },
+                                "medium": {
+                                  "rest": "onSubtle"
+                                },
+                                "low": {
+                                  "rest": "onSubtle"
+                                },
+                                "lowest": {
+                                  "rest": "onSubtle"
+                                }
+                              },
+                              "polarity": {
+                                "high": {
+                                  "rest": "onSubtle"
+                                },
+                                "medium": {
+                                  "rest": "onSubtle"
+                                },
+                                "low": {
+                                  "rest": "onSubtle"
+                                },
+                                "lowest": {
+                                  "rest": "onSubtle"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "[\"onSubtle\",\"standard\",\"primary\",\"medium\",\"selected\"]": {
+                      "default": {
+                        "light": {
+                          "onVivid": {
+                            "standard": {
+                              "neutral": {
+                                "high": {
+                                  "rest": "onSubtle",
+                                  "selected": "onVivid"
+                                },
+                                "medium": {
+                                  "rest": "onSubtle",
+                                  "selected": "onVivid"
+                                },
+                                "low": {
+                                  "rest": "onSubtle"
+                                },
+                                "lowest": {
+                                  "rest": "onSubtle"
+                                }
+                              },
+                              "primary": {
+                                "high": {
+                                  "rest": "onSubtle"
+                                },
+                                "medium": {
+                                  "rest": "onSubtle"
+                                },
+                                "low": {
+                                  "rest": "onSubtle"
+                                },
+                                "lowest": {
+                                  "rest": "onSubtle"
+                                }
+                              },
+                              "polarity": {
+                                "high": {
+                                  "rest": "onSubtle"
+                                },
+                                "medium": {
+                                  "rest": "onSubtle"
+                                },
+                                "low": {
+                                  "rest": "onSubtle"
+                                },
+                                "lowest": {
+                                  "rest": "onSubtle"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "[\"onSubtle\",\"standard\",\"primary\",\"medium\",\"pending\"]": {
+                      "default": {
+                        "light": {
+                          "onVivid": {
+                            "standard": {
+                              "neutral": {
+                                "high": {
+                                  "rest": "onSubtle",
+                                  "selected": "onVivid"
+                                },
+                                "medium": {
+                                  "rest": "onSubtle",
+                                  "selected": "onVivid"
+                                },
+                                "low": {
+                                  "rest": "onSubtle"
+                                },
+                                "lowest": {
+                                  "rest": "onSubtle"
+                                }
+                              },
+                              "primary": {
+                                "high": {
+                                  "rest": "onSubtle"
+                                },
+                                "medium": {
+                                  "rest": "onSubtle"
+                                },
+                                "low": {
+                                  "rest": "onSubtle"
+                                },
+                                "lowest": {
+                                  "rest": "onSubtle"
+                                }
+                              },
+                              "polarity": {
+                                "high": {
+                                  "rest": "onSubtle"
+                                },
+                                "medium": {
+                                  "rest": "onSubtle"
+                                },
+                                "low": {
+                                  "rest": "onSubtle"
+                                },
+                                "lowest": {
+                                  "rest": "onSubtle"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "[\"onSubtle\",\"standard\",\"polarity\",\"high\",\"rest\"]": {
+                      "default": {
+                        "light": {
+                          "onVivid": {
+                            "standard": {
+                              "neutral": {
+                                "high": {
+                                  "rest": "onSubtle",
+                                  "selected": "onVivid"
+                                },
+                                "medium": {
+                                  "rest": "onSubtle",
+                                  "selected": "onVivid"
+                                },
+                                "low": {
+                                  "rest": "onSubtle"
+                                },
+                                "lowest": {
+                                  "rest": "onSubtle"
+                                }
+                              },
+                              "primary": {
+                                "high": {
+                                  "rest": "onSubtle"
+                                },
+                                "medium": {
+                                  "rest": "onSubtle"
+                                },
+                                "low": {
+                                  "rest": "onSubtle"
+                                },
+                                "lowest": {
+                                  "rest": "onSubtle"
+                                }
+                              },
+                              "polarity": {
+                                "high": {
+                                  "rest": "onSubtle"
+                                },
+                                "medium": {
+                                  "rest": "onSubtle"
+                                },
+                                "low": {
+                                  "rest": "onSubtle"
+                                },
+                                "lowest": {
+                                  "rest": "onSubtle"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "[\"onSubtle\",\"standard\",\"polarity\",\"high\",\"pending\"]": {
+                      "default": {
+                        "light": {
+                          "onVivid": {
+                            "standard": {
+                              "neutral": {
+                                "high": {
+                                  "rest": "onSubtle",
+                                  "selected": "onVivid"
+                                },
+                                "medium": {
+                                  "rest": "onSubtle",
+                                  "selected": "onVivid"
+                                },
+                                "low": {
+                                  "rest": "onSubtle"
+                                },
+                                "lowest": {
+                                  "rest": "onSubtle"
+                                }
+                              },
+                              "primary": {
+                                "high": {
+                                  "rest": "onSubtle"
+                                },
+                                "medium": {
+                                  "rest": "onSubtle"
+                                },
+                                "low": {
+                                  "rest": "onSubtle"
+                                },
+                                "lowest": {
+                                  "rest": "onSubtle"
+                                }
+                              },
+                              "polarity": {
+                                "high": {
+                                  "rest": "onSubtle"
+                                },
+                                "medium": {
+                                  "rest": "onSubtle"
+                                },
+                                "low": {
+                                  "rest": "onSubtle"
+                                },
+                                "lowest": {
+                                  "rest": "onSubtle"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "[\"onSubtle\",\"standard\",\"polarity\",\"medium\",\"rest\"]": {
+                      "default": {
+                        "light": {
+                          "onVivid": {
+                            "standard": {
+                              "neutral": {
+                                "high": {
+                                  "rest": "onSubtle",
+                                  "selected": "onVivid"
+                                },
+                                "medium": {
+                                  "rest": "onSubtle",
+                                  "selected": "onVivid"
+                                },
+                                "low": {
+                                  "rest": "onSubtle"
+                                },
+                                "lowest": {
+                                  "rest": "onSubtle"
+                                }
+                              },
+                              "primary": {
+                                "high": {
+                                  "rest": "onSubtle"
+                                },
+                                "medium": {
+                                  "rest": "onSubtle"
+                                },
+                                "low": {
+                                  "rest": "onSubtle"
+                                },
+                                "lowest": {
+                                  "rest": "onSubtle"
+                                }
+                              },
+                              "polarity": {
+                                "high": {
+                                  "rest": "onSubtle"
+                                },
+                                "medium": {
+                                  "rest": "onSubtle"
+                                },
+                                "low": {
+                                  "rest": "onSubtle"
+                                },
+                                "lowest": {
+                                  "rest": "onSubtle"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "[\"onSubtle\",\"standard\",\"polarity\",\"medium\",\"pending\"]": {
+                      "default": {
+                        "light": {
+                          "onVivid": {
+                            "standard": {
+                              "neutral": {
+                                "high": {
+                                  "rest": "onSubtle",
+                                  "selected": "onVivid"
+                                },
+                                "medium": {
+                                  "rest": "onSubtle",
+                                  "selected": "onVivid"
+                                },
+                                "low": {
+                                  "rest": "onSubtle"
+                                },
+                                "lowest": {
+                                  "rest": "onSubtle"
+                                }
+                              },
+                              "primary": {
+                                "high": {
+                                  "rest": "onSubtle"
+                                },
+                                "medium": {
+                                  "rest": "onSubtle"
+                                },
+                                "low": {
+                                  "rest": "onSubtle"
+                                },
+                                "lowest": {
+                                  "rest": "onSubtle"
+                                }
+                              },
+                              "polarity": {
+                                "high": {
+                                  "rest": "onSubtle"
+                                },
+                                "medium": {
+                                  "rest": "onSubtle"
+                                },
+                                "low": {
+                                  "rest": "onSubtle"
+                                },
+                                "lowest": {
+                                  "rest": "onSubtle"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
                   }
                 }
               }
             }
           }
         }
-      },
-      "options": {
-        "canonicalSurfaces": {
-          "default": {
-            "light": [
-              {
-                "intent": "neutral",
-                "emphasis": "lowest",
-                "contentSurfaceContext": "onSubtle",
-                "rest": "#ffffff"
-              },
-              {
-                "intent": "neutral",
-                "emphasis": "low",
-                "contentSurfaceContext": "onSubtle",
-                "rest": "#f6f6f6"
-              },
-              {
-                "intent": "neutral",
-                "emphasis": "medium",
-                "contentSurfaceContext": "onSubtle",
-                "rest": "#e9e9e9"
-              },
-              {
-                "intent": "primary",
-                "emphasis": "highest",
-                "contentSurfaceContext": "onVivid",
-                "rest": "#3b82f6"
+      }
+    },
+    "slider": {
+      "variants": {
+        "standard": {
+          "modes": {
+            "base": {
+              "regions": {
+                "e11": {
+                  "output": {
+                    "default": {
+                      "light": {
+                        "onSubtle": {
+                          "standard": {
+                            "neutral": {
+                              "medium": {
+                                "rest": "onSubtle"
+                              }
+                            },
+                            "primary": {
+                              "medium": {
+                                "rest": "onSubtle"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "e14": {
+                  "output": {
+                    "default": {
+                      "light": {
+                        "onSubtle": {
+                          "standard": {
+                            "neutral": {
+                              "medium": {
+                                "rest": "onVivid",
+                                "disabled": "onSubtle"
+                              }
+                            },
+                            "primary": {
+                              "medium": {
+                                "rest": "onVivid",
+                                "disabled": "onSubtle"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
               }
-            ],
-            "dark": [
-              {
-                "intent": "neutral",
-                "emphasis": "lowest",
-                "contentSurfaceContext": "onSubtle",
-                "rest": "#000000"
-              },
-              {
-                "intent": "neutral",
-                "emphasis": "low",
-                "contentSurfaceContext": "onSubtle",
-                "rest": "#0e0e0e"
-              },
-              {
-                "intent": "neutral",
-                "emphasis": "medium",
-                "contentSurfaceContext": "onSubtle",
-                "rest": "#1d1d1d"
-              },
-              {
-                "intent": "primary",
-                "emphasis": "highest",
-                "contentSurfaceContext": "onVivid",
-                "rest": "#3b82f6"
-              }
-            ]
+            }
           }
         }
       }

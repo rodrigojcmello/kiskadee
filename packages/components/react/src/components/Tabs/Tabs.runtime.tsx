@@ -1,11 +1,19 @@
 import { HeadlessTabs } from '@kiskadee/react-headless';
 import { memo, type ReactNode, useEffect, useMemo, useState } from 'react';
+import { resolveRegionPaint } from '../../shared/class-resolution/regionPaint.ts';
 import { withComponentResources } from '../../shared/contexts/ComponentResourceBoundary.tsx';
-import { useControlCursorStyle } from '../../shared/contexts/useControlCursorStyle.ts';
 import {
+  SurfaceContextProvider,
+  useSurfaceContext
+} from '../../shared/contexts/SurfaceContext.tsx';
+import { useControlCursorStyle } from '../../shared/contexts/useControlCursorStyle.ts';
+import { useRegionSurface } from '../../shared/contexts/useRegionSurface.ts';
+import {
+  DEFAULT_EMPHASIS,
   joinClassNames,
   resolveListClassName,
-  resolveSeparatorClassName
+  resolveSeparatorClassName,
+  tabsColorFallback
 } from './Tabs.class-names';
 import { TabsVisualContextProvider, useTabsVisualContext } from './Tabs.context.ts';
 import { resolveSpringConfig } from './Tabs.motion.shared.ts';
@@ -203,6 +211,24 @@ export function createTabsComponent<
       ...props,
       children
     });
+    const surfaceContext = useSurfaceContext();
+    const barPaint = useMemo(
+      () =>
+        resolveRegionPaint(
+          rootState.elements.e1,
+          {
+            surfaceContext,
+            intent: rootState.intent,
+            emphasis: rootState.emphasis ?? DEFAULT_EMPHASIS
+          },
+          tabsColorFallback
+        ),
+      [rootState.elements.e1, rootState.emphasis, rootState.intent, surfaceContext]
+    );
+    const barSurface = useRegionSurface('tabs', 'e1', {
+      ...barPaint,
+      variant: rootState.resolvedVariant
+    });
     const indicatorTransition = useMemo(
       () => resolveIndicatorTransition(rootState.resolvedIndicator.motion, spring),
       [rootState.resolvedIndicator.motion, spring]
@@ -210,6 +236,7 @@ export function createTabsComponent<
     const listClassName = useMemo(
       () =>
         resolveListClassName({
+          surfaceContext,
           structural: options.structural,
           elements: rootState.elements,
           classNames: rootState.classNames,
@@ -223,6 +250,7 @@ export function createTabsComponent<
           lowerCurve: rootState.resolvedLowerCurve
         }),
       [
+        surfaceContext,
         rootState.classNames,
         rootState.elements,
         rootState.emphasis,
@@ -238,6 +266,7 @@ export function createTabsComponent<
     const separatorClassName = useMemo(
       () =>
         resolveSeparatorClassName({
+          surfaceContext: barSurface,
           structural: options.structural,
           elements: rootState.elements,
           classNames: rootState.classNames,
@@ -247,6 +276,7 @@ export function createTabsComponent<
           variant: rootState.resolvedVariant
         }),
       [
+        barSurface,
         rootState.classNames,
         rootState.elements,
         rootState.emphasis,
@@ -258,6 +288,8 @@ export function createTabsComponent<
 
     const visualContext = useMemo(
       () => ({
+        barPaint,
+        barSurface,
         selected: rootState.selected,
         scale: rootState.scale,
         intent: rootState.intent,
@@ -279,6 +311,8 @@ export function createTabsComponent<
         loadMotionEnhancer: options.loadMotionEnhancer
       }),
       [
+        barPaint,
+        barSurface,
         indicatorTransition,
         listClassName,
         options.StaticEnhancer,
@@ -322,9 +356,17 @@ export function createTabsComponent<
   const TabComponent = options.TabComponent ?? TabsTabBase;
   const ContentComponent = options.ContentComponent ?? TabsContentBase;
 
+  function SurfaceBar(props: TabsBarProps) {
+    const { barSurface } = useTabsVisualContext();
+    return (
+      <SurfaceContextProvider value={barSurface}>
+        <BarComponent {...props} />
+      </SurfaceContextProvider>
+    );
+  }
   return Object.assign(TabsRootMemo, {
     Root: TabsRootMemo,
-    Bar: BarComponent,
+    Bar: SurfaceBar,
     Tab: TabComponent,
     Label: TabsLabelBase,
     Icon: TabsIconBase,

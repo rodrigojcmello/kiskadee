@@ -4,6 +4,78 @@ import { dirname, join } from 'node:path';
 import type { Color, ColorSchema, Schema } from '@kiskadee/core';
 import { expect, it } from 'vitest';
 import { publishComponentResources } from './publishComponentResources.ts';
+import { decodePaletteSurfaceConfig } from './surfacePaletteWire.ts';
+
+it('rejects malformed region aliases and ambiguous parent coordinates', () => {
+  const map = { v: { s: { primary: { m: { r: 's' } } } } };
+  const parent = ['v', 's', 'primary', 'h', 'r', map];
+  expect(() =>
+    decodePaletteSurfaceConfig({ sc: 'e7', g: { e3: map } }, 'default', 'light')
+  ).toThrow('Unknown surface region alias');
+  expect(() => decodePaletteSurfaceConfig({ g: { title: map } }, 'default', 'light')).toThrow(
+    'Invalid surface region element'
+  );
+  expect(() =>
+    decodePaletteSurfaceConfig({ g: { e8: [map, [parent, parent]] } }, 'default', 'light')
+  ).toThrow('Duplicate parent surface coordinate');
+});
+
+it('publishes only selected-palette regions and preserves conditional parent recipes', async () => {
+  const dir = await mkdtemp(join(tmpdir(), 'kiskadee-regions-'));
+  const output = {
+    teams: { dark: { onSubtle: { standard: { neutral: { medium: { rest: 'inherit' } } } } } }
+  } as const;
+  const vivid = {
+    teams: { dark: { onSubtle: { standard: { neutral: { medium: { rest: 'onVivid' } } } } } }
+  } as const;
+  const parentKey = JSON.stringify(['onSubtle', 'standard', 'neutral', 'high', 'selected']);
+  const regions = { e3: { output }, e8: { output: vivid, against: { [parentKey]: output } } };
+  const read = async (path: string) => JSON.parse(await readFile(join(dir, path), 'utf8'));
+  try {
+    await writeFile(
+      join(dir, 'manifest.json'),
+      JSON.stringify({
+        components: { textField: {} },
+        themes: { teams: ['light', 'dark'] }
+      })
+    );
+    await writeFile(join(dir, 'core.kiskadee.json'), '{}');
+    await writeFile(
+      join(dir, 'global.kiskadee.json'),
+      JSON.stringify({
+        components: {
+          textField: {
+            variants: {
+              standard: {
+                modes: {
+                  outline: {
+                    contentSurfaceContext: output,
+                    contentRegionSurfaceContext: vivid
+                  }
+                }
+              }
+            }
+          }
+        }
+      })
+    );
+    await publishComponentResources(dir, { components: { textField: {} } } as Schema, {
+      textField: { variants: { standard: { modes: { outline: { regions } } } } }
+    });
+    const metadata = await read('components/text-field.kiskadee.json');
+    expect(metadata.resources.palettes['teams.light']).toBeUndefined();
+    expect(metadata.variants.standard.modes.outline).not.toHaveProperty('regions');
+    const palette = await read(metadata.resources.palettes['teams.dark']);
+    expect(palette.config.variants.standard.modes.outline).toMatchObject({ sc: 'e3', sr: 'e8' });
+    const mode = decodePaletteSurfaceConfig(palette.config, 'teams', 'dark').variants?.standard
+      .modes?.outline;
+    expect(mode?.regions).toEqual(regions);
+    expect(mode?.contentSurfaceContext).toBe(mode?.regions?.e3.output);
+    expect(mode?.contentRegionSurfaceContext).toBe(mode?.regions?.e8.output);
+  } finally {
+    await rm(dir, { recursive: true, force: true });
+  }
+});
 
 it('publishes Dropdown panel fill evidence only for the painted Rest palette', async () => {
   const fill = (rest: Color): ColorSchema => ({ boxColor: { neutral: { medium: { rest } } } });
@@ -200,7 +272,7 @@ it.each([false, true])('publishes lean resources (segment metadata: %s)', async 
       'default.light': { onSubtle: { primary: ['high'] } }
     });
     const descriptor = await read(metadata.resources.palettes['default.light']);
-    expect(descriptor.formatVersion).toBe(4);
+    expect(descriptor.formatVersion).toBe(5);
     expect(descriptor.config).toEqual({ sc: { s: { s: {} } } });
     expect(descriptor.capabilities.surfaceContexts['default.light']).toBeDefined();
     expect(descriptor.styles).toHaveLength(1);

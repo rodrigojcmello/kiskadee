@@ -1,5 +1,6 @@
 import { mkdir, readdir, readFile, rename, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
+import { isDeepStrictEqual } from 'node:util';
 import {
   type ComponentEmphasis,
   type ComponentSizeSupport,
@@ -15,6 +16,7 @@ import {
   type ThemeMode
 } from '@kiskadee/core';
 import { minifyCss } from '@kiskadee/css-build';
+import type { SurfaceRegionBranch } from '@kiskadee/surface-builder/region-types';
 import {
   alternativePaletteScopeKey,
   collectAlternativePaletteScopes
@@ -31,7 +33,9 @@ import { artifactHash, partitionComponentCss } from './partitionComponentCss.ts'
 import {
   COMPONENT_PALETTE_FORMAT_VERSION,
   type CompactPaletteConfig,
+  type CompactSurfaceMode,
   encodeCanonicalSurfaces,
+  encodeRegionSlice,
   encodeSurfaceContextSlice
 } from './surfacePaletteWire.ts';
 
@@ -231,8 +235,53 @@ export function buildButtonLayoutSupport(
   return { stacked: { sizes: sizes.map((size) => size.slice(2)), sizesByRadius } };
 }
 
+/** Keep materialized component maps available to older React entry points while sending each output once. */
+function compactRegions(
+  config: CompactSurfaceMode,
+  regions: NonNullable<CompactSurfaceMode['g']>
+): void {
+  config.g = regions;
+  for (const [element, region] of Object.entries(regions)) {
+    const output = Array.isArray(region) ? region[0] : region;
+    for (const field of ['sc', 'sr'] as const) {
+      if (config[field] && isDeepStrictEqual(config[field], output)) config[field] = element;
+    }
+  }
+}
+
+function publishRegionSlices(
+  config: CompactPaletteConfig,
+  component: SurfaceRegionBranch | undefined,
+  segment: string,
+  theme: ThemeMode
+): void {
+  if (!component) return;
+  const regions = encodeRegionSlice(component.regions, segment, theme);
+  if (regions) compactRegions(config, regions);
+  for (const [variant, branch] of Object.entries(component.variants ?? {})) {
+    const variantConfig = config.variants?.[variant] ?? {};
+    const variantRegions = encodeRegionSlice(branch.regions, segment, theme);
+    if (variantRegions) compactRegions(variantConfig, variantRegions);
+    for (const [mode, modeBranch] of Object.entries(branch.modes ?? {})) {
+      const modeRegions = encodeRegionSlice(modeBranch.regions, segment, theme);
+      if (!modeRegions) continue;
+      variantConfig.modes ??= {};
+      variantConfig.modes[mode] ??= {};
+      compactRegions(variantConfig.modes[mode], modeRegions);
+    }
+    if (Object.keys(variantConfig).length) {
+      config.variants ??= {};
+      config.variants[variant] = variantConfig;
+    }
+  }
+}
+
 /** Converts phase-local aggregate intermediates to the only published runtime handoff. */
-export async function publishComponentResources(buildDir: string, schema: Schema) {
+export async function publishComponentResources(
+  buildDir: string,
+  schema: Schema,
+  surfaceComponents: Partial<Record<string, SurfaceRegionBranch>> = {}
+) {
   const read = async (path: string) => JSON.parse(await readFile(resolve(buildDir, path), 'utf8'));
   const write = async (path: string, value: unknown) => {
     await mkdir(dirname(resolve(buildDir, path)), { recursive: true });
@@ -487,12 +536,14 @@ export async function publishComponentResources(buildDir: string, schema: Schema
         const regionSlice = region?.[segment]?.[theme];
         if (!contentSlice && !regionSlice) continue;
         config.variants ??= {};
-        config.variants[variant] ??= { modes: {} };
+        config.variants[variant] ??= {};
+        config.variants[variant].modes ??= {};
         config.variants[variant].modes[mode] = {
           ...(contentSlice ? { sc: encodeSurfaceContextSlice(contentSlice) } : {}),
           ...(regionSlice ? { sr: encodeSurfaceContextSlice(regionSlice) } : {})
         };
       }
+      publishRegionSlices(config, surfaceComponents[name], segment, theme);
       const hasConfig = Object.keys(config).length > 0;
       if (!classMap && !surfaceContexts && !panelFill && !styles.length && !hasConfig) continue;
       const palettePath = `components/${palette}/${componentNameToArtifactSlug(name)}.json`;

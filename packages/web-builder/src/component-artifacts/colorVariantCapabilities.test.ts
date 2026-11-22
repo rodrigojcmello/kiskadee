@@ -308,7 +308,7 @@ describe('shared color variant handoff', () => {
     expect(leaf(changed)).toEqual(leaf(standard));
   });
 
-  it('publishes complete coverage in common metadata and the v4 palette envelope', async () => {
+  it('publishes complete coverage in common metadata and the v5 palette envelope', async () => {
     const schema = fixture();
     const dir = await mkdtemp(join(tmpdir(), 'kiskadee-color-variant-'));
     const write = (name: string, value: unknown) =>
@@ -341,7 +341,7 @@ describe('shared color variant handoff', () => {
       const resource = JSON.parse(
         await readFile(join(dir, metadata.resources.palettes['default.light']), 'utf8')
       );
-      expect(resource.formatVersion).toBe(4);
+      expect(resource.formatVersion).toBe(5);
       expect(resource.config.sc.s.a).toBeUndefined();
       expect(resource.config.sc.v.a.neutral.h).toEqual({ r: 's' });
       expect(JSON.parse(await readFile(join(dir, 'manifest.json'), 'utf8')).formatVersion).toBe(3);

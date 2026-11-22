@@ -16,6 +16,7 @@ import {
   SurfaceContextProvider,
   useSurfaceContext
 } from '../../shared/contexts/SurfaceContext.tsx';
+import { resolveRegionSurface } from '../../shared/contexts/useRegionSurface.ts';
 import { hasTextFieldContent, TextFieldManagedActions } from './TextField.actions.tsx';
 import {
   DEFAULT_TEXT_FIELD_EMPHASIS,
@@ -23,6 +24,7 @@ import {
   DEFAULT_TEXT_FIELD_INTENT,
   DEFAULT_TEXT_FIELD_LABEL_PLACEMENT,
   DEFAULT_TEXT_FIELD_RADIUS,
+  resolveControlColorRecipe,
   resolveTextFieldClassNames,
   resolveTextFieldContentClassNames,
   resolveVariantElements,
@@ -234,16 +236,26 @@ export function createTextFieldComponent<TProps extends TextFieldRuntimeProps>(
       textFieldOptions.focusRingColorSource ??
       DEFAULT_TEXT_FIELD_FOCUS_RING_COLOR_SOURCE;
     const surfaceContext = useSurfaceContext();
-    const contentSurfaceContext = resolveContentSurfaceContext({
-      map: modeConfig?.contentSurfaceContext,
+    const elements = resolveTextFieldElements(textFieldClassesMap, options.structural);
+    const controlRecipe =
+      modeConfig?.regions || modeConfig?.contentSurfaceContext
+        ? resolveControlColorRecipe(elements.e3, resolvedIntent, emphasis, surfaceContext)
+        : undefined;
+    const shellCoordinate = {
       segment,
       theme,
-      consumedSurfaceContext: surfaceContext,
-      intent: resolvedIntent,
-      emphasis,
+      surfaceContext,
+      intent: controlRecipe?.intent ?? resolvedIntent,
+      emphasis: controlRecipe?.emphasis ?? emphasis,
       disabled
-    });
-    const elements = resolveTextFieldElements(textFieldClassesMap, options.structural);
+    };
+    const contentSurfaceContext = modeConfig?.regions?.e3
+      ? resolveRegionSurface(modeConfig.regions.e3, shellCoordinate)
+      : resolveContentSurfaceContext({
+          ...shellCoordinate,
+          map: modeConfig?.contentSurfaceContext,
+          consumedSurfaceContext: surfaceContext
+        });
     const shouldMirrorFloatingTypography = options.structural.variant === 'floating';
 
     const resolvedClassNames = useMemo(
@@ -278,19 +290,42 @@ export function createTextFieldComponent<TProps extends TextFieldRuntimeProps>(
 
     const regions = useMemo(() => {
       const resolve = (regionEmphasis: typeof startContentEmphasis) => {
-        const regionSurfaceContext = resolveContentSurfaceContext({
-          map: modeConfig?.contentRegionSurfaceContext,
+        const paint = modeConfig?.regions?.e8
+          ? resolveControlColorRecipe(
+              elements.e8,
+              resolvedIntent,
+              regionEmphasis,
+              contentSurfaceContext
+            )
+          : undefined;
+        const coordinate = {
           segment,
           theme,
-          consumedSurfaceContext: contentSurfaceContext,
-          intent: resolvedIntent,
-          emphasis: regionEmphasis,
+          surfaceContext: contentSurfaceContext,
+          intent: paint?.intent ?? resolvedIntent,
+          emphasis: paint?.emphasis ?? regionEmphasis,
           disabled
-        });
+        };
+        const regionSurfaceContext = modeConfig?.regions
+          ? resolveRegionSurface(modeConfig.regions.e8, {
+              ...coordinate,
+              parent: {
+                surfaceContext,
+                intent: controlRecipe?.intent ?? resolvedIntent,
+                emphasis: controlRecipe?.emphasis ?? emphasis,
+                disabled
+              }
+            })
+          : resolveContentSurfaceContext({
+              ...coordinate,
+              map: modeConfig?.contentRegionSurfaceContext,
+              consumedSurfaceContext: contentSurfaceContext
+            });
         return {
           surfaceContext: regionSurfaceContext,
           classes: resolveTextFieldContentClassNames({
             surfaceContext: regionSurfaceContext,
+            paintSurfaceContext: modeConfig?.regions ? contentSurfaceContext : regionSurfaceContext,
             structural: options.structural,
             elements,
             classNames,
@@ -305,6 +340,11 @@ export function createTextFieldComponent<TProps extends TextFieldRuntimeProps>(
     }, [
       classNames,
       contentSurfaceContext,
+      controlRecipe?.intent,
+      controlRecipe?.emphasis,
+      emphasis,
+      surfaceContext,
+      modeConfig?.regions,
       disabled,
       elements,
       endContentEmphasis,

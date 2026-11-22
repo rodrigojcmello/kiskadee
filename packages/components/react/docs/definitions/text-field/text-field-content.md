@@ -41,8 +41,15 @@ padding and borders, rather than treating its outer box center as the content li
 reserving excess clearance between a promoted label and the value. The platform binder publishes
 the passive text displacement as `--k-txf-tbo`; Icon and Button geometry remain independent.
 
-The shell and surfaced regions publish their preset-authored semantic content surface for
-independent descendants. No consumer infers it from concrete colors or luminance. Other presets
+The shell looks up its published content surface using the intent and emphasis of the color
+recipe selected for the control (`e3`). If High renders the Medium recipe, both use the Medium
+surface output. A missing output for the selected recipe preserves the surrounding context.
+When no control color recipe is available, the requested coordinate can still supply an explicit
+surface output. Each Start/End region paints `e8` using the shell's result, and selects its
+own output using its own emphasis and the shell's paint coordinate when needed. Its passive
+foreground slots and independent descendants consume that output. The connected action
+beside the shell remains on the external surface.
+No consumer infers the surface from concrete colors or luminance. Other presets
 may omit this optional anatomy; only Fluent 2 authors the capability in this delivery.
 
 ## Internal actions and free composition

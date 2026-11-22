@@ -1,4 +1,4 @@
-import { splitCardSurfaceSchema } from '../../../utils/splitCardSurfaceSchema.ts';
+import { splitDerivedCardSurfaceSchema } from '../../../utils/splitCardSurfaceSchema.ts';
 import primary from '../colors/b.blue.v1.ts';
 import neutral from '../colors/n.black.v1.ts';
 
@@ -12,12 +12,12 @@ export function createSandboxCardSchema(_args: {
     ...(['lowest', 'low', 'medium'] as const).map((emphasis) => ({
       intent: 'neutral' as const,
       emphasis,
-      contentSurfaceContext: 'onSubtle' as const
+      ...(emphasis === 'low' && { referenceFor: 'onSubtle' as const })
     })),
     {
       intent: 'primary' as const,
       emphasis: 'highest' as const,
-      contentSurfaceContext: 'onVivid' as const
+      referenceFor: 'onVivid' as const
     }
   ];
   const palettes = Object.fromEntries(
@@ -44,19 +44,7 @@ export function createSandboxCardSchema(_args: {
       return [theme, { onSubtle: { standard: surface }, onVivid: { standard: surface } }];
     })
   );
-  const contexts = {
-    neutral: Object.fromEntries(levels.map((level) => [level, { rest: 'onSubtle' }])),
-    primary: Object.fromEntries(
-      levels.map((level, i) => [
-        level,
-        {
-          rest: i >= 3 ? 'onVivid' : 'onSubtle',
-          ...(i >= 3 ? { selected: 'onSubtle' } : {})
-        }
-      ])
-    )
-  };
-  return splitCardSurfaceSchema<never>({
+  return splitDerivedCardSurfaceSchema<never>({
     options: {
       canonicalSurfaces: { default: { light: catalog, dark: catalog } },
       border: {
@@ -79,12 +67,6 @@ export function createSandboxCardSchema(_args: {
             ])
           )
         }
-      }
-    },
-    contentSurfaceContext: {
-      default: {
-        light: { onSubtle: { standard: contexts }, onVivid: { standard: contexts } },
-        dark: { onSubtle: { standard: contexts }, onVivid: { standard: contexts } }
       }
     },
     elements: {

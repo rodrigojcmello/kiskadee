@@ -29,9 +29,10 @@ subtle offsets -2/0/+2; their interaction deltas use the same family. Primary hi
 background-brand with Primary Button hover/active tokens; Selected uses the fixed Blue 70
 link-secondary Light source to preserve a distinct one-step darkening on all three themes.
 
-All non-vivid surfaces publish `onSubtle` to descendants; Primary highest publishes `onVivid`
-and Disabled returns `onSubtle`. Both surrounding contexts are authored independently from that
-outgoing context. Canonical surfaces expose each declared Rest layer in a stable order.
+The Container catalog uses the Carbon background (neutral.lowest) as its subtle compositing
+reference and primary.highest as its vivid reference. These markers identify concrete backdrops.
+The pre-build classifies each actual Container/CardAction fill against white in Light or black in
+Dark/Darker, including Disabled. This is the Kiskadee rule for independent children.
 
 ## Color and token provenance
 

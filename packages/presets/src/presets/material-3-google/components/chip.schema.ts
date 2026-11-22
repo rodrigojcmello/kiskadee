@@ -143,56 +143,6 @@ function createChipIntentSchema({
   };
 }
 
-type ContentSurfaceContextValue = SurfaceContext | 'inherit';
-
-function highContentSurfaceContext(
-  theme: ThemeName,
-  surface: SurfaceContext,
-  intent: ChipIntent
-): SurfaceContext {
-  // High onVivid is authored from the Light-track subtle family, so its
-  // children remain on a subtle surface even when the consumed context is
-  // vivid. Dark neutral high uses the D95 endpoint for the same reason;
-  // chromatic dark high remains a strong vivid surface. Medium always maps to
-  // onSubtle below because it is authored as a filled subtle treatment.
-  if (surface === 'onVivid' || (theme === 'dark' && intent === 'neutral')) {
-    return 'onSubtle';
-  }
-  return 'onVivid';
-}
-
-function createContentSurfaceContext() {
-  const themes = ['light', 'dark'] as const;
-  const surfaces = ['onSubtle', 'onVivid'] as const;
-  return Object.fromEntries(
-    themes.map((themeName) => [
-      themeName,
-      Object.fromEntries(
-        surfaces.map((surfaceName) => [
-          surfaceName,
-          {
-            standard: Object.fromEntries(
-              INTENTS.map((intentName) => {
-                const high = highContentSurfaceContext(themeName, surfaceName, intentName);
-                const disabled: ContentSurfaceContextValue = surfaceName;
-                return [
-                  intentName,
-                  {
-                    high: { rest: high, selected: high, disabled },
-                    medium: { rest: 'onSubtle', selected: high, disabled },
-                    low: { rest: 'inherit', selected: high, disabled },
-                    lowest: { rest: 'inherit', selected: high, disabled }
-                  }
-                ];
-              })
-            )
-          }
-        ])
-      )
-    ])
-  );
-}
-
 export function createMaterial3GoogleChipSchema({
   c,
   segmentNames,
@@ -247,7 +197,6 @@ export function createMaterial3GoogleChipSchema({
   }));
 
   return {
-    contentSurfaceContext: buildBySegment(segmentNames, () => createContentSurfaceContext()),
     options: { density: { compact: 's:md:1', spacious: 's:lg:1' } },
     elements: {
       e1: { name: 'chip-container' },

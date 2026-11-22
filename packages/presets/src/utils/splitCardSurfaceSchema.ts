@@ -1,19 +1,17 @@
-import type { ManualContainerComponent, Schema } from '@kiskadee/core';
+import type { DerivedContainerComponent, ManualContainerComponent, Schema } from '@kiskadee/core';
 
 type Entry = Record<string, unknown>;
 
 const entries = (value: unknown): [string, unknown][] =>
   value && typeof value === 'object' ? Object.entries(value) : [];
 
-/** Transfer authored Card Rest surfaces to Container without changing interaction recipes. */
-export function splitCardSurfaceSchema<TSegment extends string>(card: {
+type CardSource = {
   elements: { e1: Entry & { palettes: object } };
   contentSurfaceContext?: object;
   [key: string]: unknown;
-}): {
-  container: ManualContainerComponent<TSegment>;
-  card: NonNullable<Schema<TSegment>['components']['card']>;
-} {
+};
+
+function splitSurfacePaint(card: CardSource) {
   const cardPalettes: Entry = {};
   const containerPalettes: Entry = {};
 
@@ -64,6 +62,52 @@ export function splitCardSurfaceSchema<TSegment extends string>(card: {
     cardPalettes[segment] = cardThemes;
     containerPalettes[segment] = containerThemes;
   }
+
+  return { cardPalettes, containerPalettes };
+}
+
+/** The linked Card keeps interaction paint; Container owns Rest and the reference catalog. */
+export function splitDerivedCardSurfaceSchema<TSegment extends string>(
+  card: CardSource & {
+    options: {
+      canonicalSurfaces: DerivedContainerComponent<TSegment>['options']['canonicalSurfaces'];
+      [key: string]: unknown;
+    };
+  }
+) {
+  const { cardPalettes, containerPalettes } = splitSurfacePaint(card);
+  const { elements, options, ...cardMetadata } = card;
+  const { canonicalSurfaces, ...cardOptions } = options;
+  const container: DerivedContainerComponent<TSegment> = {
+    contentSurfaceContext: { derive: { element: 'e1', property: 'boxColor' } },
+    options: { canonicalSurfaces },
+    elements: {
+      e1: {
+        name: 'container',
+        palettes:
+          containerPalettes as DerivedContainerComponent<TSegment>['elements']['e1']['palettes']
+      }
+    }
+  };
+  return {
+    container,
+    card: {
+      ...cardMetadata,
+      surfaceSource: 'container',
+      options: cardOptions,
+      elements: { ...elements, e1: { ...elements.e1, palettes: cardPalettes } }
+    } as NonNullable<Schema<TSegment>['components']['card']>
+  };
+}
+
+/** Preserves the authored surface-map form for legacy sources without a reference catalog. */
+export function splitCardSurfaceSchema<TSegment extends string>(
+  card: CardSource
+): {
+  container: ManualContainerComponent<TSegment>;
+  card: NonNullable<Schema<TSegment>['components']['card']>;
+} {
+  const { cardPalettes, containerPalettes } = splitSurfacePaint(card);
 
   const containerContexts: Entry = {};
   const cardContexts: Entry = {};

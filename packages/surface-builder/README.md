@@ -16,31 +16,49 @@ To compare all companions byte for byte with fresh derivations without rewriting
 pnpm --filter @kiskadee/surface-builder check
 ```
 
-Each file keeps readable field names,
-including all authored and derived Surface Context maps and canonical surface catalogs. It carries
-`formatVersion: 1` and the preset key, version and deterministic SHA-256 revision of its authored
-Schema. The build-time reader validates that identity and compares the stored bytes with a fresh
-derivation before returning the map. The authored Schema remains a separate input.
+Each file contains `formatVersion: 2`, the preset key and version, and a deterministic SHA-256
+revision of its authored Schema. Its readable element maps are a platform-independent build
+input. Readers check identity, format, region coverage and exact regeneration before publishing.
 
 ## Derivation
 
-The preset can opt in to derivation from `e1.boxColor`. Resolve effective paint, including
-Standard/Alternative inheritance, for each available segment and theme. Resolve exactly one
-opaque Container Rest backdrop from `onSubtle.standard` for each of the catalog's
-`referenceFor: 'onSubtle'` and `referenceFor: 'onVivid'` markers.
+The component's existing anatomy identifies which elements paint behind independent descendants.
+The compiler walks the available segments, themes, variants, modes, color variants, intents,
+emphases and stable states. Rest is required; changed Selected, Pending and Disabled outputs
+are sparse. The runtime selects the effective painted coordinate (including component-specific
+selection projections). Hover, Focus and Pressed do not select another descendant map.
 
-- An absent or fully transparent effective fill produces `inherit`.
-- Composite partial alpha over the backdrop marked for the consumed Surface Context.
-- Classify the resulting fill against absolute white in Light or absolute black in Dark and
-  Darker. A ratio of at least 3:1 produces `onVivid`. A lower ratio produces `onSubtle`.
-- Preserve the existing Rest fallback for missing state fills. Button and CardAction classify
-  Selected, Pending and Disabled paint in addition to Rest, using the existing state precedence.
-- A derived Container classifies Rest and supplies that result to its catalog and to its linked
-  Card. CardAction classifies state-specific paint after the Card inherits Rest.
+- Missing paint and fully transparent paint produce `inherit`.
+- An opaque fill is classified immediately. Partial alpha uses the known local parent paint,
+  then the opaque Container catalog reference for its input context. The root neutral canvas in
+  presets without Container may come from the explicit same-segment/theme background token.
+- The reference for contrast is white in Light and black in Dark/Darker. A ratio of at least
+  3:1 produces `onVivid`. Lower ratios produce `onSubtle`. This threshold classifies surfaces;
+  glyph and text legibility require their own checks.
+- Absent backdrops, runtime colors and gradients without a provable uniform classification
+  generate diagnostics with the recipe coordinate. These coordinates retain the legacy output
+  or inheritance. A uniform fill or an opaque achromatic gradient entirely on one side of the
+  cutoff can be classified. A gradient with varying RGB never supplies a fabricated RGB to a
+  translucent child.
+- Container publishes its calculated Rest to its catalog and linked Card. CardAction classifies
+  its effective stable states after resolving the Container contribution. Older authoring maps
+  are accepted as fallback for indeterminate paints.
 
-The contrast threshold selects a semantic surface for descendants. Text and icon contrast need
-separate checks. A translucent fill's classification represents its canonical backdrop. A custom
-background can produce another painted color under the same semantic context.
+## Region handoff
+
+At the component root, variant or variant/mode branch, `regions.<element>.output` contains the
+standard semantic map. For example, Chip `e2` and `e5` each publish their own result to the
+primary action and Remove. Materialization for existing build consumers exposes their compatible
+primary and TextField mode maps without duplicating those fields in the portable file.
+
+Nested layers can have the same parent semantic category but different underlying RGB. The base
+map assumes the canonical host. When a real local composition gives a different result, the
+region also publishes `against[parentCoordinate]`. The key is the JSON tuple of the parent's
+consumed context, color variant, effective intent, effective emphasis and stable state. For each
+child coordinate present in this override, use its entire state leaf; otherwise use `output`.
+The active segment, theme and branch are supplied by the enclosing component. TextField Start
+and End select their emphases independently against their control. Select and thumb layers
+retain their host-relative paint recipes while compositing over the local painted parent.
 
 The [Web resource publisher](../web-builder/docs/definitions/component-resources.md#palette-surface-configuration)
 reads this file with the preset and emits the selected portions in compact palette descriptors.

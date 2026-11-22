@@ -92,7 +92,7 @@ it('waits for consumed component maps and supports retry without committing part
       };
     if (path.endsWith('global.kiskadee.json')) return {};
     if (path.endsWith('button.descriptor.json'))
-      return { formatVersion: 4, component: 'button', styles: [], classMap: 'button.palette.json' };
+      return { formatVersion: 5, component: 'button', styles: [], classMap: 'button.palette.json' };
     if (path.endsWith('button.metadata.json'))
       return {
         formatVersion: 3,

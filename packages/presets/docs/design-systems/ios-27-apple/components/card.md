@@ -94,8 +94,8 @@ represents a bordered container and a grouped content surface without inventing 
 Strong Primary no longer uses the raw light Accent L28. The source Accent is designed for tint,
 not a general canvas of white text. `vivid +4` resolves to #0069c8 and `vivid +8` to #004588;
 these family-relative offsets preserve the tonal scale and establish a readable strong canvas.
-Both are explicit extensions, not Apple background tokens. Dark and Darker use the same Light
-track for these surfaces so their descendants consistently use light foregrounds.
+Both are Kiskadee extensions. Dark and Darker use the same Light track for these surface
+fills. The pre-build resolves the descendant context against the contrast reference of each theme.
 
 ## Canonical Surfaces And Content Context
 
@@ -103,14 +103,10 @@ Light and Dark publish all six canonical entries. Darker publishes five, omittin
 from the canonical suggestions while retaining its full palette and runtime support. The existing
 Showcase preference resolves to Neutral Low (black) when Medium is absent; this makes Darker a
 Base canvas without changing Showcase selection logic. Medium remains available to explicitly
-configured nested Cards. Opaque neutral/tinted entries publish `onSubtle`; Primary High/Highest
-publish `onVivid`.
-
-Card explicitly publishes `contentSurfaceContext` in both input contexts. Opaque Neutral and
-Primary Medium reset descendants to `onSubtle`; their Selected state switches to Primary High
-and `onVivid`. High/Highest always publish `onVivid`. The catalog alone does not perform this
-runtime transition. Nested Cards consume the matching contextual border while retaining their
-own opaque source-backed surface.
+configured nested Cards. Neutral Low is the published grouped/base canvas and the subtle
+compositing reference. Primary Highest is the vivid compositing reference. The output supplied to
+descendants is classified again for the actual fill in the active theme. In Dark/Darker the strong
+blue can therefore produce onSubtle against black. The Apple source colors remain intact.
 
 ## Interaction, Border, And Geometry
 

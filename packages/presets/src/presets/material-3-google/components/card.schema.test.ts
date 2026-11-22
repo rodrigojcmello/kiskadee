@@ -1,9 +1,11 @@
 import { expect, it } from 'vitest';
 import { createPresetColorGetter } from '../../../utils/presetColor.ts';
+import { readSurfaceCompanion } from '../../surface-companion.test-support.ts';
 import { schemaColors } from '../material-3-google.colors.ts';
 import { createMaterial3GoogleCardSchema } from './card.schema.ts';
 
 const c = createPresetColorGetter<'default' | 'dynamic' | 'purple'>({ colors: schemaColors });
+const outputs = readSurfaceCompanion('material-3-google');
 const { card, container } = createMaterial3GoogleCardSchema({
   c,
   segmentNames: ['default', 'dynamic', 'purple'],
@@ -14,7 +16,7 @@ it('publishes canonical surfaces, palettes and descendant contexts consistently'
   for (const segment of ['default', 'dynamic', 'purple'] as const)
     for (const theme of ['light', 'dark'] as const)
       for (const surface of ['onSubtle', 'onVivid'] as const) {
-        const entries = container.options?.canonicalSurfaces?.[segment]?.[theme];
+        const entries = outputs.container.options.canonicalSurfaces[segment][theme];
         expect(entries).toHaveLength(10);
         for (const entry of entries!) {
           const rest =
@@ -29,15 +31,15 @@ it('publishes canonical surfaces, palettes and descendant contexts consistently'
           expect(states?.rest).toBeUndefined();
           expect(states?.hover).not.toEqual(rest);
           expect(
-            container.contentSurfaceContext?.[segment]?.[theme]?.[surface]?.standard?.[
+            outputs.container.regions.e1.output[segment]?.[theme]?.[surface]?.standard?.[
               entry.intent
             ]?.[entry.emphasis]?.rest
           ).toBe(entry.contentSurfaceContext);
-          expect(
-            card.contentSurfaceContext?.[segment]?.[theme]?.[surface]?.standard?.[entry.intent]?.[
+          const published =
+            outputs.card.regions.e1.output[segment]?.[theme]?.[surface]?.standard?.[entry.intent]?.[
               entry.emphasis
-            ]?.disabled
-          ).toBe('onSubtle');
+            ];
+          expect(published?.disabled ?? published?.rest).toBe('onSubtle');
         }
       }
 });
@@ -83,7 +85,7 @@ it('requires Primary Highest as the canonical onVivid surface in every segment a
       expect(container.options?.canonicalSurfaces?.[segment]?.[theme]).toContainEqual({
         intent: 'primary',
         emphasis: 'highest',
-        contentSurfaceContext: 'onVivid'
+        referenceFor: 'onVivid'
       });
       for (const surface of ['onSubtle', 'onVivid'] as const) {
         const states =
@@ -102,8 +104,8 @@ it('requires Primary Highest as the canonical onVivid surface in every segment a
           pressed: c.ref(segment, 'l', 'card.primary', 'vivid', -2)
         });
         expect(
-          container.contentSurfaceContext?.[segment]?.[theme]?.[surface]?.standard?.primary?.highest
-            ?.rest
+          outputs.container.regions.e1.output[segment]?.[theme]?.[surface]?.standard?.primary
+            ?.highest?.rest
         ).toBe('onVivid');
       }
     }

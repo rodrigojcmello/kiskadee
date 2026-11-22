@@ -1,6 +1,7 @@
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { expect, it } from 'vitest';
+import { readSurfaceCompanion } from '../surface-companion.test-support.ts';
 import { primitiveColors } from './sandbox.colors.ts';
 import { schema } from './sandbox.schema.ts';
 
@@ -34,7 +35,8 @@ it('publishes rounded controls, canonical surfaces and its own Dropdown', () => 
   expect(schema.global?.radius).toBe('rounded');
   expect(schema.components.dropdown).toBeDefined();
   for (const theme of ['light', 'dark'] as const) {
-    const catalog = schema.components.container?.options?.canonicalSurfaces?.default?.[theme];
+    const catalog =
+      readSurfaceCompanion('sandbox').container.options.canonicalSurfaces.default[theme];
     expect(catalog?.some((surface) => surface.contentSurfaceContext === 'onVivid')).toBe(true);
     expect(catalog?.some((surface) => surface.contentSurfaceContext === 'onSubtle')).toBe(true);
   }

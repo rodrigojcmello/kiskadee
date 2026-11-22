@@ -18,6 +18,7 @@ type DotIndicatorPhase = 'idle' | 'exit' | 'enter';
  */
 export default function TabsDotMotionBarEnhancer({ children }: TabsMotionEngineProps) {
   const {
+    barSurface,
     selected,
     scale,
     intent,
@@ -103,6 +104,7 @@ export default function TabsDotMotionBarEnhancer({ children }: TabsMotionEngineP
 
   const renderedIndicatorRect = dotDisplayRect ?? indicatorRect;
   const indicatorClassName = resolveIndicatorClassName({
+    surfaceContext: barSurface,
     structural,
     elements,
     classNames,

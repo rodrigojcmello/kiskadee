@@ -35,9 +35,9 @@ palette maps or CSS. `surfaceContexts` continues to describe Standard states.
 
 The [Surface Builder](../../../surface-builder/README.md) pre-build emits one readable
 `generated/surface-contexts.json` in each preset directory. Web Builder uses the Surface Builder
-reader to verify the checked-in companion against the authored Schema and current derivation.
+reader to verify the version 2 companion against the authored Schema and current derivation.
 It then publishes each selected component, segment and theme as a separate palette resource.
-A palette resource uses `formatVersion: 4`. The manifest, component metadata and class-map
+A palette resource uses `formatVersion: 5`. The manifest, component metadata and class-map
 envelopes use `formatVersion: 3`. Compiled Web Brand Packs use `kiskadee.brand-pack-build.v3`
 and format 3. Consumers require the defined version for each envelope.
 
@@ -50,17 +50,24 @@ policy. It carries no color or contrast classification.
 
 The compact surface configuration uses these fields in the selected palette resource:
 
-- `config.sc.<s|v>.<s|a>.<intent>.<hh|h|m|l|ll>` contains the context received, color variant,
+- A surface map uses `<s|v>.<s|a>.<intent>.<hh|h|m|l|ll>` for the context received, color variant,
   intent and emphasis. The state codes are `r` Rest, `s` Selected, `p` Pending and `d` Disabled.
   The output values are `s` for `onSubtle`, `v` for `onVivid` and `i` for `inherit`.
 - `config.cs` contains the ordered canonical surface catalog as
   `[intent, emphasisCode, contextCode, restColor]` entries.
-- `config.variants.<variant>.modes.<mode>` carries TextField's `sc` content map and `sr` region map
-  for the selected palette. Common mode options remain in component metadata.
+- `g.<element>` carries the output for a painted region, at the component, variant, or mode that
+  owns that element. Usually it contains a single surface map. Regions whose output depends on
+  the parent's paint use `[map, overrides]`. Each override is
+  `[parentContext, parentColorVariant, parentIntent, parentEmphasis, parentState, overrideMap]`,
+  using the same compact codes. Only the current segment/theme is included. A matching leaf in
+  the override replaces the complete base state leaf.
+- `sc` (content) and `sr` (TextField content region) hold maps or refer to their identical
+  `g` output by element ID. The decoder shares the resulting map in memory. Common variant and
+  mode options remain in metadata.
 
 The palette descriptor address already identifies the segment and theme. Its decoder restores
 those coordinates and merges mode maps with common variant and mode options before exposing the
-readable `contentSurfaceContext`, `contentRegionSurfaceContext` and `options.canonicalSurfaces`
+readable `regions`, `contentSurfaceContext`, `contentRegionSurfaceContext` and `options.canonicalSurfaces`
 to React. Missing states retain Rest and explicit `inherit` retains the consumed context.
 Invalid versions or compact codes fail resource preparation. The browser loads only the selected
 palette descriptor and its existing dependencies.

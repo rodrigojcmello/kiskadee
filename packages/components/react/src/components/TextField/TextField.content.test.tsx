@@ -11,6 +11,7 @@ import {
   SurfaceContextProvider,
   useSurfaceContext
 } from '../../shared/contexts/SurfaceContext.tsx';
+import { Badge } from '../Badge/Badge.tsx';
 import { resolveTextFieldContentClassNames } from './TextField.class-names.ts';
 import { TextFieldAction, TextFieldIcon, TextFieldText } from './TextField.content.tsx';
 import { createTextFieldComponent } from './TextField.runtime.tsx';
@@ -78,7 +79,14 @@ vi.mock('./useTextFieldArtifactConfig.ts', () => {
   return {
     useTextFieldArtifactConfig: () => ({
       textFieldClassesMap: {
-        standard: { outline: elements, underline: elements, borderless: elements },
+        standard: {
+          outline: elements,
+          underline: elements,
+          borderless: {
+            ...elements,
+            e3: { c: { v: { s: { neutral: { m: 'shell-medium', l: 'shell-low' } } } } }
+          }
+        },
         floating: { notched: elements, inside: elements }
       },
       options: {},
@@ -527,6 +535,56 @@ describe('TextField internal content', () => {
     expect(result.getByText('Find').className).toContain('neutral-surfaced-passive');
     expect(result.getByText('Unit').className).toContain('neutral-surfaced-passive');
     expect(result.getByTestId('connected-surface').textContent).toBe('onVivid');
+  });
+
+  it('uses the painted shell recipe for a Badge in a Borderless field on vivid', () => {
+    const Borderless = fields.find(({ name }) => name === 'borderless')!.Field;
+    const value = {
+      ...context,
+      classesMap: {
+        badge: {
+          e1: {
+            c: {
+              s: { s: { attention: { m: 'badge-subtle' } } },
+              v: { s: { attention: { m: 'badge-vivid' } } }
+            }
+          }
+        }
+      }
+    };
+    const tree = (
+      emphasis: 'high' | 'medium' | 'low',
+      intent: 'neutral' | 'warning' = 'neutral'
+    ) => (
+      <KiskadeeContext.Provider value={value}>
+        <SurfaceContextProvider value="onVivid">
+          <Borderless
+            label="Search"
+            emphasis={emphasis}
+            intent={intent}
+            startContentEmphasis="medium"
+            startContent={<Badge data-testid="start">1</Badge>}
+            endContentEmphasis="lowest"
+            endContent={<Badge data-testid="end">2</Badge>}
+          />
+        </SurfaceContextProvider>
+      </KiskadeeContext.Provider>
+    );
+    const view = render(tree('medium'));
+    const shell = view.getByLabelText('Search').closest('.shell-medium');
+    expect(shell).not.toBeNull();
+    expect(view.getByTestId('end').classList).toContain('badge-subtle');
+    view.rerender(tree('high'));
+    expect(shell?.classList).toContain('shell-medium');
+    expect(view.getByTestId('end').classList).toContain('badge-subtle');
+    view.rerender(tree('high', 'warning'));
+    expect(shell?.classList).toContain('shell-medium');
+    expect(view.getByTestId('end').classList).toContain('badge-subtle');
+    view.rerender(tree('low'));
+    // The exact Low shell has no declared output. Only its independently surfaced Start is subtle.
+    expect(shell?.classList).toContain('shell-low');
+    expect(view.getByTestId('end').classList).toContain('badge-vivid');
+    expect(view.getByTestId('start').classList).toContain('badge-subtle');
   });
 
   it('preserves passive focus handoff and leaves action focus on the action', () => {

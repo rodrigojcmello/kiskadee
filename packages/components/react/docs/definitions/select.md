@@ -37,9 +37,11 @@ as are Select e4 (trigger) and Dropdown e4 (option label). The list composes Dro
 Dropdown.Item (e2), Dropdown.Label (e4) and Dropdown.Checkmark (e10). Dropdown.Items and Dropdown.Group
 organize these slots without creating additional Select elements.
 
-Dropdown.Surface supplies `onSubtle` to rich option labels when the active palette publishes
-`panelFill` for the panel's Rest background. A geometry-only or border-only panel and a headless
-list preserve the inherited context. The same rule applies during presence animations.
+Dropdown.Surface publishes its generated panel context and Dropdown.Item applies its own
+regional output to rich option labels. A geometry-only panel preserves its backdrop and a
+headless list preserves the inherited context. The same rule applies during presence animations.
+Inside a styled closed Select the rich selected value or placeholder receives the trigger
+surface (`e4`) over the control (`e3`). External labels and messages use the surrounding context.
 
 Headless Select.Content supplies the portalled listbox and anchored positioning. Select e13 supplies
 its anchor gap and collision clearances through generated scale tokens.

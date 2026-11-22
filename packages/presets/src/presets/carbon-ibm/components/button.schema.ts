@@ -20,7 +20,6 @@ type Recipe = { boxColor: IntentColors; borderColor: IntentColors; textColor: In
 
 const INTENTS = ['primary', 'neutral', 'destructive', 'positive'] as const;
 const EMPHASES = ['high', 'medium', 'low', 'lowest'] as const;
-const THEMES = ['light', 'dark', 'darker'] as const;
 const BUTTON_SCALES = ['s:sm:2', 's:sm:1', 's:md:1', 's:lg:1', 's:lg:2', 's:lg:3'] as const;
 const themes = <T>(factory: (theme: Theme) => T) => ({
   light: factory('light'),
@@ -353,50 +352,7 @@ export function createCarbonIbmButtonSchema({ c }: { c: CarbonIbmColorResolver }
   });
 
   return {
-    contentSurfaceContext: {
-      default: Object.fromEntries(
-        THEMES.map((theme) => [
-          theme,
-          Object.fromEntries(
-            (['onSubtle', 'onVivid'] as const).map((surface) => [
-              surface,
-              {
-                standard: Object.fromEntries(
-                  INTENTS.map((intent) => [
-                    intent,
-                    {
-                      high: {
-                        rest: surface === 'onSubtle' ? 'onVivid' : 'onSubtle',
-                        pending: surface === 'onSubtle' ? 'onVivid' : 'onSubtle',
-                        disabled: 'inherit'
-                      },
-                      medium: { rest: 'inherit', pending: 'inherit', disabled: 'inherit' },
-                      low: {
-                        rest: 'inherit',
-                        selected:
-                          surface === 'onVivid' || (intent === 'primary' && theme !== 'light')
-                            ? 'onSubtle'
-                            : 'onVivid',
-                        pending: 'inherit',
-                        disabled: 'inherit'
-                      },
-                      lowest: {
-                        rest: 'inherit',
-                        ...(intent === 'destructive' && surface === 'onSubtle'
-                          ? { selected: 'onVivid' }
-                          : {}),
-                        pending: 'inherit',
-                        disabled: 'inherit'
-                      }
-                    }
-                  ])
-                )
-              }
-            ])
-          )
-        ])
-      )
-    },
+    contentSurfaceContext: { derive: { element: 'e1', property: 'boxColor' } },
     options: {
       density: { compact: 's:sm:1', regular: 's:md:1', spacious: 's:lg:1' },
       groupDivider: true,

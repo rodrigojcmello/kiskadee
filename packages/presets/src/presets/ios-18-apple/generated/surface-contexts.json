@@ -1,5 +1,5 @@
 {
-  "formatVersion": 1,
+  "formatVersion": 2,
   "preset": {
     "key": "ios-18-apple",
     "version": [
@@ -9,5 +9,52 @@
     ],
     "revision": "84c2b5f853c9ed67e7201276ef6ead0bcec4545d5020a2fbf6d0611485a1f521"
   },
-  "components": {}
+  "components": {
+    "switch": {
+      "variants": {
+        "standard": {
+          "modes": {
+            "base": {
+              "regions": {
+                "e2": {
+                  "output": {
+                    "default": {
+                      "light": {
+                        "onSubtle": {
+                          "standard": {
+                            "neutral": {
+                              "medium": {
+                                "rest": "onSubtle"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "e3": {
+                  "output": {
+                    "default": {
+                      "light": {
+                        "onSubtle": {
+                          "standard": {
+                            "neutral": {
+                              "medium": {
+                                "rest": "onSubtle"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 }

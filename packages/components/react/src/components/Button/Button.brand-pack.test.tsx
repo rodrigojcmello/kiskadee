@@ -11,6 +11,10 @@ import {
   KiskadeeContext,
   type KiskadeeContextValue
 } from '../../shared/contexts/KiskadeeContext.tsx';
+import {
+  SurfaceContextProvider,
+  useSurfaceContext
+} from '../../shared/contexts/SurfaceContext.tsx';
 import { Button } from './Button.tsx';
 
 const baseButtonClassMap = {
@@ -125,6 +129,16 @@ function createPreloadedResources(): LoadedBrandPackResources {
   };
 }
 
+function installPreloadedStylesheet(resources: LoadedBrandPackResources) {
+  const stylesheet = document.createElement('link');
+  stylesheet.rel = 'stylesheet';
+  stylesheet.href = resources.stylesheetHref!;
+  stylesheet.integrity = `sha256-${btoa(String.fromCharCode(...resources.stylesheetSha256!.match(/../g)!.map((byte) => parseInt(byte, 16))))}`;
+  stylesheet.dataset.kLoaded = 'true';
+  stylesheet.dataset.testBrandPack = 'true';
+  document.head.appendChild(stylesheet);
+}
+
 afterEach(() => {
   cleanup();
   for (const link of document.querySelectorAll('link[data-test-brand-pack]')) {
@@ -134,6 +148,39 @@ afterEach(() => {
 });
 
 describe('Button brand intents', () => {
+  it('preserves the surrounding surface for independent brand recipes without a published output', () => {
+    const pack = createPreloadedResources();
+    installPreloadedStylesheet(pack);
+    const context = createContextValue({ [pack.cacheKey]: pack });
+    function ReadSurface() {
+      return <span data-testid="brand-child">{useSurfaceContext()}</span>;
+    }
+    const maps = {
+      default: { light: { onVivid: { standard: { neutral: { high: { rest: 'onSubtle' } } } } } }
+    };
+    const view = render(
+      <KiskadeeContext.Provider
+        value={{
+          ...context,
+          componentArtifacts: {
+            button: { component: 'button', formatVersion: 3, contentSurfaceContext: maps }
+          }
+        }}
+      >
+        <SurfaceContextProvider value="onVivid">
+          <BrandPackBoundary pack="auth" components={['button']}>
+            <Button intent="brand.google" emphasis="high">
+              <Button.Label>
+                <ReadSurface />
+              </Button.Label>
+            </Button>
+          </BrandPackBoundary>
+        </SurfaceContextProvider>
+      </KiskadeeContext.Provider>
+    );
+    expect(view.getByRole('button').classList).toContain('google-box-on-vivid-high');
+    expect(view.getByTestId('brand-child').textContent).toBe('onVivid');
+  });
   it('reports a missing boundary and never falls back to a system intent', () => {
     const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
 
@@ -160,13 +207,7 @@ describe('Button brand intents', () => {
 
   it('merges a compatible pack without replacing the system intents', () => {
     const resources = createPreloadedResources();
-    const stylesheet = document.createElement('link');
-    stylesheet.rel = 'stylesheet';
-    stylesheet.href = resources.stylesheetHref!;
-    stylesheet.integrity = `sha256-${btoa(String.fromCharCode(...resources.stylesheetSha256!.match(/../g)!.map((byte) => parseInt(byte, 16))))}`;
-    stylesheet.dataset.kLoaded = 'true';
-    stylesheet.dataset.testBrandPack = 'true';
-    document.head.appendChild(stylesheet);
+    installPreloadedStylesheet(resources);
     const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
 
     render(

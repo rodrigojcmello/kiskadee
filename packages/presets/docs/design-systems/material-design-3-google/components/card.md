@@ -18,6 +18,13 @@ elevation is 0dp for filled/outlined and 1dp for elevated.
 Checked cards can use secondary for the outline. These are source observations,
 not a requirement for a separate Kiskadee secondary intent.
 
+## Surface computation
+
+The portable pre-build uses Neutral Low (the Showcase base canvas) and Primary Highest (the
+strong brand canvas) as the two compositing backdrops in each supported segment/theme.
+Classifications are generated for each effective fill. Earlier mapping and promotion notes below
+document the origin of the paint and the formerly authored output labels.
+
 ## Kiskadee mapping
 
 Status: **Official adapted** for the surface/border/elevation separation;

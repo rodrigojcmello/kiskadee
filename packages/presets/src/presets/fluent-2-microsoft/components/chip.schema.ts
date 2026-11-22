@@ -134,35 +134,7 @@ export function createFluent2MicrosoftChipSchema({ c }: CreateChipSchemaArgs): C
     onVivid: { standard: { textColor: createIntentMap(theme, 'text') } }
   });
 
-  const createContentSurfaceContext = () =>
-    Object.fromEntries(
-      (['light', 'dark', 'darker'] as const).map((theme) => [
-        theme,
-        Object.fromEntries(
-          (['onSubtle', 'onVivid'] as const).map((input) => [
-            input,
-            {
-              standard: Object.fromEntries(
-                INTENTS.map((intent) => [
-                  intent,
-                  {
-                    high: { rest: 'onVivid', selected: 'onVivid', disabled: 'onSubtle' },
-                    medium: { rest: 'inherit' },
-                    low: { rest: 'inherit' },
-                    lowest: { rest: 'inherit' }
-                  }
-                ])
-              )
-            }
-          ])
-        )
-      ])
-    );
-
   return {
-    contentSurfaceContext: {
-      default: createContentSurfaceContext()
-    },
     elements: {
       e1: { name: 'chip-container' },
       e2: {

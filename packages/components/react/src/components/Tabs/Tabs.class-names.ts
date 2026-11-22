@@ -2,7 +2,8 @@ import {
   type ClassNameByElementJSON,
   stateActivator as cn,
   type EffectClassBucketJSON,
-  type RadiusMode
+  type RadiusMode,
+  type SurfaceContext
 } from '@kiskadee/core';
 import { isValidElement, type ReactNode } from 'react';
 import {
@@ -27,8 +28,12 @@ import type {
   TabsVisualContextValue
 } from './Tabs.types';
 
+export const tabsColorFallback = {
+  useFirstIntentFallback: true,
+  emphasisFallbackOrder: ['h', 'hh', 'm', 'l', 'll']
+} as const;
 export const DEFAULT_SCALE = 's:md:1';
-export const DEFAULT_EMPHASIS: TabsVisualContextValue['emphasis'] = 'medium';
+export const DEFAULT_EMPHASIS = 'medium';
 export const DEFAULT_INTENT = 'neutral';
 export const DEFAULT_VARIANT: TabsVisualContextValue['variant'] = 'line';
 
@@ -69,11 +74,12 @@ function resolveEffectBucketClassName(bucket: EffectClassBucketJSON | undefined)
 export function resolveIntentClasses(
   element: TabsClassesMap['e1'] | undefined,
   intent: string,
-  emphasis: TabsVisualContextValue['emphasis']
+  emphasis: TabsVisualContextValue['emphasis'],
+  surfaceContext?: SurfaceContext
 ): string {
   return resolveIntentClassName(element, intent, emphasis, {
-    useFirstIntentFallback: true,
-    emphasisFallbackOrder: ['h', 'hh', 'm', 'l', 'll']
+    ...tabsColorFallback,
+    surfaceContext
   });
 }
 
@@ -135,6 +141,7 @@ export function resolveElementClassName(
     scale: string;
     intent: string;
     emphasis: TabsVisualContextValue['emphasis'];
+    surfaceContext?: SurfaceContext;
     selected?: boolean;
     includeEffects?: boolean;
   }
@@ -148,10 +155,8 @@ export function resolveElementClassName(
         scale: options.scale,
         intent: options.intent,
         emphasis: options.emphasis,
-        intentOptions: {
-          useFirstIntentFallback: true,
-          emphasisFallbackOrder: ['h', 'hh', 'm', 'l', 'll']
-        }
+        surfaceContext: options.surfaceContext,
+        intentOptions: tabsColorFallback
       }),
       options.includeEffects === false ? '' : resolveEffectClasses(element),
       options.includeEffects === false || !shadowClass ? '' : cn.shadow,
@@ -407,6 +412,7 @@ export function resolveListClassName(options: {
   scale: string;
   intent: string;
   emphasis: TabsVisualContextValue['emphasis'];
+  surfaceContext?: SurfaceContext;
   tabWidth: TabsVisualContextValue['tabWidth'];
   tabShape: RadiusMode;
   variant: TabsVisualContextValue['variant'];
@@ -430,6 +436,7 @@ export function resolveListClassName(options: {
       variant: options.variant
     }),
     resolveElementClassName(options.elements.e1, {
+      surfaceContext: options.surfaceContext,
       scale: options.scale,
       intent: options.intent,
       emphasis: options.emphasis
@@ -452,10 +459,12 @@ export function resolveSeparatorClassName(options: {
   scale: string;
   intent: string;
   emphasis: TabsVisualContextValue['emphasis'];
+  surfaceContext?: SurfaceContext;
   variant: TabsVisualContextValue['variant'];
 }): string | undefined {
   return joinClassNames(
     resolveElementClassName(options.elements.e6, {
+      surfaceContext: options.surfaceContext,
       scale: options.scale,
       intent: options.intent,
       emphasis: options.emphasis
@@ -480,6 +489,7 @@ export function resolveTriggerClassName(options: {
   scale: string;
   intent: string;
   emphasis: TabsVisualContextValue['emphasis'];
+  surfaceContext?: SurfaceContext;
   tabWidth: TabsVisualContextValue['tabWidth'];
   tabShape: RadiusMode;
   variant: TabsVisualContextValue['variant'];
@@ -489,6 +499,7 @@ export function resolveTriggerClassName(options: {
 }): string | undefined {
   return joinClassNames(
     resolveElementClassName(options.elements.e2, {
+      surfaceContext: options.surfaceContext,
       scale: options.scale,
       intent: options.intent,
       emphasis: options.emphasis,
@@ -552,6 +563,7 @@ export function resolveBridgeTriggerClassName(options: {
   scale: string;
   intent: string;
   emphasis: TabsVisualContextValue['emphasis'];
+  surfaceContext?: SurfaceContext;
   tabWidth: TabsVisualContextValue['tabWidth'];
   tabShape: RadiusMode;
   selected: boolean;
@@ -564,8 +576,18 @@ export function resolveBridgeTriggerClassName(options: {
     ? (selectedShellElement ?? triggerElement)
     : triggerElement;
   const activeColorClassName = options.selected
-    ? resolveIntentClasses(selectedShellElement, options.intent, options.emphasis)
-    : resolveIntentClasses(triggerElement, options.intent, options.emphasis);
+    ? resolveIntentClasses(
+        selectedShellElement,
+        options.intent,
+        options.emphasis,
+        options.surfaceContext
+      )
+    : resolveIntentClasses(
+        triggerElement,
+        options.intent,
+        options.emphasis,
+        options.surfaceContext
+      );
   const activeRadiusClassName = resolveRadiusClassName(
     options.selected ? (selectedShellElement ?? triggerElement) : triggerElement,
     options.scale,
@@ -609,10 +631,12 @@ export function resolveLabelClassName(options: {
   scale: string;
   intent: string;
   emphasis: TabsVisualContextValue['emphasis'];
+  surfaceContext?: SurfaceContext;
   className?: string;
 }): string | undefined {
   return joinClassNames(
     resolveElementClassName(options.elements.e3, {
+      surfaceContext: options.surfaceContext,
       scale: options.scale,
       intent: options.intent,
       emphasis: options.emphasis
@@ -638,10 +662,12 @@ export function resolveIconClassName(options: {
   scale: string;
   intent: string;
   emphasis: TabsVisualContextValue['emphasis'];
+  surfaceContext?: SurfaceContext;
   className?: string;
 }): string | undefined {
   return joinClassNames(
     resolveElementClassName(options.elements.e4, {
+      surfaceContext: options.surfaceContext,
       scale: options.scale,
       intent: options.intent,
       emphasis: options.emphasis
@@ -668,6 +694,7 @@ export function resolveIndicatorClassName(options: {
   scale: string;
   intent: string;
   emphasis: TabsVisualContextValue['emphasis'];
+  surfaceContext?: SurfaceContext;
   tabShape: RadiusMode;
   indicator: TabsResolvedIndicator;
   variant: TabsVisualContextValue['variant'];
@@ -687,6 +714,7 @@ export function resolveIndicatorClassName(options: {
 
   return joinClassNames(
     resolveElementClassName(options.elements.e5, {
+      surfaceContext: options.surfaceContext,
       scale: options.scale,
       intent: options.intent,
       emphasis: options.emphasis,

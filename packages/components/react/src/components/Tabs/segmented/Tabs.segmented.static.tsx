@@ -24,6 +24,7 @@ type TabsSegmentedStaticBarEnhancerProps = {
  */
 function TabsSegmentedStaticIndicator() {
   const {
+    barSurface,
     selected,
     scale,
     intent,
@@ -76,6 +77,7 @@ function TabsSegmentedStaticIndicator() {
   }, [barRef, selected, updateIndicatorRect]);
 
   const indicatorClassName = resolveIndicatorClassName({
+    surfaceContext: barSurface,
     structural,
     elements,
     classNames,

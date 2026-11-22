@@ -66,15 +66,10 @@ not a claim that Material exposes the same serialized surface context.
 
 ## Surface context
 
-`contentSurfaceContext` is authored for every segment, theme, input context and intent from the
-coordinate the Chip actually paints. High and Selected use `onSubtle` when the authored fill is a
-light subtle family (including every `onVivid` high fill and Dark neutral high at D95); strong dark
-vivid fills use `onVivid` (Light high and Dark chromatic high on `onSubtle`). Medium is a filled
-subtle treatment and publishes `onSubtle`, including its Light-track fill under `onVivid`. Low and
-lowest Rest are transparent and publish `inherit`; their Selected descendants promote to the high
-coordinate. Disabled preserves the consumed `surface` context so descendants follow the same
-surrounding semantic surface. Omitted transient descendant context is inherited by the existing
-context model rather than inferred from luminance.
+Material Chip preserves its authored colors. For each available segment, theme, intent, emphasis and
+stable state, the Surface Builder classifies the Content/Select body (e2) and the Remove button (e5)
+separately. A transparent action inherits the enclosing surface. Partially transparent paint is
+composed over the Material Container reference before classification.
 
 ## Schema Mapping
 

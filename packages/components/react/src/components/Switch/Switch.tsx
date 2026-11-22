@@ -1,13 +1,22 @@
+import {
+  neutralMediumFallback,
+  resolveRegionPaint
+} from '../../shared/class-resolution/regionPaint.ts';
 import { withComponentResources } from '../../shared/contexts/ComponentResourceBoundary.tsx';
 import { useComponentScale } from '../../shared/contexts/DensityContext.tsx';
+import { useKiskadee } from '../../shared/contexts/KiskadeeContext.tsx';
 import { useControlCursorStyle } from '../../shared/contexts/useControlCursorStyle.ts';
+import { resolveRegionSurface, useRegionSurfaces } from '../../shared/contexts/useRegionSurface.ts';
 import './Switch.structural.scss';
 import './effects/thumb-shrink/SwitchThumbShrink.structural.scss';
 import { stateActivator as cn, resolveActivationFeedbackSetting } from '@kiskadee/core';
 import { HeadlessSwitch, useControlState } from '@kiskadee/react-headless';
 import { type ElementType, memo, type PointerEvent, useCallback, useMemo, useState } from 'react';
 import { mergeClassNamePatches } from '../../shared/class-resolution/classNames.ts';
-import { useSurfaceContext } from '../../shared/contexts/SurfaceContext.tsx';
+import {
+  SurfaceContextProvider,
+  useSurfaceContext
+} from '../../shared/contexts/SurfaceContext.tsx';
 import {
   hasSwitchActivationFeedbackEffect,
   useSwitchActivationFeedbackController,
@@ -361,15 +370,35 @@ function SwitchRoot(props: SwitchProps) {
   ]);
   const MotionThumb = motionEffect?.SwitchRuntimeMotionThumb;
   const Thumb: ElementType = MotionThumb ?? HeadlessSwitch.Thumb;
+  const { segment, theme } = useKiskadee();
+  const regions = useRegionSurfaces('switch', variant, mode);
+  const state = {
+    intent,
+    emphasis,
+    surfaceContext,
+    selected: motionController.visualControlState,
+    disabled: !!disabled || status === 'disabled',
+    pending: status === 'pending'
+  };
+  const trackPaint = resolveRegionPaint(elements.e2, state, neutralMediumFallback);
+  const trackSurface = resolveRegionSurface(regions?.e2, { ...trackPaint, segment, theme });
+  const thumbPaint = resolveRegionPaint(elements.e3, state, neutralMediumFallback);
+  const thumbSurface = resolveRegionSurface(regions?.e3, {
+    ...thumbPaint,
+    segment,
+    theme,
+    surfaceContext: trackSurface,
+    parent: trackPaint
+  });
   const iconNodes = hasIcons ? (
-    <>
+    <SurfaceContextProvider value={thumbSurface}>
       {icons?.rest ? (
         <HeadlessSwitch.Icon className="k-swt-e6a-a">{icons.rest}</HeadlessSwitch.Icon>
       ) : null}
       {icons?.selected ? (
         <HeadlessSwitch.Icon className="k-swt-e6b-a">{icons.selected}</HeadlessSwitch.Icon>
       ) : null}
-    </>
+    </SurfaceContextProvider>
   ) : null;
   const thumbProps = MotionThumb
     ? {

@@ -1,10 +1,10 @@
 import type { ComponentName } from '@kiskadee/core';
 
 export const surfaceStatuses = {
-  fix: { label: 'Fix pending', symbol: '⚠' },
-  decision: { label: 'Visual decision', symbol: '◇' },
+  derived: { label: 'Derived', symbol: '✓' },
+  delegated: { label: 'Delegated', symbol: '↳' },
+  inherited: { label: 'Inherited', symbol: '↳' },
   partial: { label: 'Partial', symbol: '◐' },
-  verified: { label: 'Verified', symbol: '✓' },
   unreviewed: { label: 'Awaiting review', symbol: '?' }
 } as const;
 
@@ -15,140 +15,119 @@ type SurfaceAuditRow = {
   details?: string[];
 };
 
-// Cross-preset findings from docs/reviews/surface-context-coverage.md.
-// Update the affected rows when a fix or design decision is verified.
+// All supported preset branches are audited in docs/reviews/surface-context-coverage.md.
 const components: Record<ComponentName, SurfaceAuditRow> = {
   accordion: {
     label: 'Accordion',
-    status: 'verified',
-    summary:
-      'In Fluent Light, the panel divider follows the Card frame. A subtle frame uses Low on both subtle and vivid pages.'
+    status: 'delegated',
+    summary: 'Card, CardAction and Container publish the frame, header and panel surfaces.',
+    details: [
+      'In Fluent Light the divider follows the Card frame. A subtle frame uses Low on either page background.'
+    ]
   },
   badge: {
     label: 'Badge',
-    status: 'decision',
-    summary: 'Check the icon inside a filled Badge.Mark.',
-    details: [
-      'In Carbon, Fluent Microsoft, iOS 27 and Material, a Neutral High mark in Light can place an independent icon on a dark fill while the icon inherits a subtle context.',
-      'Text badges and dots already consume the surrounding surface. Full-bleed marks use the supplied artwork.'
-    ]
+    status: 'derived',
+    summary: 'A contained Mark supplies the surface behind its icon.',
+    details: ['Full-bleed artwork, text badges and dots retain their existing host context.']
   },
   bottomSheet: {
     label: 'BottomSheet',
-    status: 'decision',
-    summary: 'Panel verified. Review Carbon item highlights.',
+    status: 'derived',
+    summary: 'The dialog and each painted option row supply a surface.',
     details: [
-      'All 18 panel backgrounds checked resolve to onSubtle at rest.',
-      'Decide whether a child in a Carbon item should switch palettes during hover or press.'
+      'The portal establishes the initial subtle context. The scrim sits outside the dialog.'
     ]
   },
   button: {
     label: 'Button',
-    status: 'partial',
-    summary: 'Verified in Fluent Microsoft. Other presets need review.',
+    status: 'derived',
+    summary:
+      'Button fills determine the content surface in all active presets, including Fluent 2 Microsoft.',
     details: [
-      'All 1,080 Fluent Microsoft cases matched. Inline badges receive the button surface; external badges receive the surrounding surface.',
-      'Review Carbon selection and disabled states, iOS 27 fills and Material High in Dark. Some translucent fills need reference backgrounds. Fluent Kiskadee also uses gradients and dynamic colors.'
+      'Inline badges receive the button surface; external badges receive the surrounding surface.',
+      'Fluent 2 Kiskadee is a legacy preset kept for its gradient button example. Its 14 unresolved recipes are excluded from the active status.'
     ]
   },
   card: {
     label: 'Card',
-    status: 'partial',
-    summary: 'Fluent Microsoft is verified. Review CardAction states.',
-    details: [
-      'Card uses the Container surface at rest. The Fluent calculation also covers CardAction states.',
-      'Compare disabled Carbon actions, iOS 27 Primary Highest in Dark and Darker, and the selected Elegant card.'
-    ]
+    status: 'derived',
+    summary: 'Rest comes from Container. CardAction classifies its own interaction fills.'
   },
   chip: {
     label: 'Chip',
-    status: 'decision',
-    summary: 'Compare the primary action and Remove separately.',
+    status: 'derived',
+    summary: 'Content and Select share a surface. Remove owns a separate surface.',
     details: [
-      'In Fluent Light on vivid, a Primary Medium chip paints a pale blue fill while its inline badge still receives onVivid.',
-      'Remove paints its own background. Check its icon in Fluent, Carbon and Material; translucent Material fills need reference backgrounds.'
+      'In Fluent Light the selected Primary Medium chip supplies onSubtle over white and blue cards. A transparent Lowest chip at rest inherits the card surface.'
     ]
   },
   container: {
     label: 'Container',
-    status: 'partial',
-    summary: 'Fluent Microsoft is verified. Review dark fills in Carbon and iOS 27.',
-    details: [
-      'Compare Carbon Neutral High in Dark and iOS 27 Primary Highest in Dark and Darker.',
-      'Choose canonical backgrounds per preset and theme before migrating translucent recipes.'
-    ]
+    status: 'derived',
+    summary: 'The Rest fill determines the surface received by children.'
   },
   dropdown: {
     label: 'Dropdown',
-    status: 'decision',
-    summary: 'Panel verified. Review Carbon item highlights.',
+    status: 'derived',
+    summary: 'Each option receives the panel surface and can publish its own fill.',
     details: [
-      'All 20 panel backgrounds checked resolve to onSubtle at rest.',
-      'A Carbon item can cross the vivid threshold during hover or press. Decide how a nested badge should render.'
+      'An unpainted inline panel inherits its surroundings. Portaled Dropdown.Content establishes an independent overlay boundary.'
     ]
   },
-  icon: { label: 'Icon', status: 'verified', summary: 'The glyph uses the surrounding surface.' },
+  icon: { label: 'Icon', status: 'inherited', summary: 'The glyph uses the surrounding surface.' },
   layout: {
     label: 'Layout',
-    status: 'verified',
+    status: 'inherited',
     summary: 'Children inherit the surrounding surface.'
   },
   progress: {
     label: 'Progress',
-    status: 'verified',
+    status: 'inherited',
     summary: 'The track and indicator have no independent content slots.'
   },
   select: {
     label: 'Select',
-    status: 'decision',
-    summary: 'Popup fixed. Review rich content in the closed control.',
-    details: [
-      'Options on a painted Dropdown panel receive onSubtle. A list with no panel fill keeps its surrounding context.',
-      'Compare a badge inside a closed Fluent Outline or Borderless control on vivid. Sandbox translucent triggers still need reference backgrounds.'
-    ]
+    status: 'derived',
+    summary:
+      'The closed value follows the control and trigger. The open list delegates to Dropdown.'
   },
   separator: {
     label: 'Separator',
-    status: 'verified',
-    summary: 'The line consumes the surrounding surface.'
+    status: 'inherited',
+    summary: 'The decorative line consumes the surrounding surface.'
   },
   slider: {
     label: 'Slider',
-    status: 'decision',
-    summary: 'Review the thumb icon and the value tooltip.',
-    details: [
-      'Identify the fill behind a custom thumb icon. In Fluent Light, a custom tooltip value can inherit onSubtle over a dark fill.',
-      'The same value formatter can also render outside the tooltip on the surrounding surface.'
-    ]
+    status: 'derived',
+    summary: 'The thumb icon and value tooltip use their respective fills.',
+    details: ['External labels and value summaries stay on the host surface.']
   },
   switch: {
     label: 'Switch',
-    status: 'decision',
-    summary: 'Review custom icons inside the Fluent thumb.',
-    details: [
-      'In Fluent Light the Neutral Medium thumb changes from dark at rest to white when selected. The outer label stays on the surrounding surface.'
-    ]
+    status: 'derived',
+    summary:
+      'Thumb icons follow the thumb fill over the track. The external label stays on the host surface.'
   },
   tabs: {
     label: 'Tabs',
-    status: 'decision',
-    summary: 'Review the fill behind selected Material tabs.',
+    status: 'derived',
+    summary: 'The selected tab and its bar each publish a surface.',
     details: [
-      'Check Box, Segmented and Bridge separately. A Box indicator can fill the selected tab behind a custom badge. The content panel inherits its own surrounding surface.'
+      'Box and Segmented account for the indicator behind the selected tab. Bridge uses its selected shell. Line and Dot indicators cover only part of a tab. The content panel inherits the surrounding surface.'
     ]
   },
   text: {
     label: 'Text',
-    status: 'verified',
+    status: 'inherited',
     summary: 'Inline content shares the surrounding surface.'
   },
   textField: {
     label: 'TextField',
-    status: 'fix',
-    summary: 'Fluent can paint Medium when High is requested and pass the wrong context.',
+    status: 'derived',
+    summary: 'The control, Start and End each supply the surface behind their content.',
     details: [
-      'Align the context fallback with the painted control. In Fluent Light on vivid, a Borderless High field paints a subtle fill but its Lowest end slot can still receive onVivid.',
-      'The authored Fluent emphasis matched across all 300 control and 600 region cases. Some Material fills need reference backgrounds.'
+      'The shell uses its effective paint recipe. A translucent region uses the local shell background. A connected sibling action stays on the surrounding surface.'
     ]
   }
 };

@@ -2,6 +2,7 @@ import { mkdtemp, readdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { validateSchemaComponentContracts } from '@kiskadee/core';
+import { schema as elegant } from '@kiskadee/presets/src/presets/elegant/index.ts';
 import { schema as fluent } from '@kiskadee/presets/src/presets/fluent-2-microsoft/index.ts';
 import { schema as material } from '@kiskadee/presets/src/presets/material-3-google/index.ts';
 import { describe, expect, it } from 'vitest';
@@ -37,7 +38,7 @@ describe('portable surface contexts', () => {
       await generateSurfaceContexts([source]);
       await checkSurfaceContexts([source]);
       const edited = await readSurfaceContexts(source);
-      edited.components.button!.contentSurfaceContext!.default!.light!.onSubtle!.standard.primary!
+      edited.components.button!.regions!.e1!.output.default!.light!.onSubtle!.standard.primary!
         .high!.rest = 'onSubtle';
       const modifiedBytes = `${JSON.stringify(edited, null, 2)}\n`;
       await writeFile(path, modifiedBytes);
@@ -65,7 +66,7 @@ describe('portable surface contexts', () => {
         contentSurfaceContext: 'onVivid'
       });
       expect(
-        card?.contentSurfaceContext?.[segment]?.light?.onSubtle?.standard.primary?.highest
+        card?.regions?.e1?.output?.[segment]?.light?.onSubtle?.standard.primary?.highest
       ).toEqual({
         rest: 'onVivid',
         disabled: 'onSubtle'
@@ -82,7 +83,7 @@ describe('portable surface contexts', () => {
         });
         expect(!!anchor?.rest).toBe(true);
         expect(
-          card?.contentSurfaceContext?.[segment]?.[theme]?.onSubtle?.standard.primary?.highest?.rest
+          card?.regions?.e1?.output?.[segment]?.[theme]?.onSubtle?.standard.primary?.highest?.rest
         ).toBe('onSubtle');
         expect(
           card?.options?.canonicalSurfaces[segment]?.[theme]?.find(
@@ -107,41 +108,35 @@ describe('portable surface contexts', () => {
     ).not.toHaveProperty('rest');
   });
 
-  it('keeps authored maps for other presets and carries both TextField region maps', () => {
+  it('derives the published appearance from paint for other presets and both TextField regions', () => {
     const authored = buildSurfaceContextsArtifact(preset(material));
-    expect(authored.components.container?.contentSurfaceContext).toEqual(
-      material.components.container?.contentSurfaceContext
-    );
-    expect(authored.components.button?.contentSurfaceContext).toEqual(
-      material.components.button?.contentSurfaceContext
-    );
-
-    const fluentOutput = buildSurfaceContextsArtifact(preset(fluent));
-    const outline = fluentOutput.components.textField?.variants.standard?.modes.outline;
-    expect(outline).toEqual({
-      contentSurfaceContext:
-        fluent.components.textField?.variants.standard?.modes.outline?.contentSurfaceContext,
-      contentRegionSurfaceContext:
-        fluent.components.textField?.variants.standard?.modes.outline?.contentRegionSurfaceContext
-    });
-    expect(outline?.contentSurfaceContext).toBeDefined();
-    expect(outline?.contentRegionSurfaceContext).toBeDefined();
+    expect(
+      authored.components.button!.regions!.e1!.output.default!.dark!.onSubtle!.standard.primary!
+        .high!.rest
+    ).toBe('onVivid');
+    expect(authored.components.container).not.toHaveProperty('contentSurfaceContext');
+    const outline = buildSurfaceContextsArtifact(preset(fluent)).components.textField?.variants
+      ?.standard?.modes?.outline;
+    expect(outline?.regions?.e3?.output).toBeDefined();
+    expect(outline?.regions?.e8?.output).toBeDefined();
+    expect(outline).not.toHaveProperty('contentSurfaceContext');
+    expect(outline).not.toHaveProperty('contentRegionSurfaceContext');
   });
 
   it.each([
     { name: 'empty catalog', canonicalSurfaces: {} },
     { name: 'empty segment', canonicalSurfaces: { default: {} } }
   ])('omits an optional manual $name without rejecting the artifact', ({ canonicalSurfaces }) => {
-    const source = preset(structuredClone(material));
-    source.schema.components.container!.options!.canonicalSurfaces = canonicalSurfaces;
-
+    const source = preset(structuredClone(elegant));
+    source.schema.components.container!.options = { canonicalSurfaces };
     const artifact = buildSurfaceContextsArtifact(source);
     expect(() => validateSurfaceContextsArtifact(artifact, source)).not.toThrow();
     expect(artifact.components.container?.options?.canonicalSurfaces).toBeUndefined();
     expect(artifact.components.card?.options?.canonicalSurfaces).toBeUndefined();
-    expect(artifact.components.container?.contentSurfaceContext).toEqual(
-      source.schema.components.container?.contentSurfaceContext
-    );
+    expect(
+      artifact.components.container?.regions?.e1?.output?.default?.light?.onSubtle?.standard.neutral
+        ?.medium?.rest
+    ).toBe('onSubtle');
   });
 
   it('still rejects the omission of a populated authored catalog', () => {
@@ -182,13 +177,13 @@ describe('portable surface contexts', () => {
       );
 
       const emptyDerived = structuredClone(artifact);
-      emptyDerived.components.button!.contentSurfaceContext = {};
+      emptyDerived.components.button!.regions!.e1!.output = {};
       await writeFile(path, JSON.stringify(emptyDerived), 'utf8');
       await expect(readSurfaceContexts(source, options)).rejects.toThrow(
         'derived surface map cannot be empty'
       );
 
-      await writeFile(path, JSON.stringify({ ...artifact, formatVersion: 2 }), 'utf8');
+      await writeFile(path, JSON.stringify({ ...artifact, formatVersion: 1 }), 'utf8');
       await expect(readSurfaceContexts(source, options)).rejects.toThrow(
         'unsupported portable surface format'
       );

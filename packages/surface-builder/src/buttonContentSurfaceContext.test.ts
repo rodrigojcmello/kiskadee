@@ -49,7 +49,7 @@ describe('Button content surface derivation', () => {
       schema: fluent,
       schemaPath: 'fluent-2-microsoft.schema.ts'
     });
-    expect(artifact.components.button!.contentSurfaceContext).toEqual(output);
+    expect(artifact.components.button!.regions!.e1!.output).toEqual(output);
     expect(fluent.components.button!.contentSurfaceContext).toBe(source);
   });
 
@@ -127,13 +127,26 @@ describe('Button content surface derivation', () => {
 
   it.each<Color>([
     'var(--unresolved)',
-    { kind: 'linear', angle: 90, stops: [{ color: '#fff', position: 0 }] }
-  ])('rejects unsupported resolved paint %j at the recipe path', (paint) => {
+    {
+      kind: 'linear',
+      angle: 90,
+      stops: [
+        { color: '#fff', position: 0 },
+        { color: '#000', position: 100 }
+      ]
+    }
+  ])('preserves unresolved paint %j as an explicit diagnostic and inherited context', (paint) => {
     const schema = structuredClone(fluent);
     lightPaint(schema).onSubtle.standard.boxColor!.primary!.high!.rest = structuredClone(paint);
-    expect(() => resolveButtonContentSurfaceContext(schema)).toThrow(
-      /palettes\.default\.light\.onSubtle\.standard\.boxColor\.primary\.high\.rest: expected a resolved HEX/
-    );
+    const artifact = buildSurfaceContextsArtifact({ key: 'test', schema, schemaPath: 'test.ts' });
+    expect(artifact.diagnostics).toContainEqual({
+      path: 'components.button.elements.e1.palettes.default.light.onSubtle.standard.boxColor.primary.high.rest',
+      reason: typeof paint === 'string' ? 'runtime-color' : 'mixed-gradient'
+    });
+    expect(
+      artifact.components.button!.regions!.e1!.output!.default!.light!.onSubtle!.standard.primary!
+        .high!.rest
+    ).toBe('inherit');
   });
 
   it('requires one opaque reference per context in each derived segment and theme', () => {
@@ -144,14 +157,14 @@ describe('Button content surface derivation', () => {
     container.options!.canonicalSurfaces!.teams!.darker = references.filter(
       ({ referenceFor }) => referenceFor !== 'onVivid'
     );
-    expect(() => resolveButtonContentSurfaceContext(schema)).toThrow(
-      /canonicalSurfaces\.teams\.darker: expected exactly one referenceFor "onVivid"/
-    );
+    expect(() =>
+      buildSurfaceContextsArtifact({ key: 'test', schema, schemaPath: 'test.ts' })
+    ).toThrow(/canonicalSurfaces\.teams\.darker.*onVivid/);
     container.options!.canonicalSurfaces!.teams!.darker = references;
     container.elements.e1.palettes!.teams!.darker!.onSubtle.standard.boxColor.primary!
       .highest!.rest = '#34386f80';
-    expect(() => resolveButtonContentSurfaceContext(schema)).toThrow(
-      /palettes\.teams\.darker\.onSubtle\.standard\.boxColor\.primary\.highest\.rest: canonical surface reference must be opaque/
-    );
+    expect(() =>
+      buildSurfaceContextsArtifact({ key: 'test', schema, schemaPath: 'test.ts' })
+    ).toThrow(/canonicalSurfaces\.teams\.darker.*opaque/);
   });
 });

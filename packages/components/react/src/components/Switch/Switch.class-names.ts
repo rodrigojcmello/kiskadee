@@ -26,6 +26,7 @@ import {
   resolveRadiusClassName as resolveSharedRadiusClassName,
   resolveScaleClassName as resolveSharedScaleClassName
 } from '../../shared/class-resolution/classNames.ts';
+import { neutralMediumFallback } from '../../shared/class-resolution/regionPaint.ts';
 import type {
   SwitchClassesMap,
   SwitchClassNames,
@@ -69,9 +70,7 @@ export function resolveIntentClasses(
 ): string {
   return resolveIntentClassName(element, intent, emphasis, {
     surfaceContext,
-    fallbackIntent: 'neutral',
-    useFirstIntentFallback: true,
-    emphasisFallbackOrder: ['m', 'h', 'hh', 'l', 'll']
+    ...neutralMediumFallback
   });
 }
 
@@ -93,9 +92,7 @@ export function elem(
     surfaceContext: options.surfaceContext,
     intentOptions: {
       surfaceContext: options.surfaceContext,
-      fallbackIntent: 'neutral',
-      useFirstIntentFallback: true,
-      emphasisFallbackOrder: ['m', 'h', 'hh', 'l', 'll']
+      ...neutralMediumFallback
     }
   });
 }

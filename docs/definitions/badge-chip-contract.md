@@ -163,11 +163,11 @@ sparse state precedence is `disabled > pending > selected > rest`. A missing sta
 a missing map branch preserves the consumed context; explicit `inherit` also preserves it.
 Unsupported `onVivid` palette authorship remains unsupported and must not fall back to `onSubtle`.
 
-Only components that create a semantic descendant surface publish a Provider. Button and Chip
-publish their produced surface. Card publishes its authored content surface. Portaled Dropdown and
-BottomSheet surfaces reset descendants to `onSubtle` instead of inheriting the trigger's surface.
-An official relation may republish the host's consumed context when its descendant renders outside
-the produced content surface; `Button.Badge` does this for its four external placements.
+The portable pre-build resolves each painted region. Chip Content and Select publish the output of
+`e2`; their inline Badge consumes it. Remove is a sibling and publishes the output of `e5` to its
+own icon. Contained Badge.Mark uses its capsule fill for the supplied glyph. An external Button.Badge
+consumes the surface outside the Button. The existing independent overlay boundary and row rules are
+documented in [React Surface Context](../../packages/components/react/docs/definitions/surface-context.md).
 
 ## Project ownership
 

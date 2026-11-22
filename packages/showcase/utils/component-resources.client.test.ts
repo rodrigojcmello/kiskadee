@@ -134,7 +134,7 @@ it('does not expose metadata until CSS is ready, and retries a rejected resource
 it('retries invalid palette envelopes and merges selected TextField regions into the common modes', async () => {
   const manifest = {
     formatVersion: 3,
-    revision: 'surface-v4',
+    revision: 'surface-v5',
     components: { textField: { artifacts: { metadata: 'text-field.json' } } }
   } as Manifest;
   const requests: string[] = [];
@@ -159,7 +159,7 @@ it('retries invalid palette envelopes and merges selected TextField regions into
       }
       attempts++;
       return Response.json({
-        formatVersion: attempts === 1 ? 3 : 4,
+        formatVersion: attempts === 1 ? 4 : 5,
         component: 'textField',
         styles: [],
         config: {
@@ -167,8 +167,12 @@ it('retries invalid palette envelopes and merges selected TextField regions into
             standard: {
               modes: {
                 outline: {
-                  sc: { s: { s: { neutral: { l: { r: 'i' } } } } },
-                  sr: { v: { s: { neutral: { m: { r: attempts === 2 ? 'invalid' : 'v' } } } } }
+                  sc: 'e3',
+                  sr: 'e8',
+                  g: {
+                    e3: { s: { s: { neutral: { l: { r: 'i' } } } } },
+                    e8: { v: { s: { neutral: { m: { r: attempts === 2 ? 'invalid' : 'v' } } } } }
+                  }
                 }
               }
             }
@@ -178,7 +182,7 @@ it('retries invalid palette envelopes and merges selected TextField regions into
     })
   );
   const prepare = () =>
-    prepareComponentResources('surface-v4', manifest, 'textField', 'teams', 'dark');
+    prepareComponentResources('surface-v5', manifest, 'textField', 'teams', 'dark');
   await expect(prepare()).rejects.toThrow('Invalid component palette');
   await expect(prepare()).rejects.toThrow('Invalid compact surface code');
   const result = await prepare();
@@ -189,6 +193,7 @@ it('retries invalid palette envelopes and merges selected TextField regions into
         modes: {
           outline: {
             options: { focusRingColorSource: 'field' },
+            regions: { e3: { output: expect.any(Object) }, e8: { output: expect.any(Object) } },
             contentSurfaceContext: {
               teams: { dark: { onSubtle: { standard: { neutral: { low: { rest: 'inherit' } } } } } }
             },

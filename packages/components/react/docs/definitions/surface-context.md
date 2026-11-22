@@ -19,9 +19,9 @@ in the Provider.
 
 - `surfaceContext` is the semantic surface a component consumes. The prop is an optional explicit
   override for that component.
-- `contentSurfaceContext` is the published output map used by a surface-owning component to
-  determine what its descendants consume. The build publishes either the authored values or the
-  result of a preset's explicit derivation policy in this same map shape.
+- The selected component palette publishes descendant outputs. A component with multiple
+  painted regions looks up the output for each element. Existing primary-surface readers use
+  the corresponding `contentSurfaceContext` map.
 
 `contentSurfaceContext` is serialized configuration, not a Provider value. At runtime the component
 selects one output from that map and publishes the resulting single value through
@@ -65,6 +65,12 @@ Output precedence is `disabled > pending > selected > rest`. Missing state outpu
 missing map branches and explicit `inherit` preserve the consumed context. Runtime resolution does
 not invent an `onSubtle` color fallback when the active preset lacks `onVivid` classes.
 
+Nested paint may depend on the underlying parent's actual recipe. A regional map can include
+an override keyed by the parent's consumed surface, color variant, effective intent, effective
+emphasis, and stable state. React selects the published override when it covers the local
+coordinate and otherwise uses the ordinary region map. Only the final semantic context is
+passed to independent descendants.
+
 CardAction uses the selection state resolved by headless-react, including uncontrolled selection,
 and accounts for native or projected disabled state before publishing its output. The visual layer
 does not maintain a second selection state.
@@ -99,24 +105,25 @@ explicit value only when they intentionally know more than the nearest semantic 
 
 ## Component Boundaries
 
-Button, Chip, and Card publish their descendant surface from `contentSurfaceContext`. Card's
+Button, Chip, and Card publish the descendant surface of their painted regions. Card's
 `canonicalSurfaces` catalog documents recommended recipes and ordering. The runtime reads only the
 published output map to propagate Surface Context.
+
+Optional Button BrandPacks supply paint for their own `brand.*` intents. A brand intent with
+no published surface output retains the surrounding context, even when a system intention
+with the same emphasis provides a different result.
 
 `Button.Badge` routes context by placement. Inline placements remain inside Button's produced
 surface. External placements republish the surface consumed by Button because their Badge renders
 outside that produced surface. An explicit `surfaceContext` on Badge still wins over either
 Provider; the relation never detects color, luminance, or DOM paint.
 
-Dropdown and BottomSheet reset their portaled surfaces to `onSubtle` so trigger ancestry does not
-leak into an independent overlay surface. A portal must either publish the semantic context of the
-surface it creates or deliberately reset it; DOM placement alone cannot preserve the trigger's
-visual surroundings.
-
-Dropdown.Content establishes this independent boundary when portaled. An inline Content keeps
-the local context. Dropdown.Surface can also be composed inside a Select listbox or Menu without
-Dropdown.Content. It publishes `onSubtle` when the current Web palette confirms a painted panel;
-otherwise its children retain the context at the composition site.
+The independent Dropdown.Content and BottomSheet portals start on a subtle backdrop. Each
+painted panel publishes its calculated result, and each item publishes the result of its
+own stable state on that panel. An inline Dropdown.Content keeps the local backdrop.
+Dropdown.Surface used directly in a Select listbox or Menu resolves its regional map against
+that composition's input. Transparent geometry preserves that input. The closed Select
+resolves the control, then the trigger, for its rich value or placeholder.
 
 ## Custom And Mixed Surfaces
 

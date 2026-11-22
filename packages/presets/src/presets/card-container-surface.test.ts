@@ -12,6 +12,7 @@ import { schema as material } from './material-3-google/material-3-google.schema
 import { schema as sandbox } from './sandbox/sandbox.schema.ts';
 import { schema as sandbox2 } from './sandbox-2/sandbox-2.schema.ts';
 import { schema as sandbox3 } from './sandbox-3/sandbox-3.schema.ts';
+import { readSurfaceCompanion } from './surface-companion.test-support.ts';
 
 type StateMap = Record<string, unknown>;
 type BoxColor = Record<string, Record<string, StateMap>>;
@@ -74,24 +75,20 @@ for (const [name, schema] of Object.entries({
 }
 
 it('keeps Card-only descendant context changes for selected and disabled states', () => {
-  const iosContainer = ios.components.container!;
-  const carbonContainer = carbon.components.container!;
-  if (isDerivedContainerComponent(iosContainer) || isDerivedContainerComponent(carbonContainer)) {
-    throw new Error('Expected manual Container contexts');
-  }
+  const iosOutputs = readSurfaceCompanion('ios-27-apple');
   expect(
-    ios.components.card?.contentSurfaceContext?.default?.light?.onSubtle?.standard?.neutral?.lowest
-      ?.selected
+    iosOutputs.card.regions.e1.output.default?.light?.onSubtle?.standard.neutral?.lowest?.selected
   ).toBe('onVivid');
   expect(
-    iosContainer.contentSurfaceContext?.default?.light?.onSubtle?.standard?.neutral?.lowest?.rest
+    iosOutputs.container.regions.e1.output.default?.light?.onSubtle?.standard.neutral?.lowest?.rest
   ).toBe('onSubtle');
+  const carbonOutputs = readSurfaceCompanion('carbon-ibm');
   expect(
-    carbon.components.card?.contentSurfaceContext?.default?.light?.onSubtle?.standard?.primary
-      ?.highest?.disabled
-  ).toBe('onSubtle');
+    carbonOutputs.card.regions.e1.output.default?.light?.onSubtle?.standard.neutral?.lowest
+      ?.disabled
+  ).toBe('onVivid');
   expect(
-    carbonContainer.contentSurfaceContext?.default?.light?.onSubtle?.standard?.primary?.highest
+    carbonOutputs.container.regions.e1.output.default?.light?.onSubtle?.standard.neutral?.lowest
       ?.rest
-  ).toBe('onVivid');
+  ).toBe('onSubtle');
 });

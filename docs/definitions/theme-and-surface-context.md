@@ -50,8 +50,7 @@ does not depend on claiming that contextual styling exists only here.
 
 ## Ownership and related contracts
 
-This definition owns the relationship between the two axes. Presets own their concrete recipes and
-source evidence, including any choice to derive the context a component produces.
+This definition owns the relationship between the two axes. Presets own their concrete paint recipes, canonical backdrops and source evidence. The portable pre-build maps the existing anatomy to its painted regions and derives descendant context for each stable state. A legacy declaration supplies a fallback only for an indeterminate region.
 [Surface Builder](../../packages/surface-builder/README.md) materializes those outputs in one
 portable artifact per preset. Platform builders publish the relevant maps for runtime consumers.
 Framework code consumes semantic outputs without inspecting rendered colors.
