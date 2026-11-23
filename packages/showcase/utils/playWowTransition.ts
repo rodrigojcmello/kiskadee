@@ -3,7 +3,7 @@ const timers = new WeakMap<Element, number>();
 export function playWowTransition(durationMs = 900): void {
   if (typeof document === 'undefined') return;
 
-  for (const root of document.querySelectorAll('.s-content')) {
+  for (const root of document.querySelectorAll('[data-showcase-transition-host]')) {
     const previous = timers.get(root);
     if (previous !== undefined) window.clearTimeout(previous);
     root.classList.add('s-wow');

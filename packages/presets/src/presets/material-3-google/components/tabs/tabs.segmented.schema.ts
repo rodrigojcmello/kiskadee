@@ -18,7 +18,7 @@ export function createMaterial3GoogleTabsSegmentedVariant({
             rest: {
               ref:
                 surface === 'onVivid'
-                  ? c.ref(segment, 'l', 'primary', 'vivid')
+                  ? c.ref(segment, theme, 'primary', 'vivid')
                   : tabWhite(c, segment, theme)
             }
           }
@@ -106,7 +106,7 @@ export function createMaterial3GoogleTabsSegmentedVariant({
                 surface === 'onVivid'
                   ? { rest: tabWhite(c, segment, theme) }
                   : {
-                      rest: c.ref(segment, 'l', 'primary', 'vivid'),
+                      rest: c.ref(segment, theme, 'primary', 'vivid'),
                       hover: c.ref(segment, 'l', 'primary', 'vivid', 1),
                       pressed: c.ref(segment, 'l', 'primary', 'vivid', 2)
                     }

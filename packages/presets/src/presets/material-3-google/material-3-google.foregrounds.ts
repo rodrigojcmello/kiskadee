@@ -13,7 +13,7 @@ export function createMaterial3GoogleForegrounds({ c, segmentNames }: Args): Sch
         const rest = deep
           ? c(segment, track, role, track === 'l' ? 65 : 85)
           : c.ref(segment, track, role, 'vivid', track === 'd' && role !== 'neutral' ? 6 : 0);
-        const white = c(segment, 'l', 'primitive.black.v1', 0);
+        const white = c(segment, track, 'primitive.black.v1', track === 'l' ? 0 : 100);
         const foreground = (value: typeof rest) => ({
           high: { rest: value, pending: withAlpha(value, 70), disabled: withAlpha(value, 38) },
           medium: { rest: withAlpha(value, 68), disabled: withAlpha(value, 38) },

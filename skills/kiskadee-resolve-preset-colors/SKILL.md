@@ -27,7 +27,11 @@ official semantic token or component
   preset's primitive-color source before referencing them from a schema.
 - Do not silently choose a visually similar family or tone. If evidence or a mapping is missing,
   complete the evidence and tonal mapping first.
-- Resolve Light and Dark independently. They may legitimately use different tonal positions.
+- Apply [Theme of origin](../../packages/presets/docs/definitions/tonal-color-contract.md#theme-of-origin).
+  Trace the destination palette, segment, bound primitive and source track before resolving.
+  For an origin-only migration, compare exact values and alpha in every segment and state.
+  If no exact equivalent exists, list the source role, tone and HEX for the owner. Keep that
+  recipe pending. Run `pnpm check:preset-colors` to check authored cross-track dependencies.
 
 The no-literal rule includes white, black, transparent colors, overlays, focus colors, and shadow
 colors. In an FRF preset, express them as physical `cap` locators with alpha. If the schema contract

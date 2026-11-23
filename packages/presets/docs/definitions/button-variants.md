@@ -1,5 +1,24 @@
 # Button Variants
 
+## White buttons on dark surfaces
+
+Choose the intent from the action first. For example, a primary “Buy” action keeps
+`intent="primary"` when the user switches themes. On a dark brand panel in a Light theme
+or on a dark surface in a Dark theme, a white or near-white fill can give that action
+strong visual prominence. A secondary action may also use a light Neutral recipe.
+Changing “Buy” to Neutral solely to obtain that fill would give it a different semantic role.
+
+Prefer `primary.high` when a design system calls for a prominent white primary button.
+Choose Standard if white is the usual presentation on that surface, or Alternative if the
+usual presentation is the brand color and white is a second treatment of the same priority.
+An authored `highest` makes sense when the design system distinguishes a priority above
+High in real compositions. A desire for a third fill color alone does not establish that
+distinction. Evaluate the button next to actual supporting actions when deciding what draws
+attention. This is preset-authoring guidance.
+
+See the [Fluent Dark decision](../design-systems/fluent-2-microsoft/components/button.md#dark-primary-high-decision)
+and the [deferred emphasis fallback](../../../../docs/proposals/button-emphasis-fallback.md).
+
 ## Subtle as Low-Emphasis Base
 
 Kiskadee treats `subtle` as the low-emphasis base for button styling. The

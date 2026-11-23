@@ -34,7 +34,7 @@ const COMPLEMENTARY_SURFACES = {
     neutralLow: neutral(5),
     neutralMedium: neutral(2),
     primaryMedium: primary(9),
-    primaryHighest: primary(65)
+    primaryHighest: primary(10)
   },
   darker: {
     track: 'd',
@@ -67,9 +67,11 @@ function resolveColor(
 export function createFluent2MicrosoftContainerSchema({
   elements,
   canonicalSurfaces,
+  sourceSegment,
   c,
   segmentNames
 }: {
+  sourceSegment: 'default' | 'teams';
   elements: DerivedContainerComponent['elements'];
   canonicalSurfaces: DerivedContainerComponent['options']['canonicalSurfaces'];
   c: Fluent2MicrosoftColorResolver;
@@ -83,6 +85,7 @@ export function createFluent2MicrosoftContainerSchema({
 
   for (const segment of segmentNames) {
     for (const theme of ['light', 'dark', 'darker'] as const) {
+      const legacyTeamsHighest = sourceSegment === 'teams' && theme === 'dark';
       const recipe = COMPLEMENTARY_SURFACES[theme];
       for (const context of ['onSubtle', 'onVivid'] as const) {
         const palette = container.elements.e1.palettes[segment]?.[theme]?.[context]?.standard;
@@ -109,8 +112,8 @@ export function createFluent2MicrosoftContainerSchema({
             rest: resolveColor(
               c,
               segment,
-              theme === 'dark' ? 'l' : recipe.track,
-              recipe.primaryHighest
+              legacyTeamsHighest ? 'l' : recipe.track,
+              legacyTeamsHighest ? primary(65) : recipe.primaryHighest
             )
           }
         };
@@ -120,6 +123,9 @@ export function createFluent2MicrosoftContainerSchema({
       if (canonical && canonicalByTheme) {
         canonicalByTheme[theme] = [
           ...canonical,
+          ...(theme === 'dark'
+            ? [{ intent: 'primaryComplementary', emphasis: 'medium' } as const]
+            : []),
           {
             intent: 'primaryComplementary',
             emphasis: 'highest'

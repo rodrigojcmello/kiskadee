@@ -1,6 +1,6 @@
 import { type BadgeIntent, primitive, type Schema } from '@kiskadee/core';
 import { buildBySegment } from '../../../utils/buildBySegment.ts';
-import type { PresetColorGetter } from '../../../utils/presetColor.ts';
+import { type PresetColorGetter, physicalTone } from '../../../utils/presetColor.ts';
 
 type Material3GoogleSegmentName = 'default' | 'dynamic' | 'purple';
 type BadgeComponent = NonNullable<Schema<'purple'>['components']['badge']>;
@@ -45,10 +45,20 @@ function createBadgeIntentSchema({
   const role = `badge.${intent}` as BadgeRole;
   const themeShortcut: ThemeShortcut = theme === 'light' ? 'l' : 'd';
   const lightSurface = context === 'onVivid';
-  const family = (reference: 'subtle' | 'vivid', offset = 0, alpha?: number) =>
-    c.ref(segment, lightSurface ? 'l' : themeShortcut, role, reference, offset, alpha);
+  const family = (reference: 'subtle' | 'vivid', offset = 0, alpha?: number) => {
+    const matchingAnchor =
+      (intent === 'primary' || intent === 'attention') && reference === 'vivid' && offset === 0;
+    const track = lightSurface && !matchingAnchor ? 'l' : themeShortcut;
+    return c.ref(segment, track, role, reference, offset, alpha);
+  };
   const physical = (polarity: 'light' | 'dark', alpha?: number) =>
-    c(segment, 'l', primitive('black', 'v1'), polarity === 'light' ? 0 : 100, alpha);
+    c(
+      segment,
+      themeShortcut,
+      primitive('black', 'v1'),
+      physicalTone(themeShortcut, polarity),
+      alpha
+    );
 
   // Material's badge is a compact filled status mark. The additional emphasis
   // positions complete Kiskadee's shared badge vocabulary using the same family.
@@ -105,15 +115,22 @@ export function createMaterial3GoogleBadgeSchema({
   segmentNames,
   transparent
 }: CreateMaterial3GoogleBadgeSchemaArgs): BadgeComponent {
-  const resolveTransparent = (segment: Material3GoogleSegmentName) =>
-    transparent ?? c(segment, 'l', primitive('black', 'v1'), 100, 0);
+  const resolveTransparent = (segment: Material3GoogleSegmentName, theme: ThemeName) =>
+    transparent ??
+    c(
+      segment,
+      theme === 'light' ? 'l' : 'd',
+      primitive('black', 'v1'),
+      theme === 'light' ? 100 : 0,
+      0
+    );
 
   const surfacePalette = (
     segment: Material3GoogleSegmentName,
     theme: ThemeName,
     context: SurfaceContext
   ) => {
-    const transparentColor = resolveTransparent(segment);
+    const transparentColor = resolveTransparent(segment, theme);
     return {
       boxColor: createIntentMap(
         INTENTS,
@@ -144,7 +161,7 @@ export function createMaterial3GoogleBadgeSchema({
           theme,
           intent,
           context,
-          transparent: resolveTransparent(segment)
+          transparent: resolveTransparent(segment, theme)
         }).text
     )
   });
@@ -221,15 +238,14 @@ export function createMaterial3GoogleBadgeSchema({
   }));
 
   const ringPalettes = buildBySegment(segmentNames, (segment) => {
-    const transparentColor = resolveTransparent(segment);
     const ring = (theme: ThemeName, context: SurfaceContext) => {
       const polarity = context === 'onVivid' || theme === 'dark' ? 'light' : 'dark';
       const alpha = context === 'onVivid' ? 35 : theme === 'dark' ? 24 : 20;
       const value = c(
         segment,
-        'l',
+        theme === 'light' ? 'l' : 'd',
         primitive('black', 'v1'),
-        polarity === 'light' ? 0 : 100,
+        physicalTone(theme === 'light' ? 'l' : 'd', polarity),
         alpha
       );
       return createIntentMap(INTENTS, () => ({
@@ -239,23 +255,26 @@ export function createMaterial3GoogleBadgeSchema({
         lowest: { rest: value }
       }));
     };
-    const transparentMap = createIntentMap(INTENTS, () => ({
-      high: { rest: transparentColor },
-      medium: { rest: transparentColor },
-      low: { rest: transparentColor },
-      lowest: { rest: transparentColor }
-    }));
+    const transparentMap = (theme: ThemeName) => {
+      const transparentColor = resolveTransparent(segment, theme);
+      return createIntentMap(INTENTS, () => ({
+        high: { rest: transparentColor },
+        medium: { rest: transparentColor },
+        low: { rest: transparentColor },
+        lowest: { rest: transparentColor }
+      }));
+    };
     return {
       light: {
         onSubtle: {
           standard: {
-            boxColor: transparentMap,
+            boxColor: transparentMap('light'),
             borderColor: ring('light', 'onSubtle')
           }
         },
         onVivid: {
           standard: {
-            boxColor: transparentMap,
+            boxColor: transparentMap('light'),
             borderColor: ring('light', 'onVivid')
           }
         }
@@ -263,13 +282,13 @@ export function createMaterial3GoogleBadgeSchema({
       dark: {
         onSubtle: {
           standard: {
-            boxColor: transparentMap,
+            boxColor: transparentMap('dark'),
             borderColor: ring('dark', 'onSubtle')
           }
         },
         onVivid: {
           standard: {
-            boxColor: transparentMap,
+            boxColor: transparentMap('dark'),
             borderColor: ring('dark', 'onVivid')
           }
         }

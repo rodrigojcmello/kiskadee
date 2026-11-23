@@ -50,7 +50,7 @@ function contrast(first: string, second: string) {
 }
 
 describe('Fluent Button Low contextual surface', () => {
-  it('preserves Card Neutral Low on subtle surfaces in every intent, including Disabled resets', () => {
+  it('reveals the Dark host at Rest and uses the canonical Low surface for Disabled', () => {
     for (const segment of segments)
       for (const theme of themes) {
         const expected =
@@ -60,7 +60,8 @@ describe('Fluent Button Low contextual surface', () => {
           const fill =
             button.elements.e1!.palettes![segment]![theme]!.onSubtle!.standard.boxColor![intent]!
               .low!;
-          expect(fill.rest).toBe(expected);
+          if (theme === 'dark') expect(fill.rest).toMatch(/^#[0-9a-f]{6}00$/);
+          else expect(fill.rest).toBe(expected);
           expect(fill.disabled).toBe(expected);
           expect(fill.hover).toMatch(/^#[a-f0-9]{6}$/);
           expect(fill.pressed).toMatch(/^#[a-f0-9]{6}$/);
@@ -88,7 +89,17 @@ describe('Fluent Button Low contextual surface', () => {
             );
             const background = (state === 'selected' ? fill.selected!.rest : fill[state]) as string;
             expect
-              .soft(contrast(foreground, background), `${segment}/${theme}/${intent}/${state}`)
+              .soft(
+                contrast(
+                  foreground,
+                  composite(
+                    background,
+                    schema.components.container!.elements.e1.palettes![segment]![theme]!.onSubtle!
+                      .standard.boxColor!.neutral!.low!.rest as string
+                  )
+                ),
+                `${segment}/${theme}/${intent}/${state}`
+              )
               .toBeGreaterThanOrEqual(4.5);
           }
         }

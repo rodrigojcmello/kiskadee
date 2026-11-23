@@ -1,6 +1,6 @@
 import type { Color, Schema } from '@kiskadee/core';
 import { buildBySegment } from '../../../utils/buildBySegment.ts';
-import type { PresetColorGetter } from '../../../utils/presetColor.ts';
+import { type PresetColorGetter, physicalTone } from '../../../utils/presetColor.ts';
 
 type TextFieldComponent = NonNullable<Schema<'purple'>['components']['textField']>;
 type Material3GoogleSegmentName = 'default' | 'dynamic' | 'purple';
@@ -8,7 +8,7 @@ type Material3GoogleSegmentName = 'default' | 'dynamic' | 'purple';
 type CreateMaterial3GoogleTextFieldSchemaArgs = {
   c: PresetColorGetter<Material3GoogleSegmentName>;
   segmentNames: readonly Material3GoogleSegmentName[];
-  transparent: string;
+  transparent?: string;
 };
 
 type PaletteTheme = Record<string, Record<string, Record<string, unknown>>>;
@@ -34,9 +34,11 @@ function createVividSurfacePalette(
   group: TextFieldPaletteGroup,
   c: PresetColorGetter<Material3GoogleSegmentName>,
   segment: Material3GoogleSegmentName,
+  track: 'l' | 'd',
   transparent: string
 ): PaletteTheme[string] {
-  const white = (alpha?: number) => c(segment, 'l', 'primitive.black.v1', 0, alpha);
+  const white = (alpha?: number) =>
+    c(segment, track, 'primitive.black.v1', track === 'l' ? 0 : 100, alpha);
   const intentMap = (factory: (intent: Material3GoogleTextFieldIntent) => unknown) => ({
     neutral: { medium: factory('neutral') },
     error: { medium: factory('error') },
@@ -45,7 +47,7 @@ function createVividSurfacePalette(
   const semantic = (intent: 'error' | 'warning', offset = 0) =>
     c.ref(
       segment,
-      'l',
+      intent === 'error' && offset === 0 ? track : 'l',
       intent === 'error' ? 'textField.error' : 'textField.warning',
       'vivid',
       offset
@@ -112,7 +114,7 @@ function createVividSurfacePalette(
 function withVividSurfaceContexts<TPaletteGroupBundle extends PaletteGroupBundle>(
   paletteGroups: TPaletteGroupBundle,
   c: PresetColorGetter<Material3GoogleSegmentName>,
-  transparent: string
+  transparent: string | undefined
 ): TPaletteGroupBundle {
   const merged: PaletteGroupBundle = {};
   for (const groupName of Object.keys(paletteGroups)) {
@@ -127,7 +129,15 @@ function withVividSurfaceContexts<TPaletteGroupBundle extends PaletteGroupBundle
               groupName as TextFieldPaletteGroup,
               c,
               segmentName as Material3GoogleSegmentName,
-              transparent
+              themeName === 'light' ? 'l' : 'd',
+              transparent ??
+                c(
+                  segmentName as Material3GoogleSegmentName,
+                  themeName === 'light' ? 'l' : 'd',
+                  'primitive.black.v1',
+                  themeName === 'light' ? 100 : 0,
+                  0
+                )
             )
           }
         };
@@ -237,6 +247,8 @@ function createTextFieldElementPalettes({
   segmentNames,
   transparent
 }: CreateMaterial3GoogleTextFieldSchemaArgs) {
+  const transparentFor = (segment: Material3GoogleSegmentName, track: 'l' | 'd') =>
+    transparent ?? c(segment, track, 'primitive.black.v1', physicalTone(track, 'dark'), 0);
   return {
     control: buildBySegment(segmentNames, (s) => ({
       light: {
@@ -245,24 +257,24 @@ function createTextFieldElementPalettes({
             boxColor: {
               neutral: {
                 medium: {
-                  rest: transparent,
+                  rest: transparentFor(s, 'l'),
                   hover: fieldStateRef(c(s, 'l', 'neutral', 1)),
-                  focus: fieldStateRef(transparent),
+                  focus: fieldStateRef(transparentFor(s, 'l')),
                   disabled: fieldStateRef(c(s, 'l', 'neutral', 90, 8))
                 }
               },
               error: {
                 medium: {
-                  rest: transparent,
+                  rest: transparentFor(s, 'l'),
                   hover: fieldStateRef(c(s, 'l', 'redLike', 1)),
-                  focus: fieldStateRef(transparent)
+                  focus: fieldStateRef(transparentFor(s, 'l'))
                 }
               },
               warning: {
                 medium: {
-                  rest: transparent,
+                  rest: transparentFor(s, 'l'),
                   hover: fieldStateRef(c(s, 'l', 'yellowLike', 1)),
-                  focus: fieldStateRef(transparent)
+                  focus: fieldStateRef(transparentFor(s, 'l'))
                 }
               }
             },
@@ -300,24 +312,24 @@ function createTextFieldElementPalettes({
             boxColor: {
               neutral: {
                 medium: {
-                  rest: transparent,
+                  rest: transparentFor(s, 'd'),
                   hover: fieldStateRef(c(s, 'd', 'neutral', 8)),
-                  focus: fieldStateRef(transparent),
+                  focus: fieldStateRef(transparentFor(s, 'd')),
                   disabled: fieldStateRef(c(s, 'd', 'neutral', 10, 16))
                 }
               },
               error: {
                 medium: {
-                  rest: transparent,
+                  rest: transparentFor(s, 'd'),
                   hover: fieldStateRef(c(s, 'd', 'redLike', 10)),
-                  focus: fieldStateRef(transparent)
+                  focus: fieldStateRef(transparentFor(s, 'd'))
                 }
               },
               warning: {
                 medium: {
-                  rest: transparent,
+                  rest: transparentFor(s, 'd'),
                   hover: fieldStateRef(c(s, 'd', 'yellowLike', 10)),
-                  focus: fieldStateRef(transparent)
+                  focus: fieldStateRef(transparentFor(s, 'd'))
                 }
               }
             },
@@ -495,25 +507,25 @@ function createTextFieldElementPalettes({
               borderColor: {
                 neutral: {
                   medium: {
-                    rest: transparent,
-                    hover: fieldStateRef(transparent),
-                    focus: fieldStateRef(transparent),
-                    disabled: fieldStateRef(transparent),
-                    readOnly: fieldStateRef(transparent)
+                    rest: transparentFor(s, 'l'),
+                    hover: fieldStateRef(transparentFor(s, 'l')),
+                    focus: fieldStateRef(transparentFor(s, 'l')),
+                    disabled: fieldStateRef(transparentFor(s, 'l')),
+                    readOnly: fieldStateRef(transparentFor(s, 'l'))
                   }
                 },
                 error: {
                   medium: {
-                    rest: transparent,
-                    hover: fieldStateRef(transparent),
-                    focus: fieldStateRef(transparent)
+                    rest: transparentFor(s, 'l'),
+                    hover: fieldStateRef(transparentFor(s, 'l')),
+                    focus: fieldStateRef(transparentFor(s, 'l'))
                   }
                 },
                 warning: {
                   medium: {
-                    rest: transparent,
-                    hover: fieldStateRef(transparent),
-                    focus: fieldStateRef(transparent)
+                    rest: transparentFor(s, 'l'),
+                    hover: fieldStateRef(transparentFor(s, 'l')),
+                    focus: fieldStateRef(transparentFor(s, 'l'))
                   }
                 }
               }
@@ -551,25 +563,25 @@ function createTextFieldElementPalettes({
               borderColor: {
                 neutral: {
                   medium: {
-                    rest: transparent,
-                    hover: fieldStateRef(transparent),
-                    focus: fieldStateRef(transparent),
-                    disabled: fieldStateRef(transparent),
-                    readOnly: fieldStateRef(transparent)
+                    rest: transparentFor(s, 'd'),
+                    hover: fieldStateRef(transparentFor(s, 'd')),
+                    focus: fieldStateRef(transparentFor(s, 'd')),
+                    disabled: fieldStateRef(transparentFor(s, 'd')),
+                    readOnly: fieldStateRef(transparentFor(s, 'd'))
                   }
                 },
                 error: {
                   medium: {
-                    rest: transparent,
-                    hover: fieldStateRef(transparent),
-                    focus: fieldStateRef(transparent)
+                    rest: transparentFor(s, 'd'),
+                    hover: fieldStateRef(transparentFor(s, 'd')),
+                    focus: fieldStateRef(transparentFor(s, 'd'))
                   }
                 },
                 warning: {
                   medium: {
-                    rest: transparent,
-                    hover: fieldStateRef(transparent),
-                    focus: fieldStateRef(transparent)
+                    rest: transparentFor(s, 'd'),
+                    hover: fieldStateRef(transparentFor(s, 'd')),
+                    focus: fieldStateRef(transparentFor(s, 'd'))
                   }
                 }
               }

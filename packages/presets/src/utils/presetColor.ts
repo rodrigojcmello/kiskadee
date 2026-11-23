@@ -79,6 +79,12 @@ export type StrictPresetColorResolver<TSegmentName extends string, TEvidenceId e
   ): SolidColor;
 };
 
+/** Physical endpoints reverse between the two authored tonal tracks. */
+export function physicalTone(track: ThemeShortcut, polarity: 'light' | 'dark'): 0 | 100 {
+  const white = track === 'l' ? 0 : 100;
+  return polarity === 'light' ? white : white === 0 ? 100 : 0;
+}
+
 function parseSemanticRole(
   value: string
 ): { semantic: SemanticColor; variant: SemanticVariant } | null {
@@ -309,8 +315,7 @@ export function createStrictPresetColorResolver<
       assertPresetColorAlpha(locator.alpha);
 
       if (locator.mode === 'cap') {
-        const tone =
-          locator.polarity === 'light' ? (theme === 'l' ? 0 : 100) : theme === 'l' ? 100 : 0;
+        const tone = physicalTone(theme, locator.polarity);
         return color(args, segmentName, theme, locator.primitive, tone, locator.alpha);
       }
 

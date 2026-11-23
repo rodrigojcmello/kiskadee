@@ -39,7 +39,11 @@ export function createIos27AppleIconSchema({
                   onVivid: {
                     standard: {
                       textColor: {
-                        neutral: { medium: { rest: c('default', 'l', 'neutral', 0) } },
+                        neutral: {
+                          medium: {
+                            rest: c('default', track, 'neutral', theme === 'light' ? 0 : 100)
+                          }
+                        },
                         primary: {
                           medium: { rest: c.ref('default', 'l', 'icon.primary', 'subtle', -2) }
                         }

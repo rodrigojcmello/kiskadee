@@ -328,19 +328,24 @@ export function createIos27AppleBrandButtonOnVividIntent({
 export function createIos27AppleButtonOnVividIntent({
   family,
   neutralFamily,
+  scale,
   neutral = false
 }: {
   family: Ios27AppleButtonTonalFamily;
   neutralFamily: Ios27AppleButtonTonalFamily;
+  scale: Ios27AppleButtonFormulaScale;
   neutral?: boolean;
 }) {
-  const white = neutralFamily.color('l', 0);
-  const black = neutralFamily.color('l', 100);
+  const white = neutralFamily.color(scale, scale === 'l' ? 0 : 100);
+  const black = neutralFamily.color(scale, scale === 'l' ? 100 : 0);
   const overlay = (alpha: number) => withAlpha(black, alpha);
   const transparent = overlay(0);
   const disabledSurface = withAlpha(white, 12);
   const disabledForeground = withAlpha(white, 30);
-  const tintedForeground = family.reference('l', 'vivid', neutral ? 0 : 10);
+  const tintedForeground =
+    neutral && scale === 'd'
+      ? family.color('d', 5)
+      : family.reference('l', 'vivid', neutral ? 0 : 10);
   const onSurface = {
     rest: white,
     disabled: { ref: disabledForeground }
@@ -385,7 +390,7 @@ export function createIos27AppleButtonOnVividIntent({
     },
     textColor: {
       high: {
-        rest: family.reference('l', 'vivid', neutral ? 0 : 10),
+        rest: tintedForeground,
         disabled: { ref: disabledForeground }
       },
       medium: {

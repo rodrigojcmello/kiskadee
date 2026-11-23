@@ -13,7 +13,7 @@ type SliderComponent = NonNullable<Schema<Ios27AppleSegmentName>['components']['
 type CreateIos27AppleSliderSchemaArgs = {
   c: PresetColorGetter<Ios27AppleSegmentName>;
   segmentNames: readonly Ios27AppleSegmentName[];
-  transparent: string;
+  transparent?: string;
 };
 
 const sizes = {
@@ -60,7 +60,7 @@ const layout = {
 export function createIos27AppleSliderSchema({
   c,
   segmentNames,
-  transparent
+  transparent: explicitTransparent
 }: CreateIos27AppleSliderSchemaArgs): SliderComponent {
   type Theme = 'light' | 'dark' | 'darker';
   type Slot =
@@ -83,7 +83,9 @@ export function createIos27AppleSliderSchema({
     slot: Slot
   ): { textColor?: IntentColors; boxColor?: IntentColors; borderColor?: IntentColors } => {
     const scale = theme === 'light' ? 'l' : 'd';
-    const white = c(segment, 'l', 'neutral', 0);
+    const transparent =
+      explicitTransparent ?? c(segment, scale, 'neutral', theme === 'light' ? 100 : 0, 0);
+    const white = c(segment, scale, 'neutral', theme === 'light' ? 0 : 100);
     const primaryLabel = vivid ? white : c(segment, scale, 'neutral', 100);
     const secondaryLabel = vivid
       ? withAlpha(white, 85)
@@ -113,7 +115,10 @@ export function createIos27AppleSliderSchema({
       return {
         boxColor: both(state(white, withAlpha(white, 50))),
         borderColor,
-        ...text(c(segment, 'l', 'neutral', 100), c(segment, 'l', 'neutral', 100, 30))
+        ...text(
+          c(segment, scale, 'neutral', theme === 'light' ? 100 : 0),
+          c(segment, scale, 'neutral', theme === 'light' ? 100 : 0, 30)
+        )
       };
     let rest: SolidColor;
     let disabled: SolidColor | undefined;

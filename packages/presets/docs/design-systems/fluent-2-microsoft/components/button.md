@@ -1,5 +1,51 @@
 # Fluent 2 Microsoft Button Evidence
 
+## Dark Primary High decision
+
+On 2026-11-23 the owner retained the four authored Button emphasis levels. On the dark
+neutral and blue surfaces reviewed (both supply `onSubtle`), Primary High uses classic
+brand blue in Standard and the brighter complementary blue in Alternative. Neutral High
+can carry the near-white treatment. The existing white High on Light/onVivid serves a
+different surface combination.
+
+A fifth level solely for a white primary fill would add a priority distinction the reviewed
+compositions did not require. Revisit the choice if a concrete composition calls for it.
+Other presets can choose white for their own [Primary High recipe](../../../definitions/button-variants.md#white-buttons-on-dark-surfaces).
+
+## Dark Button refinement (2026-11-22)
+
+**Kiskadee extension.** These Dark recipes supersede the older Dark descriptions below.
+The Primary High Standard fill retains the documented Brand-70 to D40 mapping. On a subtle
+surface its optional alternative uses the same complementary High fill and dark label as
+the vivid alternative. Dark/onSubtle Alt now follows the Light/onVivid accent families across all four system intents.
+Neutral uses its dark High and inherits its other levels. The chromatic alternatives use their
+complementary vivid anchor for High fill and lower labels, and tinted overlays on the Dark host.
+
+For the Dark/onSubtle Standard Medium trial, Primary, Destructive and Positive tint the physical
+white cap with 75% of their resolved foreground tone. Neutral keeps the white cap.
+Both use 14%, 10% and 6% opacity for Rest, Hover and Pressed/Selected. On vivid, Medium uses the white-cap 14%/10% fill
+and the existing pressed treatment (including Primary complementary selection). Standard
+High stays white and Standard Low stays transparent at Rest.
+
+Dark/onSubtle Medium adds an 8% physical white perimeter around the tinted Rest fill.
+Low reveals the host surface at Rest. Its perimeter uses 12% opacity, with a 20% bottom
+edge at Rest and 24% on Hover. Standard uses white; the chromatic Alt uses its complementary
+intent color. In Dark/onSubtle Alternative, chromatic Medium keeps its 10% Selected fill
+during Hover so the 14% unselected Hover fill cannot replace it. These Button-local contours apply across system intents.
+
+Dark/onSubtle Medium labels and icons use the existing strong foregrounds for composited fills.
+Chromatic Standard consumes the family's Dark Deep/onVivid High ink and Alternative consumes
+its Dark Standard/onVivid High ink. Neutral consumes Dark Standard/onSubtle High in both
+variants. The underlying Card still supplies onSubtle. The brighter ink keeps enabled labels
+legible on both Neutral Low and Primary Highest in the Microsoft and Teams segments.
+
+The Dark Primary Lowest Standard label and icon on vivid use the blue deep alternative High
+foreground. The preset selects the Light complementary primary vivid reference minus two
+tonal steps. The blue segment yields `#78cdff` (4.67:1 against `#045091`); the Teams segment
+yields `#c6b5ff`. The saturated alternative High fill remains at its original vivid anchor.
+These colors follow the approved Button visual refinement in the Dark Showcase captures.
+The Container/Card surface selection and the portable contrast threshold are independent.
+
 ## Descendant Surface Context derivation
 
 **Kiskadee extension.** The Fluent Button derives descendant context in Light, Dark and Darker

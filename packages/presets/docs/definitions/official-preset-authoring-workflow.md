@@ -61,6 +61,8 @@ Before authoring palettes in an FRF preset, classify each solid base color:
 - use `exact` only for a fixed source decision already registered under an `evidenceId`;
 - use `cap` for physical white, black, and their alpha variants, including transparency.
 
+Apply the [theme-of-origin rule](tonal-color-contract.md#theme-of-origin) to every lookup, including physical caps and inputs to derived colors. Verify the destination before a locator becomes a HEX value.
+
 Resolve these locators inside the preset. Do not publish provenance locators into the Schema and do
 not bypass the strict resolver with literals or direct tonal lookup helpers.
 

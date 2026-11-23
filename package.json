@@ -12,6 +12,7 @@
     "biome": "biome check --write .",
     "precommit": "biome check --staged --vcs-enabled=true --vcs-client-kind=git",
     "test": "vitest run",
+    "check:preset-colors": "vitest run packages/presets/src/presets/tonal-track-policy.test.ts",
     "commitlint": "commitlint --edit"
   },
   "devDependencies": {

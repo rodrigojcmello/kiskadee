@@ -22,8 +22,10 @@ export function createIos27AppleContours({ c }: { c: PresetColorGetter<Segment> 
                       }
                     },
                     onVivid: {
-                      medium: { rest: c('default', 'l', 'neutral', 0, 30) },
-                      low: { rest: c('default', 'l', 'neutral', 0, 17) }
+                      medium: {
+                        rest: c('default', track, 'neutral', theme === 'light' ? 0 : 100, 30)
+                      },
+                      low: { rest: c('default', track, 'neutral', theme === 'light' ? 0 : 100, 17) }
                     }
                   }
                 ];

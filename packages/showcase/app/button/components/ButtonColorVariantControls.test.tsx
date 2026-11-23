@@ -196,103 +196,19 @@ describe('Button color variant controls', () => {
     render();
     expect(control.value).toBe('alternative');
   });
-  it('qualifies supported coordinates without making sample buttons selectable', () => {
+  it('keeps all eight comparison buttons Standard and passive even when Alt is available', () => {
     publish();
     render(true);
+    expect(container.querySelector('[role="switch"]')).toBeNull();
     const buttons = Array.from(container.querySelectorAll<HTMLButtonElement>('button'));
-    const vividHigh = container.querySelector<HTMLButtonElement>(
-      '[data-surface="onVivid"] button'
-    )!;
-    const subtleHigh = container.querySelector<HTMLButtonElement>(
-      '[data-surface="onSubtle"] button'
-    )!;
+    expect(buttons).toHaveLength(8);
     act(() => {
       for (const button of buttons) button.click();
     });
     for (const button of buttons) {
+      expect(button.dataset.intent).toBe('primary');
       expect(button.getAttribute('aria-pressed')).toBeNull();
       expect(button.dataset.selectionEmphasis).toBeUndefined();
     }
-    const alt = container.querySelector<HTMLInputElement>(
-      '[data-surface="onVivid"] [role="switch"]'
-    )!;
-    expect(
-      container.querySelector<HTMLInputElement>('[data-surface="onSubtle"] [role="switch"]')!
-        .disabled
-    ).toBe(true);
-    expect(container.querySelector('select')).toBeNull();
-    expect(alt.disabled).toBe(false);
-    act(() => alt.click());
-    expect(Array.from(container.querySelectorAll('button'))).toEqual(buttons);
-    expect(vividHigh.getAttribute('aria-pressed')).toBeNull();
-    expect(subtleHigh.getAttribute('aria-pressed')).toBeNull();
-    expect(vividHigh.dataset.intent).toBe('primary-alt');
-    expect(subtleHigh.dataset.intent).toBe('primary');
-    artifact.theme = 'dark';
-    render(true);
-    expect(alt.disabled).toBe(true);
-    expect(alt.checked).toBe(false);
-    expect(vividHigh.dataset.intent).toBe('primary');
-    expect(vividHigh.getAttribute('aria-pressed')).toBeNull();
-    artifact.theme = 'light';
-    render(true);
-    expect(alt.checked).toBe(true);
-    expect(vividHigh.dataset.intent).toBe('primary-alt');
-  });
-  it('enables only the subtle Switch when only that surface has an alternative', () => {
-    artifact.colorVariants = {
-      alternative: { 'default.light': { onSubtle: { primary: ['high'] } } }
-    };
-    render(true);
-    const alt = container.querySelector<HTMLInputElement>(
-      '[data-surface="onSubtle"] [role="switch"]'
-    )!;
-    const vividAlt = container.querySelector<HTMLInputElement>(
-      '[data-surface="onVivid"] [role="switch"]'
-    )!;
-    expect(alt.disabled).toBe(false);
-    expect(alt.checked).toBe(false);
-    expect(vividAlt.disabled).toBe(true);
-    expect(vividAlt.checked).toBe(false);
-    act(() => alt.click());
-    expect(alt.checked).toBe(true);
-    expect(
-      container.querySelector('[data-surface="onSubtle"] button')?.getAttribute('data-intent')
-    ).toBe('primary-alt');
-    expect(
-      container.querySelector('[data-surface="onVivid"] button')?.getAttribute('data-intent')
-    ).toBe('primary');
-  });
-  it('toggles both surface alternatives independently, starting with both off', () => {
-    artifact.colorVariants = {
-      alternative: {
-        'default.light': {
-          onSubtle: { primary: ['high'] },
-          onVivid: { primary: ['high'] }
-        }
-      }
-    };
-    render(true);
-    const subtle = container.querySelector<HTMLInputElement>(
-      '[data-surface="onSubtle"] [role="switch"]'
-    )!;
-    const vivid = container.querySelector<HTMLInputElement>(
-      '[data-surface="onVivid"] [role="switch"]'
-    )!;
-    const subtleHigh = container.querySelector<HTMLButtonElement>(
-      '[data-surface="onSubtle"] button'
-    )!;
-    const vividHigh = container.querySelector<HTMLButtonElement>(
-      '[data-surface="onVivid"] button'
-    )!;
-    expect(subtle.checked).toBe(false);
-    expect(vivid.checked).toBe(false);
-    act(() => subtle.click());
-    expect(subtleHigh.dataset.intent).toBe('primary-alt');
-    expect(vividHigh.dataset.intent).toBe('primary');
-    act(() => vivid.click());
-    act(() => subtle.click());
-    expect(subtleHigh.dataset.intent).toBe('primary');
-    expect(vividHigh.dataset.intent).toBe('primary-alt');
   });
 });

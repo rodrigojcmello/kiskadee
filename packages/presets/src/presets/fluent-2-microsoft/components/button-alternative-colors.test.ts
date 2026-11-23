@@ -107,12 +107,19 @@ describe('Fluent Button shared color variants', () => {
             button.elements.e2!.palettes![segment]![theme]!.onVivid!,
             variant
           );
-          for (const [intent, family] of Object.entries(families)) {
+          for (const intent of Object.keys(families) as (keyof typeof families)[]) {
+            const family = families[intent];
+            const darkAccent = intent === 'primary' && theme === 'dark' && variant === 'standard';
             const expected = resolveForegroundVariant(
-              schema.global!.foregrounds!.profiles[family]!.standard.palettes[segment]![theme]!
-                .onVivid!,
-              variant
+              schema.global!.foregrounds!.profiles[family]![darkAccent ? 'deep' : 'standard']!
+                .palettes[segment]![theme]!.onVivid!,
+              intent === 'primary' && theme === 'dark' ? 'alternative' : variant
             ).high.rest;
+            if (darkAccent) {
+              const card = schema.components.container!.elements.e1.palettes![segment]!.dark!
+                .onSubtle.standard.boxColor!.primary!.highest!.rest as string;
+              expect(contrastRatio(expected as string, card)).toBeGreaterThanOrEqual(4.5);
+            }
             for (const state of states)
               expect(resolve(stateValue(paint.textColor![intent]!.lowest, state), segment)).toBe(
                 expected
@@ -132,7 +139,10 @@ describe('Fluent Button shared color variants', () => {
               variant
             ).textColor!;
             for (const intent of intents) {
-              const expected = resolve(paint[intent]!.lowest!.rest, segment);
+              const expected =
+                theme === 'dark' && variant === 'standard' && intent === 'primary'
+                  ? resolve('fg:blue.standard.dark.onVivid.high', segment)
+                  : resolve(paint[intent]!.lowest!.rest, segment);
               for (const emphasis of ['medium', 'low'] as const)
                 for (const state of states) {
                   if (
@@ -149,6 +159,17 @@ describe('Fluent Button shared color variants', () => {
             }
           }
   });
+  it('keeps the Dark subtle Alt Medium selected fill when hover is also active', () => {
+    for (const segment of segments) {
+      const fills = button.elements.e1!.palettes![segment]!.dark!.onSubtle.alternative!.boxColor!;
+      for (const intent of ['primary', 'destructive', 'positive'] as const) {
+        const medium = fills[intent]!.medium!;
+        expect(medium.hover).not.toBe(medium.selected!.rest);
+        expect(medium.selected!.hover).toBe(medium.selected!.rest);
+      }
+    }
+  });
+
   it('inherits unchanged whole state maps instead of freezing Standard copies', () => {
     for (const segment of segments)
       for (const theme of themes) {
@@ -180,7 +201,15 @@ describe('Fluent Button shared color variants', () => {
       for (const theme of themes) {
         for (const element of ['e1', 'e2', 'e3'] as const) {
           const palette = button.elements[element]!.palettes![segment]![theme]!;
-          expect(palette.onSubtle.alternative).toBeUndefined();
+          if (theme === 'dark') {
+            const paint = palette.onSubtle.alternative! as ColorSchema;
+            const map = element === 'e1' ? paint.boxColor! : paint.textColor!;
+            for (const intent of intents) {
+              expect(Object.keys(map[intent]!)).toEqual(
+                intent === 'neutral' ? ['high'] : ['high', 'medium', 'low', 'lowest']
+              );
+            }
+          } else expect(palette.onSubtle.alternative).toBeUndefined();
           expect(palette.onVivid!.alternative).toBeDefined();
           const effective = resolveColorVariantPalette<ColorSchema>(
             palette.onVivid!,
@@ -277,6 +306,36 @@ describe('Fluent Button shared color variants', () => {
           }
         }
       }
+  });
+
+  it('keeps Dark Medium labels and icons legible on neutral and primary Cards', () => {
+    for (const segment of segments) {
+      const card =
+        schema.components.container!.elements.e1.palettes![segment]!.dark!.onSubtle.standard
+          .boxColor!;
+      const backgrounds = [card.neutral!.low!.rest, card.primary!.highest!.rest];
+      const root = button.elements.e1!.palettes![segment]!.dark!.onSubtle;
+
+      for (const variant of ['standard', 'alternative'] as const) {
+        const fills = resolveColorVariantPalette(root, variant).boxColor!;
+        for (const element of ['e2', 'e3'] as const) {
+          const content = button.elements[element]!.palettes![segment]!.dark!.onSubtle;
+          const text = resolveColorVariantPalette(content, variant).textColor!;
+          for (const intent of intents)
+            for (const state of states) {
+              const fill = resolve(stateValue(fills[intent]!.medium, state), segment);
+              const ink = resolve(stateValue(text[intent]!.medium, state), segment);
+              for (const background of backgrounds) {
+                const surface = composite(fill, background as string);
+                expect(
+                  contrastRatio(composite(ink, surface), surface),
+                  `${segment}/dark/${variant}/${element}/${intent}/medium/${state} on ${background}`
+                ).toBeGreaterThanOrEqual(4.5);
+              }
+            }
+        }
+      }
+    }
   });
 
   it('preserves the authored alternative body contrast with inherited Neutral', () => {

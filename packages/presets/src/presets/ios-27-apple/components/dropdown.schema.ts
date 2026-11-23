@@ -14,7 +14,7 @@ export function createIos27AppleDropdownSchema({
 }: CreateIos27AppleDropdownSchemaArgs): DropdownComponent {
   const createTheme = (theme: ThemeName) => {
     const track = theme === 'light' ? 'l' : 'd';
-    const transparent = c('default', 'l', 'dropdown.neutral', 100, 0);
+    const transparent = c('default', track, 'dropdown.neutral', track === 'l' ? 100 : 0, 0);
     const disabledText = fg.parentState(`neutral.standard.${theme}.onSubtle.lowest`);
     const neutralText = fg(`neutral.standard.${theme}.onSubtle.high`);
     const secondaryText = fg(`neutral.standard.${theme}.onSubtle.medium`);

@@ -43,7 +43,8 @@ const c = createStrictPresetColorResolver<
 type Segments = never;
 
 export function createFluent2MicrosoftSchema(
-  colorResolver: Fluent2MicrosoftColorResolver
+  colorResolver: Fluent2MicrosoftColorResolver,
+  sourceSegment: 'default' | 'teams' = 'default'
 ): Schema<Segments> {
   const segmentNames = ['default'] as const;
   const shadowBlack = (alpha: number) =>
@@ -220,6 +221,7 @@ export function createFluent2MicrosoftSchema(
       slider: createFluent2MicrosoftSliderSchema({ c: colorResolver }),
       button: createFluent2MicrosoftButtonSchema({ c: colorResolver }),
       ...createFluent2MicrosoftCardSchema({
+        sourceSegment,
         c: colorResolver,
         segmentNames
       }),
@@ -239,8 +241,11 @@ export function createFluent2MicrosoftSchema(
 }
 
 const defaultSchema = createFluent2MicrosoftSchema(c);
-const teamsSchema = createFluent2MicrosoftSchema({
-  resolve: (_segment, theme, locator) => c.resolve('teams', theme, locator)
-});
+const teamsSchema = createFluent2MicrosoftSchema(
+  {
+    resolve: (_segment, theme, locator) => c.resolve('teams', theme, locator)
+  },
+  'teams'
+);
 
 export const schema: Schema<'teams'> = withTeamsPalettes(defaultSchema, teamsSchema);

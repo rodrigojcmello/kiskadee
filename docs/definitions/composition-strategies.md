@@ -25,6 +25,8 @@ rendered part, see [alternate element recipes](#alternate-element-recipes-for-on
 The [stable examples](#stable-examples) connect the strategies to implemented contracts; they are
 precedents to evaluate, not templates that override a new component's semantics.
 
+For the source of a preset color, follow the [tonal origin contract](../../packages/presets/docs/definitions/tonal-color-contract.md#theme-of-origin) and the [official authoring workflow](../../packages/presets/docs/definitions/official-preset-authoring-workflow.md).
+
 ## Strategies compose
 
 Composition strategies are not mutually exclusive. One concern may require a public component, a

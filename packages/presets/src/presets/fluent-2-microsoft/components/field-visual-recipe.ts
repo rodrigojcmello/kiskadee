@@ -48,7 +48,7 @@ export function createFieldVisualRecipe(
     ? c.resolve('default', 'l', referenceColor('textField.neutral', 'subtle', 4))
     : onSurfaceForeground;
   const lightCap = (alpha: number) =>
-    c.resolve('default', 'l', absoluteCap(primitive('black', 'v1'), 'light', alpha));
+    c.resolve('default', track, absoluteCap(primitive('black', 'v1'), 'light', alpha));
   const brand = c.resolve(
     'default',
     vivid ? 'l' : track,

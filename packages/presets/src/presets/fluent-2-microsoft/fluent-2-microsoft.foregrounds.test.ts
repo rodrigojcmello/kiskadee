@@ -72,7 +72,7 @@ describe('Fluent four-strength foreground migration', () => {
   });
 });
 
-it('authors only the three common-profile onVivid alternatives and preserves the emphasis hierarchy', () => {
+it('scopes vivid alternatives to the published foreground coordinates', () => {
   const expected = {
     default: { blue: '#40befe', red: '#fe8a80', green: '#5ecd59' },
     teams: { blue: '#b5a2f4', red: '#fe8a80', green: '#5ecd59' }
@@ -91,6 +91,8 @@ it('authors only the three common-profile onVivid alternatives and preserves the
               low: { rest: `${high}94` },
               lowest: { rest: `${high}66` }
             });
+          } else if (family === 'blue' && profile === 'deep' && theme === 'dark') {
+            expect(Object.keys(palette.onVivid!.alternative!)).toEqual(['high']);
           } else expect(palette.onVivid!.alternative).toBeUndefined();
         }
       }

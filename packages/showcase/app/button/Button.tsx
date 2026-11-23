@@ -28,6 +28,7 @@ import {
   ShowcaseSelectControl
 } from '@/components/ShowcaseControls';
 import { useShowcaseDisplayPreferences } from '@/components/ShowcaseDisplayPreferences';
+import { useButtonColorVariants } from '@/hooks/use-button-color-variants';
 import { useDropdownPresenceControl } from '@/hooks/use-dropdown-presence-control';
 import { useShowcaseBackground } from '@/hooks/use-showcase-background';
 import { useShowcaseMetadata } from '@/hooks/use-showcase-metadata';
@@ -41,6 +42,7 @@ import { useShowcaseTextProfiles } from '@/utils/showcase-text-profiles';
 import s from './Button.module.scss';
 import { ButtonAsyncExample } from './components/ButtonAsyncExample';
 import { ButtonBadgeExamples } from './components/ButtonBadgeExamples';
+import { getButtonColorVariantSupport } from './components/ButtonColorVariantControls';
 import { ButtonGroupExamples } from './components/ButtonGroupExamples';
 import { ButtonIconExamples } from './components/ButtonIconExamples';
 import { ButtonIconFormatExamples } from './components/ButtonIconFormatExamples';
@@ -162,6 +164,22 @@ export function Button() {
       ?.neutral?.low?.rest
   );
 
+  const [altEnabled, setAltEnabled] = React.useState(false);
+  const hasIntentAlt = getButtonColorVariantSupport({
+    colorVariants: useButtonColorVariants(),
+    segment,
+    theme,
+    contexts: [background.cardSurface?.contentSurfaceContext ?? activeSurfaceContext],
+    intents: [
+      'primary',
+      'neutral',
+      'destructive',
+      'positive',
+      ...(buttonState?.support ? ['support'] : [])
+    ]
+  });
+  const intentVariant =
+    inlineControlsAvailable && hasIntentAlt && altEnabled ? 'alternative' : 'standard';
   const intentPresentationControls = inlineControlsAvailable ? (
     <fieldset aria-label="Intent presentation controls" className={s.intentsInlineControls}>
       <Switch
@@ -187,11 +205,26 @@ export function Button() {
         controlState={showFocusRing}
         onControlStateChange={setShowFocusRing}
       />
+      {sizeSeparatorAvailable && <Separator orientation="vertical" emphasis="low" />}
+      <Switch
+        id="button-intents-alt"
+        classNames={{ e4: s.intentControlLabel }}
+        label="Alt"
+        emphasis={inlineControlsSwitchEmphasis}
+        disabled={!hasIntentAlt}
+        controlState={hasIntentAlt && altEnabled}
+        onControlStateChange={setAltEnabled}
+      />
     </fieldset>
   ) : (
-    <Text as="p" emphasis="medium" profile={textProfiles.caption} role="status">
-      Switch controls are not available on this surface.
-    </Text>
+    <fieldset aria-label="Intent presentation controls" className={s.intentsInlineControls}>
+      <Text as="p" emphasis="medium" profile={textProfiles.caption} role="status">
+        Switch controls are not available on this surface.
+      </Text>
+      <Text as="label" emphasis="medium" profile={textProfiles.caption}>
+        Alt <input type="checkbox" role="switch" aria-checked={false} disabled />
+      </Text>
+    </fieldset>
   );
 
   const buttonControls = (
@@ -302,6 +335,12 @@ export function Button() {
             ) : null}
           </header>
           <SurfaceContextComparison
+            neutralReference={
+              theme === 'dark' &&
+              activeSurfaceContext === 'onSubtle' &&
+              background.canvasSurface?.key === 'primaryComplementary.highest' &&
+              background.cardSurface?.key === 'primary.highest'
+            }
             onVividSupported={onVividSupported}
             fontName={fontName}
             radius={buttonRadius}
@@ -311,22 +350,18 @@ export function Button() {
           />
           <section className={s.intentsSection} aria-labelledby="button-intents-title">
             <div className={s.intentsHeader}>
-              <div className={s.intentsHeadingRow}>
-                <Text as="h3" id="button-intents-title" profile={textProfiles.sectionTitle}>
-                  Intents
-                </Text>
-                {!showDescriptions ? intentPresentationControls : null}
-              </div>
+              <Text as="h3" id="button-intents-title" profile={textProfiles.sectionTitle}>
+                Intents
+              </Text>
+
               {showDescriptions ? (
-                <div className={s.intentsDescriptionRow}>
-                  <Text as="p" profile={textProfiles.body} className={s.intentsDescription}>
-                    Intent gives an action its semantic role. Primary advances the main task,
-                    Neutral supports support actions, Destructive signals risk, and Positive
-                    communicates a beneficial outcome.
-                  </Text>
-                  {intentPresentationControls}
-                </div>
+                <Text as="p" profile={textProfiles.body}>
+                  Intent gives an action its semantic role. Primary advances the main task, Neutral
+                  supports support actions, Destructive signals risk, and Positive communicates a
+                  beneficial outcome.
+                </Text>
               ) : null}
+              {intentPresentationControls}
             </div>
             <div
               className={`${s.intentsGrid} ${
@@ -334,6 +369,7 @@ export function Button() {
               }`}
             >
               <ButtonStateSection
+                colorVariant={intentVariant}
                 intent="primary"
                 title="Primary"
                 description={
@@ -351,6 +387,7 @@ export function Button() {
               />
 
               <ButtonStateSection
+                colorVariant={intentVariant}
                 intent="neutral"
                 title="Neutral"
                 description={
@@ -368,6 +405,7 @@ export function Button() {
               />
 
               <ButtonStateSection
+                colorVariant={intentVariant}
                 intent="destructive"
                 title="Destructive"
                 description={
@@ -387,6 +425,7 @@ export function Button() {
               />
 
               <ButtonStateSection
+                colorVariant={intentVariant}
                 intent="positive"
                 title="Positive"
                 description={
@@ -406,6 +445,7 @@ export function Button() {
               />
               {buttonState?.support ? (
                 <ButtonStateSection
+                  colorVariant={intentVariant}
                   key="support"
                   intent="support"
                   title="Support"

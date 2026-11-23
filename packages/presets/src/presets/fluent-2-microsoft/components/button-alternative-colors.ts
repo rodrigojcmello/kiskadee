@@ -13,6 +13,7 @@ import {
 } from '../fluent-2-microsoft.color.ts';
 import {
   composeOpaqueSurface,
+  DARK_SUBTLE_LOW_CONTOUR,
   FLUENT_BUTTON_ON_VIVID_RECIPE,
   FLUENT_BUTTON_PENDING_VISIBILITY,
   type FluentButtonFormulaTheme,
@@ -111,7 +112,11 @@ export function createFluentButtonAlternativeColors(
 
       const role = complementaryRoles[intent];
       const resolve = (reference: 'subtle' | 'vivid', offset = 0, alpha?: number) =>
-        c.resolve('default', 'l', referenceColor(role, reference, offset, alpha));
+        c.resolve(
+          'default',
+          theme !== 'light' && offset === 0 && reference === 'vivid' ? 'd' : 'l',
+          referenceColor(role, reference, offset, alpha)
+        );
       const complementary = resolve('vivid');
       const light = theme === 'light';
       const hoverAlpha = light
@@ -198,6 +203,10 @@ export function createFluentButtonAlternativeColors(
     rootPaint.boxColor!.neutral = {
       high: {
         ...neutralSurface,
+        hover:
+          theme === 'light'
+            ? neutralSurface.hover
+            : c.resolve('default', 'd', exactColor('button.neutral', 14, 'component.button')),
         pending: neutralStandardSurface.pending,
         disabled: neutralStandardSurface.disabled,
         selected: { ...neutralSurface.selected, hover: neutralSurface.selected!.rest }
@@ -213,6 +222,74 @@ export function createFluentButtonAlternativeColors(
         disabled: neutralStandardLabel.disabled
       }
     };
+    if (theme === 'dark') {
+      const root = result.elements.e1!.palettes!.default!.dark!.onSubtle;
+      const fills: IntentPaint = {};
+      const borders: IntentPaint = {};
+      const bottoms: IntentPaint = {};
+      for (const intent of intents) {
+        const standard = root.standard.boxColor![intent]!;
+        fills[intent] = {
+          high: { ...rootPaint.boxColor![intent]!.high!, disabled: standard.high!.disabled }
+        };
+        if (intent === 'neutral') continue;
+        const overlay = (alpha: number) =>
+          c.resolve('default', 'd', referenceColor(complementaryRoles[intent], 'vivid', 0, alpha));
+        fills[intent]!.medium = {
+          ...standard.medium!,
+          rest: overlay(18),
+          hover: overlay(14),
+          pressed: overlay(10),
+          selected: { rest: overlay(10), hover: overlay(10) },
+          pending: overlay(11)
+        };
+        for (const emphasis of ['low', 'lowest'] as const) {
+          fills[intent]![emphasis] = {
+            ...standard[emphasis]!,
+            hover: overlay(8),
+            pressed: overlay(12),
+            selected: { rest: overlay(12), hover: overlay(12) }
+          };
+        }
+        const contour = (alpha: number) => ({
+          rest: overlay(alpha),
+          pending: overlay(alpha * 0.6),
+          disabled: root.standard.borderColor![intent]!.low!.disabled
+        });
+        borders[intent] = { low: contour(DARK_SUBTLE_LOW_CONTOUR.perimeter) };
+        bottoms[intent] = {
+          low: {
+            ...contour(DARK_SUBTLE_LOW_CONTOUR.bottom),
+            hover: overlay(DARK_SUBTLE_LOW_CONTOUR.bottomHover)
+          }
+        };
+      }
+      root.alternative = { boxColor: fills, borderColor: borders, borderBottomColor: bottoms };
+      for (const element of ['e2', 'e3'] as const) {
+        const palette = result.elements[element]!.palettes!.default!.dark!.onSubtle;
+        const text: IntentPaint = {};
+        for (const intent of intents) {
+          const base = palette.standard.textColor![intent]!;
+          const high = { ...labelPaint.textColor![intent]!.high!, disabled: base.high!.disabled };
+          if (element === 'e3') delete high.pending;
+          text[intent] = { high };
+          if (intent === 'neutral') continue;
+          const family = foregroundFamilies[intent];
+          for (const emphasis of ['medium', 'low', 'lowest'] as const) {
+            const coordinate =
+              emphasis === 'medium'
+                ? (`${family}.standard.dark.onVivid.high` as const)
+                : (`${family}.standard.dark.onVivid.alternative.high` as const);
+            text[intent]![emphasis] = {
+              rest: fg(coordinate),
+              disabled: base[emphasis]!.disabled,
+              ...(element === 'e2' ? { pending: fg.parentState(`${coordinate}.pending`) } : {})
+            };
+          }
+        }
+        palette.alternative = { textColor: text };
+      }
+    }
     result.elements.e1!.palettes!.default![theme]!.onVivid!.alternative = changedStateMaps(
       standardRoot,
       rootPaint

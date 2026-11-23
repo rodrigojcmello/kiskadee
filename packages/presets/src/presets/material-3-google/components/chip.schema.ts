@@ -1,6 +1,6 @@
 import { type ChipIntent, primitive, type Schema } from '@kiskadee/core';
 import { buildBySegment } from '../../../utils/buildBySegment.ts';
-import type { PresetColorGetter } from '../../../utils/presetColor.ts';
+import { type PresetColorGetter, physicalTone } from '../../../utils/presetColor.ts';
 
 type Material3GoogleSegmentName = 'default' | 'dynamic' | 'purple';
 type ChipComponent = NonNullable<Schema<'purple'>['components']['chip']>;
@@ -13,7 +13,7 @@ type ChipRole = `chip.${ChipIntent}`;
 type CreateMaterial3GoogleChipSchemaArgs = {
   c: PresetColorGetter<Material3GoogleSegmentName>;
   segmentNames: readonly Material3GoogleSegmentName[];
-  transparent: string;
+  transparent?: string;
 };
 
 const INTENTS = ['neutral', 'primary'] as const satisfies readonly ChipIntent[];
@@ -32,22 +32,43 @@ function createChipIntentSchema({
   theme,
   intent,
   context,
-  transparent
+  transparent: explicitTransparent
 }: {
   c: PresetColorGetter<Material3GoogleSegmentName>;
   segment: Material3GoogleSegmentName;
   theme: ThemeName;
   intent: ChipIntent;
   context: SurfaceContext;
-  transparent: string;
+  transparent?: string;
 }) {
   const role = `chip.${intent}` as ChipRole;
   const themeShortcut: ThemeShortcut = theme === 'light' ? 'l' : 'd';
   const lightSurface = context === 'onVivid';
-  const family = (reference: 'subtle' | 'vivid', offset = 0, alpha?: number) =>
-    c.ref(segment, lightSurface ? 'l' : themeShortcut, role, reference, offset, alpha);
+  const family = (reference: 'subtle' | 'vivid', offset = 0, alpha?: number) => {
+    if (
+      theme === 'dark' &&
+      lightSurface &&
+      intent === 'neutral' &&
+      reference === 'subtle' &&
+      offset === -3
+    ) {
+      return c(segment, 'd', role, 99, alpha);
+    }
+    const matchingAnchor = intent === 'primary' && reference === 'vivid' && offset === 0;
+    const track = lightSurface && !matchingAnchor ? 'l' : themeShortcut;
+    return c.ref(segment, track, role, reference, offset, alpha);
+  };
+  const transparent =
+    explicitTransparent ??
+    c(segment, themeShortcut, 'primitive.black.v1', physicalTone(themeShortcut, 'dark'), 0);
   const physical = (polarity: 'light' | 'dark', alpha?: number) =>
-    c(segment, 'l', primitive('black', 'v1'), polarity === 'light' ? 0 : 100, alpha);
+    c(
+      segment,
+      themeShortcut,
+      primitive('black', 'v1'),
+      physicalTone(themeShortcut, polarity),
+      alpha
+    );
 
   const stateOffset = (state: 'hover' | 'focus' | 'pressed') => (state === 'pressed' ? 2 : 1);
 

@@ -26,7 +26,7 @@ export function createIos27AppleSwitchSchema({
     element: 'track' | 'thumb' | 'label' | 'icon'
   ) => {
     const scale = theme === 'light' ? 'l' : 'd';
-    const white = c(segment, 'l', 'neutral', 0);
+    const white = c(segment, scale, 'neutral', theme === 'light' ? 0 : 100);
     const tertiary = c(segment, scale, 'neutral', theme === 'light' ? 70 : 95, 30);
     const label = vivid ? white : c(segment, scale, 'neutral', 100);
     const disabledLabel = vivid ? withAlpha(white, 30) : tertiary;

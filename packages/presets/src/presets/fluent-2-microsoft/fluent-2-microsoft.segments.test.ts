@@ -30,9 +30,12 @@ describe('Fluent Teams shared palette', () => {
   });
 
   it('publishes every existing segment map using the same recipes with Teams resolution', () => {
-    const teams = createFluent2MicrosoftSchema({
-      resolve: (_segment, theme, locator) => c.resolve('teams', theme, locator)
-    });
+    const teams = createFluent2MicrosoftSchema(
+      {
+        resolve: (_segment, theme, locator) => c.resolve('teams', theme, locator)
+      },
+      'teams'
+    );
     let checked = 0;
     function visit(actual: unknown, template: unknown) {
       if (!template || typeof template !== 'object' || Array.isArray(template)) return;

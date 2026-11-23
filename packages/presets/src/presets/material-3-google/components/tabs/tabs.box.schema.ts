@@ -78,11 +78,11 @@ export function createMaterial3GoogleTabsBoxVariant({
       // e5: indicator
       e5: {
         name: 'indicator',
-        palettes: buildTabPalettes(segmentNames, (segment) => ({
+        palettes: buildTabPalettes(segmentNames, (segment, theme) => ({
           boxColor: {
             neutral: {
               medium: {
-                rest: c.ref(segment, 'l', 'primary', 'vivid'),
+                rest: c.ref(segment, theme, 'primary', 'vivid'),
                 hover: c.ref(segment, 'l', 'primary', 'vivid', 1),
                 pressed: c.ref(segment, 'l', 'primary', 'vivid', 2)
               }

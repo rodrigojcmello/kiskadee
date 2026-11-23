@@ -1,3 +1,4 @@
+import type { ThemeMode } from '@kiskadee/core';
 import type { ResolvedCanonicalCardSurface } from './canonical-card-surfaces';
 
 export type BackgroundScenario = {
@@ -9,7 +10,10 @@ export type BackgroundScenario = {
 };
 
 /** Compose published semantic emphases, independently of theme luminosity. */
-export function resolveBackgroundScenarios(surfaces: readonly ResolvedCanonicalCardSurface[]) {
+export function resolveBackgroundScenarios(
+  surfaces: readonly ResolvedCanonicalCardSurface[],
+  theme?: ThemeMode
+) {
   const subtle = surfaces.filter((surface) => surface.contentSurfaceContext === 'onSubtle');
   const scenarios: BackgroundScenario[] = [];
   const append = (
@@ -17,8 +21,17 @@ export function resolveBackgroundScenarios(surfaces: readonly ResolvedCanonicalC
     card: ResolvedCanonicalCardSurface,
     splitSwatch = false
   ) => {
+    if (
+      scenarios.some(
+        (scenario) => scenario.canvas.key === canvas.key && scenario.card.key === card.key
+      )
+    ) {
+      return;
+    }
+    // Swatch paint can change between themes. Only disambiguate genuinely shared canvases.
+    const sharesCanvas = scenarios.some((scenario) => scenario.canvas.key === canvas.key);
     scenarios.push({
-      key: splitSwatch ? `${canvas.key}:cards:${card.key}` : canvas.key,
+      key: sharesCanvas ? `${canvas.key}:cards:${card.key}` : canvas.key,
       label: `${canvas.label} canvas / ${card.label} cards`,
       canvas,
       card,
@@ -36,8 +49,21 @@ export function resolveBackgroundScenarios(surfaces: readonly ResolvedCanonicalC
   const neutralLow = subtle.find((surface) => surface.key === 'neutral.low');
   const neutralLowest = subtle.find((surface) => surface.key === 'neutral.lowest');
   if (neutralLow && neutralLowest) append(neutralLow, neutralLowest);
+  const primaryPair = (theme === 'dark' ? ['highest', 'medium'] : ['medium'])
+    .map((emphasis) => ({
+      canvas: subtle.find((surface) => surface.key === `primaryComplementary.${emphasis}`),
+      card: subtle.find((surface) => surface.key === `primary.${emphasis}`)
+    }))
+    .find((pair) => pair.canvas && pair.card);
   const intents = new Set(subtle.map((surface) => surface.key.split('.')[0]));
   for (const intent of intents) {
+    if (primaryPair?.canvas && primaryPair.card) {
+      if (intent === 'primaryComplementary') continue;
+      if (intent === 'primary') {
+        append(primaryPair.canvas, primaryPair.card, true);
+        continue;
+      }
+    }
     const candidates = subtle.filter((surface) => surface.key.startsWith(`${intent}.`));
     const medium = candidates.find((surface) => surface.key === `${intent}.medium`);
     const canvas =

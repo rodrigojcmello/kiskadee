@@ -182,7 +182,11 @@ export default function ShowcaseShell({
     '--showcase-default-route-background': background.defaultColor,
     '--showcase-route-background': background.color
   } as CSSProperties;
-  const content = <div className={style.contentInner}>{children}</div>;
+  const content = (
+    <div className={style.contentScroll}>
+      <div className={style.contentInner}>{children}</div>
+    </div>
+  );
   const canvas = background.canvasSurface;
   const [canvasIntent, canvasEmphasis] = canvas?.key.split('.') ?? [];
 
@@ -210,7 +214,7 @@ export default function ShowcaseShell({
           </ShowcaseIconFamilyBoundary>
         ) : null}
 
-        <div className={style.contentColumn}>
+        <div className={style.contentColumn} data-showcase-transition-host>
           <ShowcaseIconFamilyBoundary>
             <div className={style.mobileHeader}>
               <button

@@ -3,6 +3,13 @@
 This file records source evidence and schema decisions for
 `packages/presets/src/presets/fluent-2-microsoft/components/switch.schema.ts`.
 
+## Dark neutral selected treatment (2026-11-22)
+
+Kiskadee adaptation approved for Dark/onSubtle. The checked Neutral Switch uses the same
+complementary track as Light/onVivid: `switch.primary.v2` on the Light vivid anchor with
+Hover +1 and Pressed +2. Its thumb uses the physical black cap with a light selected icon.
+The Microsoft segment resolves to `#40befe` at Rest, and Teams resolves to `#b5a2f4`.
+
 ## Sources
 
 - [Fluent 2 Switch usage](https://fluent2.microsoft.design/components/web/react/core/switch/usage)

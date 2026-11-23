@@ -133,6 +133,8 @@ export const FLUENT_BUTTON_DEFAULT_TONAL_RECIPE = {
   }
 } as const satisfies Record<FluentButtonFormulaTheme, ButtonDefaultThemeRecipe>;
 
+export const DARK_SUBTLE_LOW_CONTOUR = { perimeter: 12, bottom: 20, bottomHover: 24 } as const;
+
 export const FLUENT_BUTTON_ON_VIVID_RECIPE = {
   high: {
     hover: familyExactColor(4, 'component.button'),
@@ -275,6 +277,7 @@ export function createFluentButtonOnSubtleIntent({
   lowSurface,
   lowPressedForeground,
   lightenHighInteraction = false,
+  tintDarkMedium = false,
   neutralControlBottom
 }: {
   theme: FluentButtonFormulaTheme;
@@ -289,6 +292,7 @@ export function createFluentButtonOnSubtleIntent({
   lowSurface: SolidColor;
   lowPressedForeground?: SolidColor;
   lightenHighInteraction?: boolean;
+  tintDarkMedium?: boolean;
 }): FluentButtonIntentFormula {
   const recipe = FLUENT_BUTTON_DEFAULT_TONAL_RECIPE[theme];
   const scale = recipe.scale;
@@ -314,33 +318,52 @@ export function createFluentButtonOnSubtleIntent({
         }
       : recipe.high;
   const roleColor = (locator: Fluent2MicrosoftFamilyColorLocator) => family.resolve(scale, locator);
-  const lowBorder = createBalancedLowBorder({
-    color: roleColor(recipe.low.border),
-    surface: neutralSurfaceColor(scale, recipe.low.border.surface),
-    targetDeltaE: recipe.low.border.targetDeltaE
-  });
+  const whiteOverlay = (alpha: number) =>
+    neutralButtonFamily.resolve(scale, absoluteCap(primitive('black', 'v1'), 'light', alpha));
+  const darkMediumOverlay = (alpha: number) =>
+    tintDarkMedium
+      ? withAlpha(
+          composeOpaqueSurface(withAlpha(roleColor(recipe.foreground), 75), whiteOverlay(100)),
+          alpha
+        )
+      : whiteOverlay(alpha);
+  const medium =
+    theme === 'dark'
+      ? { rest: darkMediumOverlay(14), hover: darkMediumOverlay(10), pressed: darkMediumOverlay(6) }
+      : {
+          rest: roleColor(recipe.medium.rest),
+          hover: roleColor(recipe.medium.hover),
+          pressed: roleColor(recipe.medium.pressed)
+        };
+  const lowBorder =
+    theme === 'dark'
+      ? whiteOverlay(DARK_SUBTLE_LOW_CONTOUR.perimeter)
+      : createBalancedLowBorder({
+          color: roleColor(recipe.low.border),
+          surface: neutralSurfaceColor(scale, recipe.low.border.surface),
+          targetDeltaE: recipe.low.border.targetDeltaE
+        });
 
   const lowBottomBorder =
-    neutralControlBottom?.rest ??
-    createBalancedLowBorder({
-      color: roleColor(recipe.low.border),
-      surface: neutralSurfaceColor(scale, recipe.low.border.surface),
-      targetDeltaE: isLight ? 0.13 : 0.22
-    });
+    theme === 'dark'
+      ? whiteOverlay(DARK_SUBTLE_LOW_CONTOUR.bottom)
+      : (neutralControlBottom?.rest ??
+        createBalancedLowBorder({
+          color: roleColor(recipe.low.border),
+          surface: neutralSurfaceColor(scale, recipe.low.border.surface),
+          targetDeltaE: isLight ? 0.13 : 0.22
+        }));
 
   return {
     boxColor: {
       medium: {
-        rest: roleColor(recipe.medium.rest),
-        hover: roleColor(recipe.medium.hover),
-        pressed: roleColor(recipe.medium.pressed),
-        pending: applySlotVisibility(
-          roleColor(recipe.medium.rest),
-          FLUENT_BUTTON_PENDING_VISIBILITY.surface
-        ),
+        rest: medium.rest,
+        hover: medium.hover,
+        pressed: medium.pressed,
+        pending: applySlotVisibility(medium.rest, FLUENT_BUTTON_PENDING_VISIBILITY.surface),
         disabled: adaptiveDisabled,
         selected: {
-          rest: roleColor(recipe.medium.pressed)
+          rest: medium.pressed
         }
       },
       high: {
@@ -357,7 +380,7 @@ export function createFluentButtonOnSubtleIntent({
         }
       },
       low: {
-        rest: lowSurface,
+        rest: theme === 'dark' ? transparent : lowSurface,
         hover: roleColor(recipe.low.hover),
         pressed: roleColor(recipe.low.pressed),
         // Reset transient fills while preserving the control's own solid surface.
@@ -377,7 +400,15 @@ export function createFluentButtonOnSubtleIntent({
     },
     borderColor: {
       medium: {
-        rest: transparent
+        rest: theme === 'dark' ? whiteOverlay(8) : transparent,
+        ...(theme === 'dark'
+          ? {
+              disabled: transparent,
+              pending: whiteOverlay(6),
+              pressed: transparent,
+              selected: { rest: transparent }
+            }
+          : {})
       },
       high: {
         rest: transparent
@@ -394,7 +425,11 @@ export function createFluentButtonOnSubtleIntent({
     borderBottomColor: {
       low: {
         rest: lowBottomBorder,
-        ...(neutralControlBottom ? { hover: neutralControlBottom.hover } : {}),
+        ...(theme === 'dark'
+          ? { hover: whiteOverlay(DARK_SUBTLE_LOW_CONTOUR.bottomHover) }
+          : neutralControlBottom
+            ? { hover: neutralControlBottom.hover }
+            : {}),
         pending: applySlotVisibility(lowBottomBorder, FLUENT_BUTTON_PENDING_VISIBILITY.border),
         disabled: transparent
       }
@@ -470,17 +505,18 @@ export function createFluentButtonOnVividIntent({
   canonicalSurface: SolidColor;
   lightBaseSurface: SolidColor;
 }): FluentButtonIntentFormula {
+  const scale = FLUENT_BUTTON_DEFAULT_TONAL_RECIPE[theme].scale;
   const usesSharedLightMedium = theme === 'light';
   const onVividWhite = neutralButtonFamily.resolve(
-    'light',
+    scale,
     absoluteCap(primitive('black', 'v1'), 'light')
   );
   const onVividTransparent = neutralButtonFamily.resolve(
-    'light',
+    scale,
     absoluteCap(primitive('black', 'v1'), 'light', 0)
   );
   const onVividDisabledBackground = neutralButtonFamily.resolve(
-    'light',
+    scale,
     absoluteCap(
       primitive('black', 'v1'),
       'light',
@@ -488,7 +524,7 @@ export function createFluentButtonOnVividIntent({
     )
   );
   const onVividDisabledForeground = neutralButtonFamily.resolve(
-    'light',
+    scale,
     absoluteCap(
       primitive('black', 'v1'),
       'light',
@@ -496,7 +532,7 @@ export function createFluentButtonOnVividIntent({
     )
   );
   const onVividLowBorder = neutralButtonFamily.resolve(
-    'light',
+    scale,
     absoluteCap(
       primitive('black', 'v1'),
       'light',
@@ -504,9 +540,9 @@ export function createFluentButtonOnVividIntent({
     )
   );
   const onVividInteractionBackground = (alpha: number) =>
-    neutralButtonFamily.resolve('light', absoluteCap(primitive('black', 'v1'), 'dark', alpha));
+    neutralButtonFamily.resolve(scale, absoluteCap(primitive('black', 'v1'), 'dark', alpha));
   const onVividMediumBackground = (alpha: number) =>
-    neutralButtonFamily.resolve('light', absoluteCap(primitive('black', 'v1'), 'light', alpha));
+    neutralButtonFamily.resolve(scale, absoluteCap(primitive('black', 'v1'), 'light', alpha));
   const roleColor = (locator: Fluent2MicrosoftFamilyColorLocator) =>
     family.resolve('light', locator);
   const mediumSurfaceColor = (locator: FunctionalToneLocator & { targetDeltaE: number }) =>
@@ -516,13 +552,14 @@ export function createFluentButtonOnVividIntent({
       targetDeltaE: locator.targetDeltaE,
       usage: 'On-vivid Medium surface'
     });
-  const mediumRest = usesSharedLightMedium
+  const sharedMediumFill = theme !== 'darker';
+  const mediumRest = sharedMediumFill
     ? onVividMediumBackground(FLUENT_BUTTON_ON_VIVID_RECIPE.medium.lightSurfaceAlpha.rest)
     : mediumSurfaceColor(FLUENT_BUTTON_ON_VIVID_RECIPE.medium.roleSurface.rest);
-  const mediumHover = usesSharedLightMedium
+  const mediumHover = sharedMediumFill
     ? onVividMediumBackground(FLUENT_BUTTON_ON_VIVID_RECIPE.medium.lightSurfaceAlpha.hover)
     : mediumSurfaceColor(FLUENT_BUTTON_ON_VIVID_RECIPE.medium.roleSurface.hover);
-  const mediumPressed = usesSharedLightMedium
+  const mediumPressed = sharedMediumFill
     ? onVividInteractionBackground(FLUENT_BUTTON_ON_VIVID_RECIPE.medium.lightPressedBlackAlpha)
     : mediumSurfaceColor(FLUENT_BUTTON_ON_VIVID_RECIPE.medium.roleSurface.pressed);
   const mediumForeground = usesSharedLightMedium

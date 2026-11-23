@@ -46,14 +46,17 @@ export function createMaterial3GoogleCardSchema({
     theme: 'l' | 'd',
     surface: 'onSubtle' | 'onVivid'
   ) => {
-    const transparent = c(segment, 'l', 'primitive.black.v1', 0, 0);
+    const transparent = c(segment, theme, 'primitive.black.v1', theme === 'l' ? 0 : 100, 0);
     const onSurface = c(segment, theme, 'primitive.black.v1', 100);
     const disabled = c.ref(segment, theme, 'card.neutral', 'subtle', -1);
     const resolve = (intent: 'neutral' | 'primary' | 'support', emphasis: string) => {
       const role = `card.${intent}` as const;
       const strong = emphasis === 'highest';
       const color = (offset: 0 | 1 | 2 | 3 | 4) => {
-        if (strong) return c.ref(segment, 'l', role, 'vivid', -Math.min(offset, 2));
+        if (strong) {
+          const track = intent === 'primary' && offset === 0 ? theme : 'l';
+          return c.ref(segment, track, role, 'vivid', -Math.min(offset, 2));
+        }
         if (theme === 'l' && emphasis === 'lowest') {
           // A common achromatic surface; interactions retain subtle grayscale deltas.
           return c(segment, 'l', 'primitive.black.v1', offset);
@@ -70,7 +73,7 @@ export function createMaterial3GoogleCardSchema({
       };
       const rest = color(0);
       const boundary = strong
-        ? c(segment, 'l', 'primitive.black.v1', 0, 30)
+        ? c(segment, theme, 'primitive.black.v1', theme === 'l' ? 0 : 100, 30)
         : withAlpha(onSurface, 20);
       return {
         box: {

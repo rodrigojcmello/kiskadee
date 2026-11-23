@@ -14,9 +14,12 @@ const themes = <T>(factory: (theme: Theme) => T) => ({
 });
 
 export function createCarbonIbmSwitchSchema({ c }: { c: CarbonIbmColorResolver }): SwitchComponent {
-  const cap = (alpha = 100) =>
-    c.resolve('default', 'l', absoluteCap(primitive('black', 'v1'), 'light', alpha));
-  const transparent = cap(0);
+  const cap = (theme: Theme, alpha = 100) =>
+    c.resolve(
+      'default',
+      theme === 'light' ? 'l' : 'd',
+      absoluteCap(primitive('black', 'v1'), 'light', alpha)
+    );
   const selectedColor = (theme: Theme, intent: Intent) =>
     intent === 'primary'
       ? tokenColor(c, theme, 'button-primary', 'switch.primary')
@@ -25,17 +28,17 @@ export function createCarbonIbmSwitchSchema({ c }: { c: CarbonIbmColorResolver }
   const track = (theme: Theme, onVivid: boolean, intent: Intent) => ({
     boxColor: {
       rest: onVivid
-        ? cap(40)
+        ? cap(theme, 40)
         : intent === 'polarity'
           ? tokenColor(c, theme, 'support-error', 'redLike')
           : tokenColor(c, theme, 'toggle-off', 'switch.neutral'),
-      selected: { rest: ref(onVivid ? cap() : selectedColor(theme, intent)) },
-      readOnly: ref(transparent),
-      disabled: ref(onVivid ? cap(16) : tokenColor(c, theme, 'button-disabled'))
+      selected: { rest: ref(onVivid ? cap(theme) : selectedColor(theme, intent)) },
+      readOnly: ref(cap(theme, 0)),
+      disabled: ref(onVivid ? cap(theme, 16) : tokenColor(c, theme, 'button-disabled'))
     },
     borderColor: {
-      rest: transparent,
-      readOnly: ref(onVivid ? cap(40) : tokenColor(c, theme, 'icon-disabled'))
+      rest: cap(theme, 0),
+      readOnly: ref(onVivid ? cap(theme, 40) : tokenColor(c, theme, 'icon-disabled'))
     }
   });
   const thumb = (theme: Theme, onVivid: boolean, intent: Intent) => ({
@@ -43,10 +46,12 @@ export function createCarbonIbmSwitchSchema({ c }: { c: CarbonIbmColorResolver }
       rest:
         onVivid && intent === 'polarity'
           ? tokenColor(c, 'light', 'support-error', 'redLike')
-          : cap(),
-      ...(onVivid ? { selected: { rest: ref(selectedColor('light', intent)) } } : {}),
-      readOnly: ref(onVivid ? cap() : tokenColor(c, theme, 'icon-primary')),
-      disabled: ref(onVivid ? cap(32) : tokenColor(c, theme, 'icon-on-color-disabled'))
+          : cap(theme),
+      ...(onVivid
+        ? { selected: { rest: ref(selectedColor(intent === 'primary' ? theme : 'light', intent)) } }
+        : {}),
+      readOnly: ref(onVivid ? cap(theme) : tokenColor(c, theme, 'icon-primary')),
+      disabled: ref(onVivid ? cap(theme, 32) : tokenColor(c, theme, 'icon-on-color-disabled'))
     }
   });
   const context = <T extends { boxColor: unknown; borderColor?: unknown }>(
@@ -80,9 +85,9 @@ export function createCarbonIbmSwitchSchema({ c }: { c: CarbonIbmColorResolver }
           {
             medium: {
               rest: onVivid
-                ? cap(secondary ? 85 : 100)
+                ? cap(theme, secondary ? 85 : 100)
                 : tokenColor(c, theme, secondary ? 'text-secondary' : 'text-primary'),
-              disabled: ref(onVivid ? cap(25) : tokenColor(c, theme, 'text-disabled'))
+              disabled: ref(onVivid ? cap(theme, 25) : tokenColor(c, theme, 'text-disabled'))
             }
           }
         ])
@@ -100,13 +105,13 @@ export function createCarbonIbmSwitchSchema({ c }: { c: CarbonIbmColorResolver }
               rest: onVivid
                 ? tokenColor(c, 'light', 'text-primary')
                 : tokenColor(c, theme, 'toggle-off'),
-              selected: { rest: ref(onVivid ? cap() : selectedColor(theme, intent)) },
+              selected: { rest: ref(onVivid ? cap(theme) : selectedColor(theme, intent)) },
               readOnly: ref(
                 onVivid
                   ? tokenColor(c, 'light', 'text-primary')
                   : tokenColor(c, theme, 'background')
               ),
-              disabled: ref(onVivid ? cap(16) : tokenColor(c, theme, 'button-disabled'))
+              disabled: ref(onVivid ? cap(theme, 16) : tokenColor(c, theme, 'button-disabled'))
             }
           }
         ])

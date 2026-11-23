@@ -43,10 +43,10 @@ export function createIos27AppleForegrounds({
               },
               onVivid: {
                 standard: {
-                  high: { rest: c('default', 'l', 'neutral', 0) },
-                  medium: { rest: c('default', 'l', 'neutral', 0, 80) },
-                  low: { rest: c('default', 'l', 'neutral', 0, 65) },
-                  lowest: { rest: c('default', 'l', 'neutral', 0, 50) }
+                  high: { rest: c('default', track, 'neutral', theme === 'light' ? 0 : 100) },
+                  medium: { rest: c('default', track, 'neutral', theme === 'light' ? 0 : 100, 80) },
+                  low: { rest: c('default', track, 'neutral', theme === 'light' ? 0 : 100, 65) },
+                  lowest: { rest: c('default', track, 'neutral', theme === 'light' ? 0 : 100, 50) }
                 }
               }
             }

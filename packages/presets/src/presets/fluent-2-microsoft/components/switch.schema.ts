@@ -92,13 +92,13 @@ export function createFluent2MicrosoftSwitchSchema({
   ) => c.resolve('default', THEME_TRACK[theme], locator);
   const physicalLight = (locator: Parameters<Fluent2MicrosoftColorResolver['resolve']>[2]) =>
     c.resolve('default', 'l', locator);
-  const white = physicalLight(absoluteCap(primitive('black', 'v1'), 'light'));
-  const transparent = physicalLight(absoluteCap(primitive('black', 'v1'), 'light', 0));
+  const cap = (theme: ThemeName, polarity: 'light' | 'dark', alpha = 100) =>
+    color(theme, absoluteCap(primitive('black', 'v1'), polarity, alpha));
 
   const createOnSubtleColors = (theme: ThemeName) => {
     const isLight = theme === 'light';
     const trackRest = isLight
-      ? white
+      ? cap(theme, 'light')
       : color(theme, exactColor(primitive('black', 'v1'), 9, 'component.switch'));
     const trackDisabled = color(theme, exactColor(primitive('black', 'v1'), 3, 'component.switch'));
     const neutralStrokeRole = isLight ? primitive('black', 'v1') : 'switch.neutral';
@@ -144,36 +144,43 @@ export function createFluent2MicrosoftSwitchSchema({
     };
   };
 
-  const onVividColors = {
-    trackRest: physicalLight(absoluteCap(primitive('black', 'v1'), 'light', 14)),
-    trackHover: physicalLight(absoluteCap(primitive('black', 'v1'), 'light', 20)),
-    trackPressed: physicalLight(absoluteCap(primitive('black', 'v1'), 'light', 28)),
-    trackDisabled: physicalLight(absoluteCap(primitive('black', 'v1'), 'light', 12)),
-    borderRest: physicalLight(absoluteCap(primitive('black', 'v1'), 'light', 72)),
-    borderHover: physicalLight(absoluteCap(primitive('black', 'v1'), 'light', 88)),
-    borderDisabled: physicalLight(absoluteCap(primitive('black', 'v1'), 'light', 20)),
-    thumbDisabled: physicalLight(absoluteCap(primitive('black', 'v1'), 'light', 38)),
+  const themes = <T>(factory: (theme: ThemeName) => T) => ({
+    light: factory('light'),
+    dark: factory('dark'),
+    darker: factory('darker')
+  });
+  const vividColors = themes((theme) => ({
+    trackRest: cap(theme, 'light', 14),
+    trackHover: cap(theme, 'light', 20),
+    trackPressed: cap(theme, 'light', 28),
+    trackDisabled: cap(theme, 'light', 12),
+    borderRest: cap(theme, 'light', 72),
+    borderHover: cap(theme, 'light', 88),
+    borderDisabled: cap(theme, 'light', 20),
+    thumbDisabled: cap(theme, 'light', 38),
     brandRest: physicalLight(referenceColor('primary', 'vivid', 2)),
     brandHover: physicalLight(referenceColor('primary', 'vivid', 4)),
     brandPressed: physicalLight(referenceColor('primary', 'vivid', 6)),
     polarityOff: physicalLight(referenceColor('redLike', 'vivid')),
     polarityOn: physicalLight(referenceColor('greenLike', 'vivid'))
-  };
+  }));
 
   // Windows-inspired Neutral treatment; see the Switch evidence for the ordinal recipe.
-  const onVividNeutralColors = {
-    trackRest: transparent,
-    trackHover: physicalLight(absoluteCap(primitive('black', 'v1'), 'light', 8)),
-    trackPressed: onVividColors.trackRest,
-    selectedRest: physicalLight(referenceColor('switch.primary.v2', 'vivid')),
+  const vividNeutralColors = themes((theme) => ({
+    trackRest: cap(theme, 'light', 0),
+    trackHover: cap(theme, 'light', 8),
+    trackPressed: cap(theme, 'light', 14),
+    selectedRest: color(theme, referenceColor('switch.primary.v2', 'vivid')),
     selectedHover: physicalLight(referenceColor('switch.primary.v2', 'vivid', 1)),
     selectedPressed: physicalLight(referenceColor('switch.primary.v2', 'vivid', 2)),
-    selectedThumb: physicalLight(absoluteCap(primitive('black', 'v1'), 'dark'))
-  };
+    selectedThumb: cap(theme, 'dark')
+  }));
 
   const createOnSubtleTrackIntent = (theme: ThemeName, intent: SwitchIntent) => {
     const colors = createOnSubtleColors(theme);
-    const selectedRest = intent === 'polarity' ? colors.polarityOn : colors.brandRest;
+    const accent = theme === 'dark' && intent === 'neutral' ? vividNeutralColors[theme] : undefined;
+    const selectedRest =
+      intent === 'polarity' ? colors.polarityOn : (accent?.selectedRest ?? colors.brandRest);
 
     return {
       boxColor: {
@@ -183,8 +190,8 @@ export function createFluent2MicrosoftSwitchSchema({
             ? { rest: { ref: selectedRest } }
             : {
                 rest: { ref: selectedRest },
-                hover: { ref: colors.brandHover },
-                pressed: { ref: colors.brandPressed }
+                hover: { ref: accent?.selectedHover ?? colors.brandHover },
+                pressed: { ref: accent?.selectedPressed ?? colors.brandPressed }
               },
         disabled: { ref: colors.trackDisabled }
       },
@@ -194,48 +201,61 @@ export function createFluent2MicrosoftSwitchSchema({
         pressed: { ref: colors.neutralStrokePressed },
         // Selected must suppress the unchecked Hover/Pressed stroke as well.
         selected: {
-          rest: { ref: transparent },
-          hover: { ref: transparent },
-          pressed: { ref: transparent }
+          rest: { ref: cap(theme, 'light', 0) },
+          hover: { ref: cap(theme, 'light', 0) },
+          pressed: { ref: cap(theme, 'light', 0) }
         },
         disabled: { ref: colors.disabledStroke }
       }
     };
   };
 
-  const createOnVividTrackIntent = (intent: SwitchIntent) => ({
-    boxColor: {
-      rest: intent === 'neutral' ? onVividNeutralColors.trackRest : onVividColors.trackRest,
-      hover: {
-        ref: intent === 'neutral' ? onVividNeutralColors.trackHover : onVividColors.trackHover
+  const createOnVividTrackIntent = (theme: ThemeName, intent: SwitchIntent) => {
+    const onVividColors = vividColors[theme];
+    const onVividNeutralColors = vividNeutralColors[theme];
+    return {
+      boxColor: {
+        rest: intent === 'neutral' ? onVividNeutralColors.trackRest : onVividColors.trackRest,
+        hover: {
+          ref: intent === 'neutral' ? onVividNeutralColors.trackHover : onVividColors.trackHover
+        },
+        pressed: {
+          ref: intent === 'neutral' ? onVividNeutralColors.trackPressed : onVividColors.trackPressed
+        },
+        // Selected must override the unchecked interaction overlays for every intent.
+        selected: {
+          rest: {
+            ref: intent === 'neutral' ? onVividNeutralColors.selectedRest : cap(theme, 'light')
+          },
+          hover: {
+            ref: intent === 'neutral' ? onVividNeutralColors.selectedHover : cap(theme, 'light')
+          },
+          pressed: {
+            ref: intent === 'neutral' ? onVividNeutralColors.selectedPressed : cap(theme, 'light')
+          }
+        },
+        disabled: { ref: onVividColors.trackDisabled }
       },
-      pressed: {
-        ref: intent === 'neutral' ? onVividNeutralColors.trackPressed : onVividColors.trackPressed
-      },
-      // Selected must override the unchecked interaction overlays for every intent.
-      selected: {
-        rest: { ref: intent === 'neutral' ? onVividNeutralColors.selectedRest : white },
-        hover: { ref: intent === 'neutral' ? onVividNeutralColors.selectedHover : white },
-        pressed: { ref: intent === 'neutral' ? onVividNeutralColors.selectedPressed : white }
-      },
-      disabled: { ref: onVividColors.trackDisabled }
-    },
-    borderColor: {
-      rest: onVividColors.borderRest,
-      hover: { ref: onVividColors.borderHover },
-      pressed: { ref: onVividColors.borderHover },
-      selected: {
-        rest: { ref: transparent },
-        hover: { ref: transparent },
-        pressed: { ref: transparent }
-      },
-      disabled: { ref: onVividColors.borderDisabled }
-    }
-  });
+      borderColor: {
+        rest: onVividColors.borderRest,
+        hover: { ref: onVividColors.borderHover },
+        pressed: { ref: onVividColors.borderHover },
+        selected: {
+          rest: { ref: cap(theme, 'light', 0) },
+          hover: { ref: cap(theme, 'light', 0) },
+          pressed: { ref: cap(theme, 'light', 0) }
+        },
+        disabled: { ref: onVividColors.borderDisabled }
+      }
+    };
+  };
 
   const createOnSubtleThumbIntent = (theme: ThemeName, intent: SwitchIntent) => {
     const colors = createOnSubtleColors(theme);
     const rest = intent === 'polarity' ? colors.polarityOff : colors.neutralStrokeRest;
+
+    const selectedThumb =
+      theme === 'dark' && intent === 'neutral' ? cap(theme, 'dark') : cap(theme, 'light');
 
     return {
       boxColor: {
@@ -247,24 +267,28 @@ export function createFluent2MicrosoftSwitchSchema({
               pressed: { ref: colors.neutralStrokePressed }
             }),
         selected: {
-          rest: { ref: white },
+          rest: { ref: selectedThumb },
           // Only the non-polarity intents have unchecked thumb deltas to reset.
-          ...(intent === 'polarity' ? {} : { hover: { ref: white }, pressed: { ref: white } })
+          ...(intent === 'polarity'
+            ? {}
+            : { hover: { ref: selectedThumb }, pressed: { ref: selectedThumb } })
         },
         disabled: { ref: colors.disabledThumb }
       },
       borderColor: {
-        rest: transparent
+        rest: cap(theme, 'light', 0)
       }
     };
   };
 
-  const createOnVividThumbIntent = (intent: SwitchIntent) => {
+  const createOnVividThumbIntent = (theme: ThemeName, intent: SwitchIntent) => {
+    const onVividColors = vividColors[theme];
+    const onVividNeutralColors = vividNeutralColors[theme];
     const selectedRest = intent === 'polarity' ? onVividColors.polarityOn : onVividColors.brandRest;
 
     return {
       boxColor: {
-        rest: white,
+        rest: cap(theme, 'light'),
         selected:
           intent === 'neutral'
             ? { rest: { ref: onVividNeutralColors.selectedThumb } }
@@ -278,7 +302,7 @@ export function createFluent2MicrosoftSwitchSchema({
         disabled: { ref: onVividColors.thumbDisabled }
       },
       borderColor: {
-        rest: transparent
+        rest: cap(theme, 'light', 0)
       }
     };
   };
@@ -288,7 +312,7 @@ export function createFluent2MicrosoftSwitchSchema({
       SWITCH_INTENTS.map((intent) => [intent, createOnSubtleTrackIntent(theme, intent)])
     );
     const onVividByIntent = Object.fromEntries(
-      SWITCH_INTENTS.map((intent) => [intent, createOnVividTrackIntent(intent)])
+      SWITCH_INTENTS.map((intent) => [intent, createOnVividTrackIntent(theme, intent)])
     );
 
     return {
@@ -343,13 +367,13 @@ export function createFluent2MicrosoftSwitchSchema({
         boxColor: Object.fromEntries(
           SWITCH_INTENTS.map((intent) => [
             intent,
-            { medium: createOnVividThumbIntent(intent).boxColor }
+            { medium: createOnVividThumbIntent(theme, intent).boxColor }
           ])
         ),
         borderColor: Object.fromEntries(
           SWITCH_INTENTS.map((intent) => [
             intent,
-            { medium: createOnVividThumbIntent(intent).borderColor }
+            { medium: createOnVividThumbIntent(theme, intent).borderColor }
           ])
         )
       }
@@ -457,7 +481,10 @@ export function createFluent2MicrosoftSwitchSchema({
     return {
       medium: {
         rest: theme === 'light' ? whiteReference : blackReference,
-        selected: createSelectedForeground(),
+        selected:
+          theme === 'dark' && intent === 'neutral'
+            ? { rest: whiteReference, hover: whiteReference, pressed: whiteReference }
+            : createSelectedForeground(),
         disabled: parentStateForegroundReference(
           'neutral',
           'standard',
@@ -485,12 +512,6 @@ export function createFluent2MicrosoftSwitchSchema({
         )
       }
     }
-  });
-
-  const themes = <T>(factory: (theme: ThemeName) => T) => ({
-    light: factory('light'),
-    dark: factory('dark'),
-    darker: factory('darker')
   });
 
   return {

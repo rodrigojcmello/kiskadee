@@ -52,6 +52,7 @@ type CardPaletteRecipe = {
 };
 
 type CreateFluent2MicrosoftCardSchemaArgs = {
+  sourceSegment: 'default' | 'teams';
   c: Fluent2MicrosoftColorResolver;
   segmentNames: readonly Fluent2MicrosoftSegmentName[];
 };
@@ -71,10 +72,6 @@ const lightCap = (alpha?: number) => physicalCap('light', alpha);
 const darkCap = (alpha?: number) => physicalCap('dark', alpha);
 const lightTransparent = lightCap(0);
 const darkTransparent = darkCap(0);
-const onVividTransparent: ColorLocator = {
-  color: absoluteCap(primitive('black', 'v1'), 'light', 0),
-  track: 'l'
-};
 
 const transparentBorder = (transparent: ColorLocator, selected: ColorLocator): StateRecipe => ({
   rest: transparent,
@@ -200,7 +197,7 @@ const DARK_RECIPE = {
         disabled: n(3)
       },
       highest: {
-        rest: { ...p(60), track: 'l' },
+        rest: p(18),
         hover: p(40),
         pressed: p(14),
         selected: p(28),
@@ -378,7 +375,8 @@ function createCardPalette(
   c: Fluent2MicrosoftColorResolver,
   segmentName: Fluent2MicrosoftSegmentName,
   themeName: ThemeName,
-  surfaceContext: SurfaceContext
+  surfaceContext: SurfaceContext,
+  darkHighestRest?: ColorLocator
 ) {
   const recipe: CardPaletteRecipe =
     themeName === 'light' && surfaceContext === 'onVivid'
@@ -389,7 +387,7 @@ function createCardPalette(
   const contextualBoundary = (visible: boolean) =>
     visible
       ? stateMap({}, contour(`neutral.standard.${themeName}.onVivid.medium`))
-      : stateMap({ rest: onVividTransparent });
+      : stateMap({ rest: lightTransparent });
 
   const borderColor =
     surfaceContext === 'onSubtle'
@@ -466,7 +464,12 @@ function createCardPalette(
           : undefined),
         medium: stateMap(recipe.boxColor.primary.medium),
         ...(recipe.boxColor.primary.highest
-          ? { highest: stateMap(recipe.boxColor.primary.highest) }
+          ? {
+              highest: stateMap(
+                recipe.boxColor.primary.highest,
+                darkHighestRest && resolveColor(c, segmentName, recipe.track, darkHighestRest)
+              )
+            }
           : undefined)
       }
     },
@@ -507,8 +510,11 @@ function createCardPalette(
 
 export function createFluent2MicrosoftCardSchema({
   c,
-  segmentNames
+  segmentNames,
+  sourceSegment
 }: CreateFluent2MicrosoftCardSchemaArgs) {
+  const teamsDarkRest: ColorLocator | undefined =
+    sourceSegment === 'teams' ? { ...p(60), track: 'l' } : undefined;
   const result = splitCardSurfaceSchema<never>({
     options: {
       border: {
@@ -586,8 +592,12 @@ export function createFluent2MicrosoftCardSchema({
             onVivid: { standard: createCardPalette(c, segmentName, 'light', 'onVivid') }
           },
           dark: {
-            onSubtle: { standard: createCardPalette(c, segmentName, 'dark', 'onSubtle') },
-            onVivid: { standard: createCardPalette(c, segmentName, 'dark', 'onVivid') }
+            onSubtle: {
+              standard: createCardPalette(c, segmentName, 'dark', 'onSubtle', teamsDarkRest)
+            },
+            onVivid: {
+              standard: createCardPalette(c, segmentName, 'dark', 'onVivid', teamsDarkRest)
+            }
           },
           darker: {
             onSubtle: { standard: createCardPalette(c, segmentName, 'darker', 'onSubtle') },
@@ -603,6 +613,7 @@ export function createFluent2MicrosoftCardSchema({
     container: createFluent2MicrosoftContainerSchema({
       elements: result.container.elements,
       canonicalSurfaces: CANONICAL_CARD_SURFACES,
+      sourceSegment,
       c,
       segmentNames
     })

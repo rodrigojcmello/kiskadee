@@ -186,7 +186,10 @@ export const schema: Schema<Segments> = {
           activationFeedback: {
             tone: {
               subtle: { color: c.ref(segment, track, 'neutral', 'vivid'), opacity: 0.1 },
-              vivid: { color: white, opacity: 0.2 }
+              vivid: {
+                color: c(segment, track, 'primitive.black.v1', track === 'l' ? 0 : 100),
+                opacity: 0.2
+              }
             }
           }
         }
@@ -196,11 +199,11 @@ export const schema: Schema<Segments> = {
   },
   components: {
     layout: createLayoutSchema(),
-    badge: createMaterial3GoogleBadgeSchema({ c, segmentNames, transparent }),
-    chip: createMaterial3GoogleChipSchema({ c, segmentNames, transparent }),
+    badge: createMaterial3GoogleBadgeSchema({ c, segmentNames }),
+    chip: createMaterial3GoogleChipSchema({ c, segmentNames }),
     icon: createMaterial3GoogleIconSchema({ c, segmentNames }),
     progress: createMaterial3GoogleProgressSchema({ c, segmentNames }),
-    slider: createMaterial3GoogleSliderSchema({ c, segmentNames, transparent }),
+    slider: createMaterial3GoogleSliderSchema({ c, segmentNames }),
     text: createMaterial3GoogleTextSchema(),
     bottomSheet: createMaterial3GoogleBottomSheetSchema({ c, segmentNames }),
     button: createMaterial3GoogleButtonSchema({
@@ -217,18 +220,13 @@ export const schema: Schema<Segments> = {
     separator: createMaterial3GoogleSeparatorSchema(),
     switch: createMaterial3GoogleSwitchSchema({
       c,
-      segmentNames,
-      transparent
+      segmentNames
     }),
     tabs: createMaterial3GoogleTabsSchema({
       c,
       transparent,
       white
     }),
-    textField: createMaterial3GoogleTextFieldSchema({
-      c,
-      segmentNames,
-      transparent
-    })
+    textField: createMaterial3GoogleTextFieldSchema({ c, segmentNames })
   }
 };

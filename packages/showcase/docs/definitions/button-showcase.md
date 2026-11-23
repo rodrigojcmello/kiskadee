@@ -9,17 +9,13 @@ The eight Surface contexts samples are ordinary action Buttons. They do not rece
 `controlState`, `selectionEmphasis` or a local selection handler. Clicking them retains the normal
 Hover, Focus and Pressed feedback without persistent selection or a selection indicator.
 
-Surface contexts exposes a compact Alt Switch in each Card header, aligned to the right of its
-title and description. Both start off and independently switch the color variant of their Card's Primary examples.
-Each inherits its Card's produced Surface Context for paint and coverage checks. Without
-Alternative coverage for Primary at any displayed emphasis, that Switch stays visible, disabled
-and off. Each requested variant choice survives temporary loss of coverage.
-Intents also exposes an independent Alt Switch in each intent Card header, initially off.
-Coverage uses the Card-produced context and each emphasis; unsupported rows keep Standard.
-When no displayed intent has Alternative coverage in that context, none of the Alt switches
-render. If any displayed intent has coverage, all cards render a switch and unavailable
-intents remain disabled. Restoring coverage preserves previously requested choices.
-The switches preserve the Selected examples and their independent selection state.
+Both comparison Cards show Standard Primary examples. While the Dark subtle Highest pair is selected, the left comparison Card uses the published Neutral Low reference. Intents follows the selected Primary Highest Card and the right comparison uses Primary Highest as usual.
+Intents places its description on a full-width row. Rest only, Focus ring and a single Alt
+Switch share the following right-aligned row. Alt starts off and applies to all displayed
+intent cards. Coverage is evaluated for each emphasis on the card's surface. Unsupported
+recipes use Standard. Alt stays visible, disabled and off when all displayed intents lack alternative coverage;
+its requested value survives temporary loss of coverage. Changing Alt preserves the
+independent selection state of the examples.
 Selection indicator retains its Small looping sequential Color variant Select, starting at Standard. Alternative availability comes from
 `capabilities.colorVariants` in component metadata, scoped to the current segment, theme, surface,
 intent and emphasis. Metadata discovery shares the JSON cache and does not load CSS or class maps.
@@ -41,9 +37,8 @@ not to the base Button intent. Metadata requests wait for the matching preset ma
 presets cannot combine the previous preset's resource paths or revision with the new preset.
 Pagination also retains its Radius control alongside the four paint controls.
 
-Intents places the Rest only and Focus ring switches to the right of its description, vertically
-centered, without a Card. If descriptions are hidden they move alongside the heading. A vertical
-Separator sits between the switches when the current preset publishes it.
+When descriptions are hidden, the intent controls stay on their own row below the heading.
+A vertical Separator divides adjacent controls when the current preset publishes it.
 They use the surrounding surface context. Rest only disables and resets Focus ring; when enabled,
 Focus ring projects the Focus sample. Selected examples use the default Lowest selection emphasis,
 including in grouped examples. Simplified Rest samples do not opt into selection paint.

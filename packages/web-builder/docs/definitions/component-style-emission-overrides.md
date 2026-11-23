@@ -216,7 +216,7 @@ These Switch decisions are adjacent, but they are not style-emission policy:
 
 - `components.switch.options.activationMotion`: preset-level runtime metadata exported through the
   generated Switch component artifact; React maps it to a Switch-local motion class/variable.
-- `s-content.s-wow`: Showcase-owned macro transition used for preset changes and visible geometry
+- `.s-wow .s-content`: Showcase-owned macro transition used for preset changes and visible geometry
   controls such as scale or radius; scoped to the content root and its DOM descendants.
 - `stateActivator` classes such as `-s`, `-f`, `-k`, and `-a`: runtime state selector vocabulary,
   documented separately in the interaction-state model.

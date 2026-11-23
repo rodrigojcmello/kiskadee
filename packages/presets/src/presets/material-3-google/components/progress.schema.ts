@@ -63,15 +63,17 @@ function createTrackMap(
   theme: ThemeName,
   context: 'onSubtle' | 'onVivid'
 ): ProgressTrackColorMap {
+  const themeShortcut: ThemeShortcut = theme === 'light' ? 'l' : 'd';
   if (context === 'onVivid') {
     return {
       neutral: {
-        medium: rest(c(segment, 'l', primitive('black', 'v1'), 0, 18))
+        medium: rest(
+          c(segment, themeShortcut, primitive('black', 'v1'), theme === 'light' ? 0 : 100, 18)
+        )
       }
     };
   }
 
-  const themeShortcut: ThemeShortcut = theme === 'light' ? 'l' : 'd';
   return {
     neutral: {
       medium: rest(c.ref(segment, themeShortcut, 'progress.neutral', 'subtle', 1))

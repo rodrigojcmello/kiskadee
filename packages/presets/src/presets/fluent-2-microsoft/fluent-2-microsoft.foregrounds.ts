@@ -138,12 +138,13 @@ function createAlternativeChromaticForegroundProfile(
   complementaryRole: 'primary.v2' | 'redLike.v2' | 'greenLike.v2'
 ): ForegroundProfile {
   const profile = createChromaticForegroundProfile(c, role);
-  const high = c.resolve(
-    'default',
-    'l',
-    referenceColor(complementaryRole, 'vivid', ALTERNATIVE_ON_VIVID_OFFSET)
-  );
   for (const theme of ['light', 'dark', 'darker'] as const) {
+    const track = theme === 'light' ? 'l' : 'd';
+    const high = c.resolve(
+      'default',
+      track,
+      referenceColor(complementaryRole, 'vivid', ALTERNATIVE_ON_VIVID_OFFSET)
+    );
     profile.palettes.default![theme]!.onVivid!.alternative = {
       high: {
         rest: high,
@@ -152,7 +153,7 @@ function createAlternativeChromaticForegroundProfile(
       medium: {
         rest: c.resolve(
           'default',
-          'l',
+          track,
           referenceColor(
             complementaryRole,
             'vivid',
@@ -164,7 +165,7 @@ function createAlternativeChromaticForegroundProfile(
       low: {
         rest: c.resolve(
           'default',
-          'l',
+          track,
           referenceColor(
             complementaryRole,
             'vivid',
@@ -176,7 +177,7 @@ function createAlternativeChromaticForegroundProfile(
       lowest: {
         rest: c.resolve(
           'default',
-          'l',
+          track,
           referenceColor(
             complementaryRole,
             'vivid',
@@ -354,6 +355,16 @@ export function createFluent2MicrosoftForegrounds({
     };
   };
 
+  const blueDeep = createDeepChromaticForegroundProfile(c, 'primary');
+  // A small text label on the canonical Dark blue Card needs a lighter complementary tone.
+  const darkVividAccent = c.resolve('default', 'l', referenceColor('primary.v2', 'vivid', -2));
+  blueDeep.palettes.default!.dark!.onVivid!.alternative = {
+    high: {
+      rest: darkVividAccent,
+      pending: applyVisibility(darkVividAccent, FOREGROUND_PENDING_VISIBILITY)
+    }
+  };
+
   return {
     profiles: {
       neutral: {
@@ -378,7 +389,7 @@ export function createFluent2MicrosoftForegrounds({
       },
       blue: {
         standard: createAlternativeChromaticForegroundProfile(c, 'primary', 'primary.v2'),
-        deep: createDeepChromaticForegroundProfile(c, 'primary')
+        deep: blueDeep
       },
       red: {
         standard: createAlternativeChromaticForegroundProfile(

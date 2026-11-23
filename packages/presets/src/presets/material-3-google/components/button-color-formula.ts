@@ -69,8 +69,8 @@ export function createMaterialButtonIntent({
   const role = `button.${intent}` as const;
   const scale = theme === 'light' ? 'l' : 'd';
   const inverse = surface === 'onVivid';
-  const white = c(segment, 'l', 'primitive.black.v1', 0);
-  const black = c(segment, 'l', 'primitive.black.v1', 100);
+  const white = c(segment, scale, 'primitive.black.v1', scale === 'l' ? 0 : 100);
+  const black = c(segment, scale, 'primitive.black.v1', scale === 'l' ? 100 : 0);
   const transparent = withAlpha(black, 0);
   const onSurface = inverse || theme === 'dark' ? white : black;
   const disabledBox = withAlpha(onSurface, 10);
@@ -81,7 +81,13 @@ export function createMaterialButtonIntent({
     : theme === 'light'
       ? c.ref(segment, 'l', role, 'vivid')
       : c.ref(segment, 'd', role, 'vivid', intent === 'neutral' ? 0 : 6);
-  const highText = inverse ? c(segment, 'l', role, 65) : theme === 'light' ? white : black;
+  const highText = inverse
+    ? theme === 'dark' && intent === 'destructive'
+      ? c(segment, 'd', role, 22)
+      : c(segment, 'l', role, 65)
+    : theme === 'light'
+      ? white
+      : black;
   const medium = inverse
     ? withAlpha(c.ref(segment, 'l', role, 'subtle'), 14)
     : theme === 'light'

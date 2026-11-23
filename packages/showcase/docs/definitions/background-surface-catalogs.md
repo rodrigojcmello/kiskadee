@@ -79,6 +79,8 @@ When Neutral Low and Lowest are both published, a third exception follows the tw
 canvas with Neutral Lowest Cards and a border request. Its swatch is solid Neutral Low and it is the initial selection when available.
 Neutral Medium follows the other subtle compositions, immediately before the vivid group.
 
+In Dark, the subtle primary split swatch prefers a published primaryComplementary.highest canvas with primary.highest Cards. A complete subtle Medium pair supplies the split swatch when the Highest pair is unavailable; other themes use the Medium pair when published. It replaces the individual primary and primaryComplementary subtle scenarios.
+
 The remaining On subtle choices contain one composition per published intent: Medium canvas
 and Low Cards of the same intent. Low falls back to Lowest of that intent, then the base subtle
 surface when neither is published. Catalogs without Medium retain Low or their first published
@@ -89,12 +91,13 @@ with `primary.highest` as its supporting Card when available. When the preset pu
 that base color remains available for the supporting Card and explicit demonstrations.
 Supporting Cards use their published border on these related vivid surfaces.
 
-Scenario keys retain the canvas identity; the split exception includes both identities.
+Scenario keys retain the canvas identity across themes, including when a swatch changes
+between solid and split. Additional scenarios sharing a canvas include the Card identity.
 Accessible names describe the complete canvas/Card pair. Presets and Builder continue to own
 surface availability and paint; these composition choices belong only to Showcase.
 
 `useShowcaseBackgroundState` owns the route-scoped selection in the existing Showcase panel
-context. The Shell renders the selected Container as the scrollable `s-content` surface;
+context. The Shell renders the selected Container as the stationary `s-content` surface with an inner scrolling viewport;
 Container paints the canvas and publishes its child context. For a preset without a
 published Container surface, the Shell retains the existing CSS-painted content wrapper. All
 component panels consume the same `ShowcaseBackgroundControls` through their semantic controls,

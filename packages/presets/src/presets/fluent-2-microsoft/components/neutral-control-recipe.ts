@@ -19,7 +19,7 @@ export function createNeutralControlRecipe(
   const dark = theme !== 'light';
   const track = dark ? 'd' : 'l';
   const cap = (alpha: number, polarity: 'light' | 'dark' = 'light') =>
-    c.resolve('default', 'l', absoluteCap(primitive('black', 'v1'), polarity, alpha));
+    c.resolve('default', track, absoluteCap(primitive('black', 'v1'), polarity, alpha));
   return {
     hoverBackground: vivid
       ? cap(

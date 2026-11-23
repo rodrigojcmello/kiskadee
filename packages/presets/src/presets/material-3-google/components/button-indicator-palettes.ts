@@ -19,11 +19,12 @@ export function createMaterialButtonIndicatorPalettes({
     theme: 'light' | 'dark',
     surface: 'onSubtle' | 'onVivid'
   ) => {
-    const white = c(segment, 'l', 'primitive.black.v1', 0);
+    const track = theme === 'light' ? 'l' : 'd';
+    const white = c(segment, track, 'primitive.black.v1', theme === 'light' ? 0 : 100);
     const highInside =
       surface === 'onVivid'
         ? c(segment, 'l', 'button.primary', 65)
-        : c(segment, 'l', 'primitive.black.v1', theme === 'light' ? 0 : 100);
+        : c(segment, track, 'primitive.black.v1', 0);
     const subtleInside =
       surface === 'onVivid'
         ? white

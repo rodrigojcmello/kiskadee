@@ -1,7 +1,6 @@
 'use client';
 
 import type {
-  ColorVariant,
   ComponentEmphasis,
   ElementSizeValue,
   RadiusMode,
@@ -11,17 +10,12 @@ import { componentScaleToSize } from '@kiskadee/core';
 import { Button as KButton } from '@kiskadee/react-components/button';
 import { Card } from '@kiskadee/react-components/card';
 import { Layout } from '@kiskadee/react-components/layout';
-import { useKiskadee, useSurfaceContext } from '@kiskadee/react-components/resources';
 import { SmoothText } from '@kiskadee/react-components/smooth-text';
-import { Switch } from '@kiskadee/react-components/switch';
 import { Text } from '@kiskadee/react-components/text';
-import React from 'react';
 import { ShowcaseExampleCard } from '@/components/ShowcaseBackground/ShowcaseExampleCard';
 import { useShowcaseDisplayPreferences } from '@/components/ShowcaseDisplayPreferences';
-import { useButtonColorVariants } from '@/hooks/use-button-color-variants';
 import { useShowcaseTextProfiles } from '@/utils/showcase-text-profiles';
 import s from '../Button.module.scss';
-import { getButtonColorVariantSupport, qualifyButtonIntent } from './ButtonColorVariantControls';
 
 const COMPARISON_EMPHASES: ComponentEmphasis[] = ['high', 'medium', 'low', 'lowest'];
 
@@ -41,34 +35,15 @@ function ContextComparisonContent({
   description,
   radius,
   scale,
-  textAlign,
-  colorVariant,
-  onVariantChange
+  textAlign
 }: Omit<ComparisonPresentation, 'onVividSupported'> & {
   available: boolean;
   title: string;
   titleId: string;
   description: string;
-  colorVariant: ColorVariant;
-  onVariantChange: (variant: ColorVariant) => void;
 }) {
   const textProfiles = useShowcaseTextProfiles();
   const { showDescriptions } = useShowcaseDisplayPreferences();
-  const { segment, theme } = useKiskadee();
-  const context = useSurfaceContext();
-  const colorVariants = useButtonColorVariants();
-  const supportsAlternative = (emphases: ComponentEmphasis[]) =>
-    available &&
-    getButtonColorVariantSupport({
-      colorVariants,
-      segment,
-      theme,
-      contexts: [context],
-      intents: ['primary'],
-      emphases
-    });
-  const alternativeAvailable = supportsAlternative(COMPARISON_EMPHASES);
-
   return (
     <div className={s['state-content']}>
       <header className={s.contextSurfaceHeader}>
@@ -92,24 +67,13 @@ function ContextComparisonContent({
             </Text>
           ) : null}
         </div>
-        <Switch
-          label="Alt"
-          size="sm"
-          emphasis="medium"
-          disabled={!alternativeAvailable}
-          controlState={alternativeAvailable && colorVariant === 'alternative'}
-          onControlStateChange={(checked) => onVariantChange(checked ? 'alternative' : 'standard')}
-        />
       </header>
       <div className={s.contextSurfaceGrid}>
         {available ? (
           COMPARISON_EMPHASES.map((emphasis) => (
             <KButton
               key={emphasis}
-              intent={qualifyButtonIntent(
-                'primary',
-                supportsAlternative([emphasis]) ? colorVariant : 'standard'
-              )}
+              intent="primary"
               type="button"
               emphasis={emphasis}
               radius={radius}
@@ -143,19 +107,14 @@ export function SurfaceContextComparison({
   radius,
   scale,
   surfaceContext,
+  neutralReference,
   textAlign
 }: ComparisonPresentation & {
   surfaceContext: SurfaceContext;
+  neutralReference?: boolean;
 }) {
   const textProfiles = useShowcaseTextProfiles();
   const { showDescriptions } = useShowcaseDisplayPreferences();
-  const [requestedVariants, setRequestedVariants] = React.useState<
-    Record<SurfaceContext, ColorVariant>
-  >({
-    onSubtle: 'standard',
-    onVivid: 'standard'
-  });
-
   return (
     <section
       className={`${s.contextComparison} ${
@@ -169,8 +128,7 @@ export function SurfaceContextComparison({
         </Text>
         {showDescriptions ? (
           <Text as="p" profile={textProfiles.body}>
-            Compare Primary button emphases on subtle and vivid surfaces. Use Alt to explore
-            available color variants.
+            Compare Primary button emphases on subtle and vivid surfaces.
           </Text>
         ) : null}
       </div>
@@ -179,6 +137,7 @@ export function SurfaceContextComparison({
           <ShowcaseExampleCard
             className={`${s.contextSurface} k-root`}
             context="onSubtle"
+            surfaceKey={neutralReference ? 'neutral.low' : undefined}
             role="group"
             aria-labelledby="button-context-on-subtle-title"
           >
@@ -191,10 +150,6 @@ export function SurfaceContextComparison({
               radius={radius}
               scale={scale}
               textAlign={textAlign}
-              colorVariant={requestedVariants.onSubtle}
-              onVariantChange={(variant) =>
-                setRequestedVariants((current) => ({ ...current, onSubtle: variant }))
-              }
             />
           </ShowcaseExampleCard>
         </article>
@@ -217,10 +172,6 @@ export function SurfaceContextComparison({
                 radius={radius}
                 scale={scale}
                 textAlign={textAlign}
-                colorVariant={requestedVariants.onVivid}
-                onVariantChange={(variant) =>
-                  setRequestedVariants((current) => ({ ...current, onVivid: variant }))
-                }
               />
             </Layout>
           </Card>

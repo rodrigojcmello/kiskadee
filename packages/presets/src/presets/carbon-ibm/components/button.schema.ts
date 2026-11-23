@@ -1,5 +1,10 @@
 import { primitive, type Schema, type SolidColor, withAlpha } from '@kiskadee/core';
-import { absoluteCap, type CarbonIbmColorResolver, referenceColor } from '../carbon-ibm.color.ts';
+import {
+  absoluteCap,
+  type CarbonIbmColorResolver,
+  exactColor,
+  referenceColor
+} from '../carbon-ibm.color.ts';
 import { type CarbonTokenName, tokenColor } from '../carbon-ibm.tokens.ts';
 
 type ButtonComponent = NonNullable<Schema<never>['components']['button']>;
@@ -33,9 +38,12 @@ const contexts = <T>(factory: (surface: 'onSubtle' | 'onVivid') => T) => ({
 });
 
 export function createCarbonIbmButtonSchema({ c }: { c: CarbonIbmColorResolver }): ButtonComponent {
-  const cap = (alpha = 100) =>
-    c.resolve('default', 'l', absoluteCap(primitive('black', 'v1'), 'light', alpha));
-  const transparent = cap(0);
+  const cap = (theme: Theme, alpha = 100, polarity: 'light' | 'dark' = 'light') =>
+    c.resolve(
+      'default',
+      theme === 'light' ? 'l' : 'd',
+      absoluteCap(primitive('black', 'v1'), polarity, alpha)
+    );
   const tonal = (theme: Theme, intent: Intent, reference: 'subtle' | 'vivid', offset = 0) =>
     c.resolve(
       'default',
@@ -46,11 +54,12 @@ export function createCarbonIbmButtonSchema({ c }: { c: CarbonIbmColorResolver }
     tokenColor(c, theme, name, intent ? `button.${intent}` : undefined);
 
   const onSubtle = (theme: Theme, intent: Intent): Recipe => {
+    const transparent = cap(theme, 0);
     const neutral = intent === 'neutral';
     const danger = intent === 'destructive';
     const positive = intent === 'positive';
     const highRest = positive
-      ? tonal('light', intent, 'vivid')
+      ? tonal(theme, intent, 'vivid')
       : token(
           theme,
           neutral ? 'button-secondary' : danger ? 'button-danger-primary' : 'button-primary',
@@ -79,7 +88,9 @@ export function createCarbonIbmButtonSchema({ c }: { c: CarbonIbmColorResolver }
           intent
         );
     const highSelected = neutral
-      ? token('light', 'text-secondary', intent)
+      ? theme === 'light'
+        ? token(theme, 'text-secondary', intent)
+        : c.resolve('default', 'd', exactColor('button.neutral', 30, 'source.tokens'))
       : intent === 'primary'
         ? token('light', 'link-secondary', intent)
         : tonal('light', intent, 'vivid', 2);
@@ -228,7 +239,8 @@ export function createCarbonIbmButtonSchema({ c }: { c: CarbonIbmColorResolver }
   };
 
   // Carbon does not publish a chromatic surface-context recipe. Keep this inversion explicit.
-  const onVivid = (intent: Intent): Recipe => {
+  const onVivid = (theme: Theme, intent: Intent): Recipe => {
+    const transparent = cap(theme, 0);
     const ink =
       intent === 'neutral' ? token('light', 'text-primary') : tonal('light', intent, 'vivid', 3);
     const filled = (
@@ -238,44 +250,40 @@ export function createCarbonIbmButtonSchema({ c }: { c: CarbonIbmColorResolver }
       selected: number,
       polarity: 'light' | 'dark' = 'light'
     ): StateColors => ({
-      rest: c.resolve('default', 'l', absoluteCap(primitive('black', 'v1'), polarity, rest)),
-      hover: c.resolve('default', 'l', absoluteCap(primitive('black', 'v1'), polarity, hover)),
-      pressed: c.resolve('default', 'l', absoluteCap(primitive('black', 'v1'), polarity, pressed)),
-      pending: c.resolve(
-        'default',
-        'l',
-        absoluteCap(primitive('black', 'v1'), polarity, rest * 0.7)
-      ),
-      disabled: cap(16),
+      rest: cap(theme, rest, polarity),
+      hover: cap(theme, hover, polarity),
+      pressed: cap(theme, pressed, polarity),
+      pending: cap(theme, rest * 0.7, polarity),
+      disabled: cap(theme, 16),
       selected: {
-        rest: c.resolve('default', 'l', absoluteCap(primitive('black', 'v1'), polarity, selected)),
-        pressed: c.resolve('default', 'l', absoluteCap(primitive('black', 'v1'), polarity, pressed))
+        rest: cap(theme, selected, polarity),
+        pressed: cap(theme, pressed, polarity)
       }
     });
-    const lower = { rest: cap(), pending: cap(70), disabled: cap(25) };
+    const lower = { rest: cap(theme), pending: cap(theme, 70), disabled: cap(theme, 25) };
     return {
       boxColor: {
         high: filled(100, 95, 80, 90),
         medium: filled(16, 24, 40, 32, 'dark'),
         low: {
           rest: transparent,
-          hover: cap(),
-          pressed: cap(80),
-          focus: cap(),
+          hover: cap(theme),
+          pressed: cap(theme, 80),
+          focus: cap(theme),
           pending: transparent,
           disabled: transparent,
-          selected: { rest: cap(90), pressed: cap(80) }
+          selected: { rest: cap(theme, 90), pressed: cap(theme, 80) }
         },
         lowest: { ...filled(0, 12, 32, 24, 'dark'), pending: transparent, disabled: transparent }
       },
       borderColor: {
         high: { rest: transparent },
         medium: { rest: transparent },
-        low: { rest: cap(), pending: cap(60), disabled: cap(16) },
+        low: { rest: cap(theme), pending: cap(theme, 60), disabled: cap(theme, 16) },
         lowest: { rest: transparent }
       },
       textColor: {
-        high: { rest: ink, pending: withAlpha(ink, 70), disabled: cap(25) },
+        high: { rest: ink, pending: withAlpha(ink, 70), disabled: cap(theme, 25) },
         medium: lower,
         low: { ...lower, hover: ink, pressed: ink, focus: ink, selected: { rest: ink } },
         lowest: lower
@@ -287,7 +295,9 @@ export function createCarbonIbmButtonSchema({ c }: { c: CarbonIbmColorResolver }
     onSubtle: {
       standard: Object.fromEntries(INTENTS.map((intent) => [intent, onSubtle(theme, intent)]))
     },
-    onVivid: { standard: Object.fromEntries(INTENTS.map((intent) => [intent, onVivid(intent)])) }
+    onVivid: {
+      standard: Object.fromEntries(INTENTS.map((intent) => [intent, onVivid(theme, intent)]))
+    }
   }));
   const boxPalettes = (theme: Theme) =>
     contexts((surface) => ({
@@ -339,7 +349,7 @@ export function createCarbonIbmButtonSchema({ c }: { c: CarbonIbmColorResolver }
     },
     onVivid: {
       standard: {
-        boxColor: { neutral: { medium: { rest: cap() } } },
+        boxColor: { neutral: { medium: { rest: cap(theme) } } },
         textColor: { neutral: { medium: { rest: token('light', 'text-primary') } } }
       }
     }
@@ -348,7 +358,7 @@ export function createCarbonIbmButtonSchema({ c }: { c: CarbonIbmColorResolver }
     onSubtle: {
       standard: { boxColor: { neutral: { medium: { rest: token(theme, 'button-separator') } } } }
     },
-    onVivid: { standard: { boxColor: { neutral: { medium: { rest: cap(40) } } } } }
+    onVivid: { standard: { boxColor: { neutral: { medium: { rest: cap(theme, 40) } } } } }
   });
 
   return {

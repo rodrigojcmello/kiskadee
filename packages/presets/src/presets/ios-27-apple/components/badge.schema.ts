@@ -18,8 +18,10 @@ export function createIos27AppleBadgeSchema({
 }: {
   c: PresetColorGetter<'default'>;
 }): BadgeComponent {
-  const white = (alpha?: number) => c('default', 'l', 'neutral', 0, alpha);
-  const black = (alpha?: number) => c('default', 'l', 'neutral', 100, alpha);
+  const white = (theme: ThemeName, alpha?: number) =>
+    c('default', track(theme), 'neutral', theme === 'light' ? 0 : 100, alpha);
+  const black = (theme: ThemeName, alpha?: number) =>
+    c('default', track(theme), 'neutral', theme === 'light' ? 100 : 0, alpha);
   const role = (intent: BadgeIntent) => `badge.${intent}` as const;
   const track = (theme: ThemeName) => (theme === 'light' ? 'l' : 'd');
   const vivid = (theme: ThemeName, intent: BadgeIntent) =>
@@ -29,7 +31,7 @@ export function createIos27AppleBadgeSchema({
     const lightForeground =
       intent === 'attention' ||
       (theme === 'light' && (intent === 'neutral' || intent === 'novelty'));
-    return lightForeground ? white() : black();
+    return lightForeground ? white(theme) : black(theme);
   };
   const readableForeground = (theme: ThemeName, intent: BadgeIntent) =>
     c.ref(
@@ -54,7 +56,9 @@ export function createIos27AppleBadgeSchema({
             rest: c.ref('default', onVivid ? 'l' : track(theme), role(intent), 'subtle')
           },
           low: {
-            rest: onVivid ? black(12) : c.ref('default', track(theme), role(intent), 'vivid', 0, 10)
+            rest: onVivid
+              ? black(theme, 12)
+              : c.ref('default', track(theme), role(intent), 'vivid', 0, 10)
           }
         }
       ])
@@ -65,8 +69,13 @@ export function createIos27AppleBadgeSchema({
         intent,
         {
           high: { rest: highForeground(theme, intent) },
-          medium: { rest: readableForeground(onVivid ? 'light' : theme, intent) },
-          low: { rest: onVivid ? white() : readableForeground(theme, intent) }
+          medium: {
+            rest:
+              onVivid && theme !== 'light' && intent === 'neutral'
+                ? c('default', 'd', role(intent), 5)
+                : readableForeground(onVivid ? 'light' : theme, intent)
+          },
+          low: { rest: onVivid ? white(theme) : readableForeground(theme, intent) }
         }
       ])
     );
@@ -256,11 +265,15 @@ export function createIos27AppleBadgeSchema({
           }
         },
         palettes: {
-          default: themes(() => {
+          default: themes((theme) => {
             const color = Object.fromEntries(
               INTENTS.map((intent) => [
                 intent,
-                { high: { rest: white() }, medium: { rest: white() }, low: { rest: white() } }
+                {
+                  high: { rest: white(theme) },
+                  medium: { rest: white(theme) },
+                  low: { rest: white(theme) }
+                }
               ])
             );
             return {

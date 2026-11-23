@@ -191,11 +191,7 @@ export const schema: Schema<Segment> = {
     icon: createIos27AppleIconSchema({ c }),
     text: createIos27AppleTextSchema(),
     separator: createIos27AppleSeparatorSchema(),
-    slider: createIos27AppleSliderSchema({
-      c,
-      segmentNames,
-      transparent
-    }),
+    slider: createIos27AppleSliderSchema({ c, segmentNames }),
     switch: createIos27AppleSwitchSchema({
       c,
       segmentNames,

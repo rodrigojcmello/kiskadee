@@ -6,6 +6,8 @@ Generate the portable Surface Context data with:
 pnpm --filter @kiskadee/surface-builder build
 ```
 
+The build command runs the first-party preset tonal origin check before writing. To run that check alone, use `pnpm check:preset-colors`.
+
 The Node pre-build writes `generated/surface-contexts.json` in the directory of each authored
 preset. For example, the [Fluent companion](../presets/src/presets/fluent-2-microsoft/generated/surface-contexts.json)
 is checked in alongside the Fluent schema and distributed with it. After updating a preset or

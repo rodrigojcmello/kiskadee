@@ -412,16 +412,12 @@ describe('Fluent Outline bottom contour', () => {
 });
 
 describe('Fluent TextField Dark onSubtle', () => {
-  it('uses Button contours and canonical Card surfaces while preserving focus and terminal states', () => {
+  it('uses its calibrated contours and canonical Card surfaces while preserving focus and terminal states', () => {
     for (const segment of ['default', 'teams'] as const) {
       const standard = field.variants!.standard!.modes;
       const outline = standard.outline!.elements;
       const paint = outline.e3!.palettes![segment]!.dark!.onSubtle!.standard;
-      const button =
-        schema.components.button!.elements!.e1!.palettes![segment]!.dark!.onSubtle!.standard;
-      expect(paint.borderColor!.neutral!.medium!.rest).toEqual(
-        button.borderColor!.neutral!.low!.rest
-      );
+      expect(paint.borderColor!.neutral!.medium!.rest).toBe('#d7d7d73e');
       expect(
         standard.borderless!.elements.e3!.palettes![segment]!.dark!.onSubtle!.standard.boxColor!
           .neutral!.medium!.rest
@@ -549,9 +545,15 @@ it('preserves the transparent-field hover and bottom contours across themes and 
             ? theme === 'light'
               ? '#ffffff61'
               : '#ffffffd9'
-            : button.borderBottomColor!.neutral!.low!.rest;
+            : theme === 'dark'
+              ? '#b4b4b4'
+              : button.borderBottomColor!.neutral!.low!.rest;
         const bottomHover =
-          context === 'onVivid' ? '#ffffff' : button.borderBottomColor!.neutral!.low!.hover;
+          context === 'onVivid'
+            ? '#ffffff'
+            : theme === 'dark'
+              ? '#d7d7d7'
+              : button.borderBottomColor!.neutral!.low!.hover;
         expect(fieldPaint.boxColor!.neutral!.medium!.hover).toEqual({ ref: hover });
         expect(line.rest).toEqual(bottom);
         expect(line.hover).toEqual({ ref: bottomHover });

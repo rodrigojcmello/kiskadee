@@ -13,22 +13,30 @@ import styles from './ShowcaseExampleCard.module.scss';
 /** Consumer composition only: the public Card still owns all painting and child context. */
 export function ShowcaseExampleCard({
   context,
+  surfaceKey,
   children,
   contentClassName,
   padding = 'md',
   ...props
 }: Omit<CardProps, 'intent' | 'emphasis' | 'surfaceContext'> & {
   context?: SurfaceContext;
+  surfaceKey?: import('@/utils/canonical-card-surfaces').CanonicalCardSurfaceKey;
   contentClassName?: string;
   padding?: LayoutProps['padding'];
 }) {
   const background = useShowcaseBackground();
   const { segment, theme } = useKiskadee();
   const { manifest } = useShowcaseMetadata(['card']);
-  const surface =
+  const selectedSurface =
     !context || background.cardSurface?.contentSurfaceContext === context
       ? background.cardSurface
       : background.surfaces.find((item) => item.contentSurfaceContext === context);
+  const surface =
+    (surfaceKey &&
+      background.surfaces.find(
+        (item) => item.key === surfaceKey && (!context || item.contentSurfaceContext === context)
+      )) ||
+    selectedSurface;
   const content =
     padding === false ? (
       children

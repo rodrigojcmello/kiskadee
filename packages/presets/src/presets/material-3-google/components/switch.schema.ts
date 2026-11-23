@@ -1,6 +1,6 @@
 import type { Color, Schema } from '@kiskadee/core';
 import { buildBySegment } from '../../../utils/buildBySegment.ts';
-import type { PresetColorGetter } from '../../../utils/presetColor.ts';
+import { type PresetColorGetter, physicalTone } from '../../../utils/presetColor.ts';
 
 type SwitchComponent = NonNullable<Schema<'purple'>['components']['switch']>;
 type Material3GoogleSegmentName = 'default' | 'dynamic' | 'purple';
@@ -12,7 +12,7 @@ type SwitchIntent = 'neutral' | 'polarity';
 type CreateMaterial3GoogleSwitchSchemaArgs = {
   c: PresetColorGetter<Material3GoogleSegmentName>;
   segmentNames: readonly Material3GoogleSegmentName[];
-  transparent: string;
+  transparent?: string;
 };
 
 type StateColors = {
@@ -79,7 +79,7 @@ function surfaceMap<T>(factory: (surface: SurfaceContext) => T) {
 function createSwitchPalettes({
   c,
   segmentNames,
-  transparent
+  transparent: explicitTransparent
 }: CreateMaterial3GoogleSwitchSchemaArgs) {
   const createColors = (
     segment: Material3GoogleSegmentName,
@@ -92,8 +92,11 @@ function createSwitchPalettes({
     const familyRole = intent === 'polarity' ? 'redLike' : 'neutral';
     const selectedRole = intent === 'polarity' ? 'greenLike' : 'switch.neutral';
 
+    const transparent =
+      explicitTransparent ??
+      c(segment, track, 'primitive.black.v1', physicalTone(track, 'dark'), 0);
     const physical = (polarity: 'light' | 'dark', alpha?: number) =>
-      c(segment, 'l', 'primitive.black.v1', polarity === 'light' ? 0 : 100, alpha);
+      c(segment, track, 'primitive.black.v1', physicalTone(track, polarity), alpha);
     const family = (
       role: 'neutral' | 'redLike' | 'greenLike' | 'switch.neutral',
       reference: 'subtle' | 'medium' | 'vivid',

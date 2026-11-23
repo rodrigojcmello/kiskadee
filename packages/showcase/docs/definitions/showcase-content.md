@@ -114,14 +114,17 @@ than recreated with route CSS.
 
 ## Preset transformation
 
+Changing the surface context or selecting a different background swatch starts the same
+content transition before applying the new canvas and supporting Card recipes.
+
 The Shell marks the route canvas with `s-content`. Showcase owns the temporary `s-wow`
-class and macro transition rules on this root and its DOM descendants, including specimen
-Cards. Application chrome and portals outside this subtree do not participate.
+class on the stable content column so a canvas color update preserves it. The transition
+applies to the canvas and its descendants, including specimen Cards. Application chrome and portals outside this subtree do not participate.
 
 The prepared-selection commit starts the effect before layout measurements, after resources
 are ready. Initial activation does not start it. Subsequent triggers replace the previous
-expiration timer. The existing 800ms theme duration is preserved within a 900ms activation
-window; `no-transitions` still suppresses transitions. This presentation effect interpolates
+expiration timer. The Showcase uses the 800 ms theme transition within a 900 ms activation
+window. `no-transitions` still suppresses transitions. This presentation effect interpolates
 preset values and does not author component paint or interaction-state recipes.
 
 During a preset change, Card metadata consumers retain the last valid canonical surface

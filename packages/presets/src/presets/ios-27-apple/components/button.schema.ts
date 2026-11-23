@@ -51,19 +51,20 @@ export function createIos27AppleButtonSchema({
   });
   const neutralFamily = createPresetFamily('neutral');
 
-  const createIconRegionContextPalettes = () => {
+  const createIconRegionContextPalettes = (theme: ButtonTheme) => {
+    const scale = theme === 'light' ? 'l' : 'd';
     const createContext = () => ({
       boxColor: {
         neutral: {
           medium: {
-            rest: neutralFamily.color('l', 0)
+            rest: neutralFamily.color(scale, theme === 'light' ? 0 : 100)
           }
         }
       },
       textColor: {
         neutral: {
           medium: {
-            rest: neutralFamily.color('l', 85)
+            rest: neutralFamily.color(scale, theme === 'light' ? 85 : 7)
           }
         }
       }
@@ -77,7 +78,19 @@ export function createIos27AppleButtonSchema({
 
   const createDividerContextPalettes = (theme: Ios27AppleButtonFormulaTheme) => ({
     onVivid: {
-      standard: { boxColor: { neutral: { medium: { rest: neutralFamily.color('l', 0, 30) } } } }
+      standard: {
+        boxColor: {
+          neutral: {
+            medium: {
+              rest: neutralFamily.color(
+                IOS_27_APPLE_BUTTON_TONAL_RECIPE[theme].scale,
+                theme === 'light' ? 0 : 100,
+                30
+              )
+            }
+          }
+        }
+      }
     },
     onSubtle: {
       standard: {
@@ -109,6 +122,7 @@ export function createIos27AppleButtonSchema({
     const create = (role: ButtonColorRole) =>
       onVivid
         ? createIos27AppleButtonOnVividIntent({
+            scale: theme === 'light' ? 'l' : 'd',
             family: createPresetFamily(role),
             neutralFamily,
             neutral: role === 'button.neutral'
@@ -244,9 +258,9 @@ export function createIos27AppleButtonSchema({
         name: 'button-icon-region',
         palettes: {
           default: {
-            light: createIconRegionContextPalettes(),
-            dark: createIconRegionContextPalettes(),
-            darker: createIconRegionContextPalettes()
+            light: createIconRegionContextPalettes('light'),
+            dark: createIconRegionContextPalettes('dark'),
+            darker: createIconRegionContextPalettes('darker')
           }
         },
         scales: {

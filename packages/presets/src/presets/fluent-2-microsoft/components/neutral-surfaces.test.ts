@@ -47,7 +47,11 @@ describe('Fluent achromatic surfaces', () => {
       const primary = segment === 'default' ? blue : purple;
       for (const [theme, main, companion] of [
         ['light', primary.scales.light[55], primary.scales.light[60]],
-        ['dark', primary.scales.light[60], primary.scales.light[65]],
+        [
+          'dark',
+          segment === 'default' ? blue.scales.dark[18] : purple.scales.light[60],
+          segment === 'default' ? blue.scales.dark[10] : purple.scales.light[65]
+        ],
         ['darker', primary.scales.dark[18], primary.scales.dark[14]]
       ] as const)
         for (const context of ['onSubtle', 'onVivid'] as const) {
@@ -68,7 +72,12 @@ describe('Fluent achromatic surfaces', () => {
       const primary = segment === 'default' ? blue : purple;
       for (const [theme, neutralLow, neutralMedium, primaryHighest] of [
         ['light', black.scales.light[3], black.scales.light[4], primary.scales.light[60]],
-        ['dark', black.scales.dark[5], black.scales.dark[2], primary.scales.light[65]],
+        [
+          'dark',
+          black.scales.dark[5],
+          black.scales.dark[2],
+          segment === 'default' ? blue.scales.dark[10] : purple.scales.light[65]
+        ],
         ['darker', black.scales.dark[1], black.scales.dark[0], primary.scales.dark[14]]
       ] as const)
         for (const context of ['onSubtle', 'onVivid'] as const) {

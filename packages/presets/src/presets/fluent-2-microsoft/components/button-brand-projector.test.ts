@@ -95,7 +95,7 @@ describe('createFluent2MicrosoftBrandButtonProjection', () => {
   });
 });
 
-it('keeps portable Brand Low solid on subtle surfaces and the canonical Light vivid surface', () => {
+it('projects the contextual Low fill onto portable Brand buttons', () => {
   const projection = createFluent2MicrosoftBrandButtonProjection([
     createBrand({ id: 'solid-control', darkVividSource: 'generated-anchor' })
   ]);
@@ -120,7 +120,9 @@ it('keeps portable Brand Low solid on subtle surfaces and the canonical Light vi
       schema.components.container!.elements.e1.palettes!.default![theme]!.onSubtle!.standard
         .boxColor!.neutral!.low!.rest;
     for (const context of ['onSubtle'] as const) {
-      expect(read('e1', theme, context, 'boxColor').rest).toBe(expected);
+      const rest = read('e1', theme, context, 'boxColor').rest;
+      if (theme === 'dark') expect(rest).toMatch(/^#[0-9a-f]{6}00$/);
+      else expect(rest).toBe(expected);
       expect(read('e1', theme, context, 'boxColor').disabled).toBe(expected);
       expect(read('e2', theme, context, 'textColor')).toEqual(
         read('e2', theme, 'onSubtle', 'textColor')

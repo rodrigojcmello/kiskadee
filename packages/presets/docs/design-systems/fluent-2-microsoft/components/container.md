@@ -1,5 +1,13 @@
 # Fluent 2 Container surfaces and companion calibration
 
+## Dark Blue Composition A
+
+For the Microsoft segment, Primary Highest Rest now uses the approved blue.v1 Dark scale:
+D18 (`#133d68`) for the Card and D10 (`#142d48`) for its complementary surface.
+This visual trial supersedes the November 7 Dark Blue pair in both ambient contexts.
+The Dark blue Showcase swatch consumes the Highest pair for canvas and example Cards. Teams retains the L60/L65
+calibration pending its [separate decision](../../../technical-debt/presets/fluent-2-microsoft.md).
+
 ## Vivid primary surface trial — 2026-11-07
 
 The user approved a Kiskadee calibration trial using the existing `card.primary` family:
@@ -46,6 +54,8 @@ Companion colors reuse the approved `card.neutral` and `card.primary` tonal asse
 evidence-backed exact locators. The Darker neutral medium companion uses the physical-black cap.
 This moves the source of these Rest colors to Container without changing their values; Card still
 uses the corresponding Container Rest at build time.
+
+Dark also publishes the existing Primary Complementary Medium as a canonical canvas for the paired Primary Medium composition.
 
 ## Initial paired surfaces
 

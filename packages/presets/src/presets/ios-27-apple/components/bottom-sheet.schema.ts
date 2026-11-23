@@ -12,14 +12,15 @@ type CreateIos27AppleBottomSheetSchemaArgs = {
 export function createIos27AppleBottomSheetSchema({
   c
 }: CreateIos27AppleBottomSheetSchemaArgs): BottomSheetComponent {
-  const scrimColor = {
-    boxColor: {
-      neutral: { medium: { rest: c('default', 'l', 'bottomSheet.neutral', 100, 32) } }
-    }
-  };
-  const scrim = { onSubtle: { standard: scrimColor }, onVivid: { standard: scrimColor } };
   const createTheme = (theme: ThemeName) => {
     const track = theme === 'light' ? 'l' : 'd';
+    const scrimColor = {
+      boxColor: {
+        neutral: {
+          medium: { rest: c('default', track, 'bottomSheet.neutral', track === 'l' ? 100 : 0, 32) }
+        }
+      }
+    };
     const neutralText = fg(`neutral.standard.${theme}.onSubtle.high`);
     const secondaryText = fg(`neutral.standard.${theme}.onSubtle.medium`);
     const disabledText = fg.parentState(`neutral.standard.${theme}.onSubtle.lowest`);
@@ -57,6 +58,7 @@ export function createIos27AppleBottomSheetSchema({
     };
 
     return {
+      scrim: { onSubtle: { standard: scrimColor }, onVivid: { standard: scrimColor } },
       // The surface and scrim resolve outside the descendant SurfaceContext reset.
       surface: { onSubtle: { standard: surfaceColors }, onVivid: { standard: surfaceColors } },
       handle: {
@@ -116,7 +118,7 @@ export function createIos27AppleBottomSheetSchema({
     elements: {
       e1: {
         name: 'bottom-sheet-scrim',
-        palettes: { default: { light: scrim, dark: scrim, darker: scrim } }
+        palettes: themes(light.scrim, dark.scrim, darker.scrim)
       },
       e2: {
         name: 'bottom-sheet-surface',

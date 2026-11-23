@@ -14,7 +14,7 @@ function resolved(value: unknown): unknown {
   return value && typeof value === 'object' && 'ref' in value ? value.ref : value;
 }
 
-it('makes Switch Neutral the default Windows-inspired vivid treatment while keeping subtle intents equal', () => {
+it('makes Switch Neutral the default Windows-inspired vivid treatment and reuses its selected colors on Dark subtle', () => {
   const elements = schema.components.switch!.variants!.standard!.modes!.base!.elements;
   for (const segment of ['default', 'teams'] as const) {
     for (const theme of ['light', 'dark', 'darker'] as const) {
@@ -25,12 +25,21 @@ it('makes Switch Neutral the default Windows-inspired vivid treatment while keep
         'primary',
         'polarity'
       ]);
-      expect(track.onSubtle!.standard.boxColor!.neutral).toEqual(
-        track.onSubtle!.standard.boxColor!.primary
-      );
-      expect(thumb.onSubtle!.standard.boxColor!.neutral).toEqual(
-        thumb.onSubtle!.standard.boxColor!.primary
-      );
+      if (theme === 'dark') {
+        expect(track.onSubtle.standard.boxColor!.neutral!.medium!.selected).toEqual(
+          track.onVivid!.standard.boxColor!.neutral!.medium!.selected
+        );
+        expect(thumb.onSubtle.standard.boxColor!.neutral!.medium!.selected!.rest).toEqual(
+          thumb.onVivid!.standard.boxColor!.neutral!.medium!.selected!.rest
+        );
+      } else {
+        expect(track.onSubtle!.standard.boxColor!.neutral).toEqual(
+          track.onSubtle!.standard.boxColor!.primary
+        );
+        expect(thumb.onSubtle!.standard.boxColor!.neutral).toEqual(
+          thumb.onSubtle!.standard.boxColor!.primary
+        );
+      }
       expect(track.onVivid!.standard.boxColor!.neutral!.medium!.selected!.rest).not.toEqual(
         track.onVivid!.standard.boxColor!.primary!.medium!.selected!.rest
       );
@@ -136,7 +145,7 @@ it('uses the complementary vivid anchor and shared state deltas only for the Neu
   }
 });
 
-it('keeps subtle recipes on the original family and preserves the Slider theme coverage', () => {
+it('selects the expected subtle accent by theme and preserves the Slider theme coverage', () => {
   const switchElements = schema.components.switch!.variants!.standard!.modes!.base!.elements;
   const sliderElements = schema.components.slider!.variants!.standard!.modes!.base!.elements;
   for (const segment of ['default', 'teams'] as const) {
@@ -147,8 +156,10 @@ it('keeps subtle recipes on the original family and preserves the Slider theme c
       expect(resolved(selected)).toBe(
         c.resolve(
           segment,
-          theme === 'light' ? 'l' : 'd',
-          referenceColor('primary', 'vivid', theme === 'light' ? 2 : 6)
+          theme === 'darker' ? 'd' : 'l',
+          theme === 'dark'
+            ? referenceColor('switch.primary.v2', 'vivid')
+            : referenceColor('primary', 'vivid', theme === 'light' ? 2 : 6)
         )
       );
     }

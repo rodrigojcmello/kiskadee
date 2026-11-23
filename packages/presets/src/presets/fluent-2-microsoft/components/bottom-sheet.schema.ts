@@ -98,19 +98,23 @@ const THEMES = {
 export function createFluent2MicrosoftBottomSheetSchema({
   c
 }: CreateFluent2MicrosoftBottomSheetSchemaArgs): BottomSheetComponent {
-  const scrim = {
+  const scrim = (theme: ThemeName) => ({
     onSubtle: {
       standard: {
         boxColor: {
           neutral: {
             medium: {
-              rest: c.resolve('default', 'l', absoluteCap(primitive('black', 'v1'), 'dark', 32))
+              rest: c.resolve(
+                'default',
+                THEMES[theme].track,
+                absoluteCap(primitive('black', 'v1'), 'dark', 32)
+              )
             }
           }
         }
       }
     }
-  };
+  });
   const createTheme = (theme: ThemeName) => {
     const recipe = THEMES[theme];
     const resolve = (locator: Fluent2MicrosoftColorLocator) =>
@@ -272,7 +276,9 @@ export function createFluent2MicrosoftBottomSheetSchema({
     elements: {
       e1: {
         name: 'bottom-sheet-scrim',
-        palettes: { default: { light: scrim, dark: scrim, darker: scrim } }
+        palettes: {
+          default: { light: scrim('light'), dark: scrim('dark'), darker: scrim('darker') }
+        }
       },
       e2: {
         name: 'bottom-sheet-surface',

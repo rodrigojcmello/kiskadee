@@ -78,7 +78,17 @@ export function createIos27AppleProgressSchema({
             onVivid: {
               standard: {
                 boxColor: {
-                  neutral: { medium: { rest: c('default', 'l', 'neutral', 0, 24) } }
+                  neutral: {
+                    medium: {
+                      rest: c(
+                        'default',
+                        theme === 'light' ? 'l' : 'd',
+                        'neutral',
+                        theme === 'light' ? 0 : 100,
+                        24
+                      )
+                    }
+                  }
                 }
               }
             }

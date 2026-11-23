@@ -14,7 +14,7 @@
     "./palettes/resolveForegroundReferences": "./src/palettes/resolveForegroundReferences.ts"
   },
   "scripts": {
-    "build": "node ./src/run-build.ts",
+    "build": "pnpm -w check:preset-colors && node ./src/run-build.ts",
     "check": "node ./src/run-build.ts --check"
   },
   "dependencies": {

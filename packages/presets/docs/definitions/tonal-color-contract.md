@@ -34,6 +34,27 @@ component interaction states. `subtle` identifies a low-prominence surface start
 `vivid` identifies the stronger identity/action starting point. A Black family may therefore use a
 light Dark-theme vivid reference even though its exact dark seed remains elsewhere in the scale.
 
+## Theme of origin
+
+For first-party recipes, the promoted tonal assets for the preset and segment are the
+authority for base colors. Layer 1 owns the primitive family and its approved scales;
+Layer 2 maps global semantic roles; Layer 3 maps component intents. Follow those bindings
+before looking up a tone. Light palettes read the Light scale. Dark and Darker palettes
+read the Dark scale, including onVivid, overlays, and alternative color variants.
+A physical white cap is L0 or D100; a black cap is L100 or D0. Its polarity and the theme
+of its source are independent. Documented derived colors retain their input provenance.
+
+For an origin-only correction, preserve the exact RGB and alpha, verify the target family
+binding in every affected segment, and compare all emitted states. Equal positions or
+nearby HEX values are insufficient. When the approved destination scale lacks the color,
+record the role, source family, tone and value for owner review. A new or revised family
+goes through the normal generator, review and promotion workflow as a separate decision.
+These authoring rules apply to maintained presets; consumers can customize their own JSON.
+
+Run `pnpm check:preset-colors` before publishing. It checks the first-party authored palettes
+in memory before portable generation. The [migration inventory](../technical-debt/tonal-track-origin.md)
+records outstanding cross-track dependencies and legacy coverage limits. Applications may supply customized serialized schemas independently of this first-party check.
+
 ## Functional Reference First
 
 An FRF preset authors every solid base color with one explicit locator. The locator is resolved

@@ -47,6 +47,30 @@ describe('Showcase background combinations', () => {
     });
     expect(scenarios.some((scenario) => scenario.key === 'primary.highest')).toBe(false);
   });
+  it('combines the published subtle primary Medium surfaces into one split swatch', () => {
+    const companion = { ...surfaces[2]!, key: 'primaryComplementary.medium' } as const;
+    const scenarios = resolveBackgroundScenarios([...surfaces, companion]);
+    const primary = scenarios.filter(
+      (item) =>
+        item.canvas.key.startsWith('primary') && item.canvas.contentSurfaceContext === 'onSubtle'
+    );
+    expect(primary).toHaveLength(1);
+    expect(primary[0]).toMatchObject({ canvas: companion, card: surfaces[2], splitSwatch: true });
+  });
+
+  it('prefers the subtle Highest pair in Dark and offers it as one split swatch', () => {
+    const card = { ...surfaces[3]!, contentSurfaceContext: 'onSubtle' } as const;
+    const canvas = { ...card, key: 'primaryComplementary.highest' } as const;
+    const medium = { ...surfaces[2]!, key: 'primaryComplementary.medium' } as const;
+    const scenarios = resolveBackgroundScenarios(
+      [...surfaces.slice(0, 3), card, canvas, medium],
+      'dark'
+    );
+    expect(scenarios.filter((item) => item.canvas.key.startsWith('primary'))).toEqual([
+      expect.objectContaining({ canvas, card, splitSwatch: true })
+    ]);
+  });
+
   it('preserves legacy exceptions and vivid compositions', () => {
     const scenarios = resolveBackgroundScenarios(surfaces);
     expect(scenarios.map(({ canvas, card }) => [canvas.key, card.key])).toEqual([

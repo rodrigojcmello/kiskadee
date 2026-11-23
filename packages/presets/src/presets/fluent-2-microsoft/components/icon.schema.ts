@@ -50,7 +50,7 @@ function createIconPalette(c: Fluent2MicrosoftColorResolver, theme: ThemeName) {
         textColor: {
           neutral: {
             medium: {
-              rest: c.resolve('default', 'l', absoluteCap(primitive('black', 'v1'), 'light'))
+              rest: c.resolve('default', track, absoluteCap(primitive('black', 'v1'), 'light'))
             }
           },
           primary: {

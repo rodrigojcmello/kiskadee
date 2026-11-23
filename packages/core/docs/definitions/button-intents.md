@@ -15,3 +15,5 @@ choice of pure grayscale is preset-owned. External `brand.*` intents stay separa
 Consumers discover published support from component artifacts. Showcase displays
 Support after the existing four examples when available. Progress, Badge and
 other components do not inherit Button's intent vocabulary automatically.
+
+See [white Button authoring](../../../presets/docs/definitions/button-variants.md#white-buttons-on-dark-surfaces) for intent across themes and the [deferred fallback discussion](../../../../docs/proposals/button-emphasis-fallback.md) for missing emphasis levels.

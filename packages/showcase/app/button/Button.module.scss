@@ -11,8 +11,7 @@ $height: 64px;
   }
 }
 
-.pageDescription,
-.intentsDescription {
+.pageDescription {
   max-inline-size: 72ch;
 }
 
@@ -640,37 +639,13 @@ $height: 64px;
 }
 
 .intentsHeader {
+  grid-template-columns: minmax(0, 1fr);
   display: grid;
   gap: 10px;
 
+  > h3,
   > p {
     margin: 0;
-  }
-}
-
-.intentsHeadingRow {
-  align-items: center;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
-  justify-content: space-between;
-
-  > h3 {
-    margin: 0;
-  }
-}
-
-.intentsDescriptionRow {
-  align-items: center;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
-  justify-content: space-between;
-
-  > p {
-    flex: 1 1 320px;
-    margin: 0;
-    min-inline-size: 0;
   }
 }
 

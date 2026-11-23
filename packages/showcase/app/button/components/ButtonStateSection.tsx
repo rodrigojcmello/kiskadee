@@ -13,7 +13,6 @@ import { componentScaleToSize, parseButtonIntentValue } from '@kiskadee/core';
 import { Button as KButton } from '@kiskadee/react-components/button';
 import { useKiskadee, useSurfaceContext } from '@kiskadee/react-components/resources';
 import { SmoothText } from '@kiskadee/react-components/smooth-text';
-import { Switch } from '@kiskadee/react-components/switch';
 import { Text } from '@kiskadee/react-components/text';
 import type { ManifestComponentState } from '@kiskadee/web-builder/types';
 import { Fragment, type ReactNode, useState } from 'react';
@@ -39,6 +38,7 @@ type ButtonStateSectionProps = {
   radius: RadiusMode;
   scale?: ElementSizeValue;
   surfaceContext: SurfaceContext;
+  colorVariant?: ColorVariant;
 };
 
 const EMPHASIS_ORDER = ['high', 'medium', 'low', 'lowest'] as const;
@@ -51,7 +51,6 @@ const EMPHASIS_LABELS: Record<Emphasis, string> = {
 };
 
 export function ButtonStateSection(props: ButtonStateSectionProps) {
-  const [colorVariant, setColorVariant] = useState<ColorVariant>('standard');
   const [selectedMap, setSelectedMap] = useState<Record<Emphasis, boolean>>(() => {
     const initial = {} as Record<Emphasis, boolean>;
     for (const emphasis of EMPHASIS_ORDER) {
@@ -72,8 +71,6 @@ export function ButtonStateSection(props: ButtonStateSectionProps) {
     >
       <ButtonStateSectionContent
         {...props}
-        colorVariant={colorVariant}
-        onVariantChange={setColorVariant}
         selectedMap={selectedMap}
         onToggleSelected={toggleSelected}
       />
@@ -94,13 +91,10 @@ function ButtonStateSectionContent({
   grouped = false,
   radius,
   scale,
-  colorVariant,
-  onVariantChange,
+  colorVariant = 'standard',
   selectedMap,
   onToggleSelected: toggleSelected
 }: ButtonStateSectionProps & {
-  colorVariant: ColorVariant;
-  onVariantChange: (variant: ColorVariant) => void;
   selectedMap: Record<Emphasis, boolean>;
   onToggleSelected: (emphasis: Emphasis) => void;
 }) {
@@ -119,21 +113,6 @@ function ButtonStateSectionContent({
       intents: [semanticIntent],
       emphases
     });
-  const alternativeAvailable = supportsAlternative(EMPHASIS_ORDER);
-  const anyAlternativeAvailable = getButtonColorVariantSupport({
-    colorVariants,
-    segment,
-    theme,
-    contexts: [context],
-    intents: [
-      'primary',
-      'neutral',
-      'destructive',
-      'positive',
-      ...(stateCapabilities?.support ? ['support'] : [])
-    ],
-    emphases: EMPHASIS_ORDER
-  });
   const resolveIntent = (emphasis: Emphasis) =>
     qualifyButtonIntent(intent, supportsAlternative([emphasis]) ? colorVariant : 'standard');
 
@@ -207,18 +186,6 @@ function ButtonStateSectionContent({
             </Text>
           ) : null}
         </div>
-        {anyAlternativeAvailable ? (
-          <Switch
-            label="Alt"
-            size="sm"
-            emphasis="medium"
-            disabled={!alternativeAvailable}
-            controlState={alternativeAvailable && colorVariant === 'alternative'}
-            onControlStateChange={(checked) =>
-              onVariantChange(checked ? 'alternative' : 'standard')
-            }
-          />
-        ) : null}
       </header>
       {simplified ? (
         <div className={`${s['simplified-states']} k-root`}>

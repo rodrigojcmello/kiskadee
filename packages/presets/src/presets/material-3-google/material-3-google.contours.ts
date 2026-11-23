@@ -22,8 +22,10 @@ export function createMaterial3GoogleContours({
                 low: { rest: c.ref(segment, track, 'neutral', 'vivid', 0, 12) }
               },
               onVivid: {
-                medium: { rest: c(segment, 'l', 'primitive.black.v1', 0, 30) },
-                low: { rest: c(segment, 'l', 'primitive.black.v1', 0, 12) }
+                medium: {
+                  rest: c(segment, track, 'primitive.black.v1', track === 'l' ? 0 : 100, 30)
+                },
+                low: { rest: c(segment, track, 'primitive.black.v1', track === 'l' ? 0 : 100, 12) }
               }
             });
             return { light: theme('l'), dark: theme('d') };

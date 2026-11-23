@@ -116,10 +116,13 @@ function createOnSubtleIndicatorProfiles(
   });
 }
 
-function createOnVividTrackProfiles(c: Fluent2MicrosoftColorResolver): ProgressTrackColorMap {
+function createOnVividTrackProfiles(
+  theme: Fluent2MicrosoftTheme,
+  c: Fluent2MicrosoftColorResolver
+): ProgressTrackColorMap {
   const trackColor = c.resolve(
     'default',
-    'l',
+    toThemeShortcut(theme),
     absoluteCap(primitive('black', 'v1'), 'light', ON_VIVID_TRACK_ALPHA)
   );
 
@@ -152,7 +155,7 @@ function createTrackContextPalettes(
     },
     onVivid: {
       standard: {
-        boxColor: createOnVividTrackProfiles(c)
+        boxColor: createOnVividTrackProfiles(theme, c)
       }
     }
   };

@@ -1,6 +1,6 @@
 import type { Color, Schema } from '@kiskadee/core';
 import { buildBySegment } from '../../../utils/buildBySegment.ts';
-import type { PresetColorGetter } from '../../../utils/presetColor.ts';
+import { type PresetColorGetter, physicalTone } from '../../../utils/presetColor.ts';
 
 type SliderComponent = NonNullable<NonNullable<Schema<'purple'>['components']>['slider']>;
 type Material3GoogleSegmentName = 'default' | 'dynamic' | 'purple';
@@ -12,7 +12,7 @@ type SliderIntent = 'neutral' | 'primary';
 type CreateMaterial3GoogleSliderSchemaArgs = {
   c: PresetColorGetter<Material3GoogleSegmentName>;
   segmentNames: readonly Material3GoogleSegmentName[];
-  transparent: string;
+  transparent?: string;
 };
 
 type StateColors = {
@@ -53,7 +53,7 @@ function intentMap<T>(factory: (intent: SliderIntent) => T) {
 function createSliderPalettes({
   c,
   segmentNames,
-  transparent
+  transparent: explicitTransparent
 }: CreateMaterial3GoogleSliderSchemaArgs) {
   const createColors = (
     segment: Material3GoogleSegmentName,
@@ -65,10 +65,20 @@ function createSliderPalettes({
     const onVivid = surface === 'onVivid';
     const role = intent === 'neutral' ? 'slider.neutral' : 'slider.primary';
 
+    const transparent =
+      explicitTransparent ??
+      c(segment, track, 'primitive.black.v1', physicalTone(track, 'dark'), 0);
     const physical = (polarity: 'light' | 'dark', alpha?: number) =>
-      c(segment, 'l', 'primitive.black.v1', polarity === 'light' ? 0 : 100, alpha);
+      c(segment, track, 'primitive.black.v1', physicalTone(track, polarity), alpha);
     const family = (reference: 'subtle' | 'medium' | 'vivid', offset = 0, alpha?: number) =>
-      c.ref(segment, onVivid ? 'l' : track, role, reference, offset, alpha);
+      c.ref(
+        segment,
+        onVivid && !(intent === 'primary' && reference === 'vivid' && offset === 0) ? 'l' : track,
+        role,
+        reference,
+        offset,
+        alpha
+      );
     const neutral = (reference: 'subtle' | 'medium' | 'vivid', offset = 0, alpha?: number) =>
       c.ref(segment, onVivid ? 'l' : track, 'slider.neutral', reference, offset, alpha);
 

@@ -5,6 +5,7 @@ import { useKiskadee } from '@kiskadee/react-components/resources';
 import { useMemo, useState } from 'react';
 import { resolveBackgroundScenarios } from '../utils/background-scenarios';
 import { resolveDefaultCanonicalCardSurface } from '../utils/canonical-card-surfaces';
+import { playWowTransition } from '../utils/playWowTransition';
 import { useCanonicalContainerSurfaces } from './use-canonical-container-surfaces';
 
 type Selection = {
@@ -18,7 +19,7 @@ type Selection = {
 export function useShowcaseBackgroundState(route: string) {
   const { theme, designSystem } = useKiskadee();
   const surfaces = useCanonicalContainerSurfaces();
-  const scenarios = useMemo(() => resolveBackgroundScenarios(surfaces), [surfaces]);
+  const scenarios = useMemo(() => resolveBackgroundScenarios(surfaces, theme), [surfaces, theme]);
   const [selection, setSelection] = useState<Selection>({
     route,
     designSystem,
@@ -46,12 +47,14 @@ export function useShowcaseBackgroundState(route: string) {
   const cardSurface = scenario?.card;
 
   function selectContext(context: SurfaceContext) {
+    if (context !== surfaceContext || scenario?.key !== defaultScenario?.key) playWowTransition();
     setSelection({ route, designSystem, context });
   }
 
   function selectBackground(key: string) {
     const next = scenarios.find((item) => item.key === key);
     if (!next) return;
+    if (next.key !== scenario?.key) playWowTransition();
     setSelection({ route, designSystem, context: next.canvas.contentSurfaceContext, key });
   }
 

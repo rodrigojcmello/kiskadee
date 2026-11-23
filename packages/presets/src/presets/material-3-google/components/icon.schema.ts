@@ -41,7 +41,11 @@ export function createMaterial3GoogleIconSchema({
             onVivid: {
               standard: {
                 textColor: {
-                  neutral: { medium: { rest: c(segment, 'l', 'primitive.black.v1', 0) } },
+                  neutral: {
+                    medium: {
+                      rest: c(segment, track, 'primitive.black.v1', track === 'l' ? 0 : 100)
+                    }
+                  },
                   primary: { medium: { rest: c.ref(segment, 'l', 'icon.primary', 'subtle') } }
                 }
               }

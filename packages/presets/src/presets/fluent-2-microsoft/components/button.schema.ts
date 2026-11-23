@@ -175,10 +175,11 @@ export function createFluent2MicrosoftButtonSchema({
     return createFluentButtonOnSubtleIntent({
       theme,
       neutralControlBottom:
-        role === 'button.neutral' && theme !== 'darker'
+        theme === 'dark' || (role === 'button.neutral' && theme === 'light')
           ? createNeutralControlRecipe(c, theme, false).bottom
           : undefined,
       family: families[role],
+      tintDarkMedium: role !== 'button.neutral',
       lightenHighInteraction: theme === 'light' && role === 'button.neutral',
       neutralButtonFamily,
       neutralSurfaceColor,
@@ -211,7 +212,11 @@ export function createFluent2MicrosoftButtonSchema({
       lightBaseSurface: c.resolve('default', 'l', exactColor('card.primary', 55, 'component.card'))
     });
     if (role !== 'button.primary') return palette;
-    const complementary = c.resolve('default', 'l', referenceColor('button.primary.v2', 'vivid'));
+    const complementary = c.resolve(
+      'default',
+      theme === 'light' ? 'l' : 'd',
+      referenceColor('button.primary.v2', 'vivid')
+    );
     return {
       ...palette,
       boxColor: {
@@ -378,6 +383,12 @@ export function createFluent2MicrosoftButtonSchema({
       disabled: parent(disabled, 'disabled')
     };
 
+    // The Medium overlay can sit on a brand Card even when it publishes onSubtle.
+    const darkMediumInk =
+      family === 'neutral'
+        ? 'neutral.standard.dark.onSubtle.high'
+        : (`${family}.deep.dark.onVivid.high` as const);
+
     return {
       high: {
         rest: direct(high),
@@ -385,7 +396,14 @@ export function createFluent2MicrosoftButtonSchema({
         disabled: parent(disabled, 'disabled'),
         selected: { rest: parent(high, 'pressed') }
       },
-      medium: lowerStates,
+      medium:
+        theme === 'dark'
+          ? {
+              rest: fg(darkMediumInk),
+              pending: fg.parentState(`${darkMediumInk}.pending`),
+              disabled: lowerStates.disabled
+            }
+          : lowerStates,
       low: {
         ...lowerStates,
         ...(theme !== 'light' && intent !== 'neutral'
@@ -518,7 +536,14 @@ export function createFluent2MicrosoftButtonSchema({
           : {})
       },
       low: { ...inverseStates, rest: lowestStates.rest },
-      lowest: lowestStates
+      lowest:
+        theme === 'dark' && intent === 'primary'
+          ? {
+              ...lowestStates,
+              rest: fg('blue.deep.dark.onVivid.alternative.high'),
+              pending: fg.parentState('blue.deep.dark.onVivid.alternative.high.pending')
+            }
+          : lowestStates
     };
   };
 
@@ -562,13 +587,13 @@ export function createFluent2MicrosoftButtonSchema({
     };
   };
 
-  const createIconRegionContextPalettes = () => {
+  const createIconRegionContextPalettes = (theme: ButtonRecipeTheme) => {
     const createContext = () => ({
       boxColor: {
         neutral: {
           medium: {
             rest: neutralButtonFamily.resolve(
-              'light',
+              FLUENT_BUTTON_DEFAULT_TONAL_RECIPE[theme].scale,
               absoluteCap(primitive('black', 'v1'), 'light')
             )
           }
@@ -819,9 +844,9 @@ export function createFluent2MicrosoftButtonSchema({
         name: 'button-icon-region',
         palettes: {
           default: {
-            light: createIconRegionContextPalettes(),
-            dark: createIconRegionContextPalettes(),
-            darker: createIconRegionContextPalettes()
+            light: createIconRegionContextPalettes('light'),
+            dark: createIconRegionContextPalettes('dark'),
+            darker: createIconRegionContextPalettes('darker')
           }
         },
         scales: {
